@@ -13,79 +13,118 @@
 </head>
 
 <body>
-    <h1 id="list">HOW-TO: Программа на Python, Часть 2</h1>
-    <ul>
-        <li>
-            <a href="index1.html"><em>Программа на Python — часть 1</em></a>
-        </li>
-        <li>
-            <a href="#"><em>Программа на Python — часть 2</em></a>
-        </li>
-        <li>
-            <a href="index3.html"><em>Программа на Python — часть 3</em></a>
-        </li>
-    </ul>
-    <h2>Содержание</h2>
-    <h3>HOW-TO: Программа на Python, Часть 2</h3>
-    <ul>
-        <li>
-            <a href="#s1">Списки</a>
-        </li>
-        <li>
-            <a href="#s2">Комментарии</a>
-        </li>
-    </ul>
-    <hr>
-    <p>Впрошлом уроке мы рассмотрели простую программу, которая использовала raw_input<br>
-        для получения ответа пользователя, простые типы переменных и простой цикл «<b>for</b>». В<br>
-        этом уроке мы рассмотрим ещё больше типов переменных и напишем ещё больше<br>
-        программ.
-    </p>
-    <h2 id="s1">Списки</h2>
-    <p>Давайте рассмотрим другой тип переменных, который называется <em>списки</em>. В других<br>
-        языках программирования они называются <em>массивами</em>. Если мы обратимся к аналогии с<br>
-        коробками для обуви, то массив (список) представляет собой несколько склеенных друг с<br>
-        другом коробок с одинаковыми вещами. Например, в одной коробке лежат вилки, в<br>
-        другой — ножи, в третьей — ложки. Посмотрим на простой список— список месяцев. Мы<br>
-        запрограммируем его так:
-    </p>
-    <code>months =<br>
-        ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-    </code>
-    <p>Чтобы создать список, мы заключили все значения в квадратные скобки (<b>'['</b> и <b>']'</b> ). Мы<br>
-        назвали наш список <em>'months'</em>. Чтобы использовать список, мы дадим команду print<br>
-        <b>months[0]</b> или <b>months[1]</b> (которые выведут на экран <em>'Jan'</em> или <em>'Feb'</em>). Помните:
-        счет<br>
-        начинается с нуля. Чтобы найти длину списка, можно использовать такую функцию:
-    </p>
-    <code>print len(months)
-    </code>
-    <p>которая вернёт 12.</p>
-    <p>Ещё один пример списков — категории в поваренной книге. Например…
-    </p>
-    <code>categories = ['Main dish','Meat','Fish','Soup', 'Cookies']
-    </code>
-    <p>Таким образом, в <b>categories[0]</b> хранится <em>'Main dish'</em>, а в <b>categories[4]</b> — <em>'Cookies'</em>. Всё<br>
-        очень просто. Я уверен, вы сможете придумать много других примеров использования<br>
-        списков.</p>
-    <a href="#list">Заглавие</a>
-    <hr>
-    <h2 id="s2">Комментарии</h2>
-    <p>Далее, мы должны обсудить комментарии. Комментарии важны по нескольким причинам.<br>
-        Они не только говорят вам или другим людям, что вы пытаетесь делать, но и напомнят<br>
-        вам через полгода, что же вы хотели сделать. Когда вы будете писать много программ,<br>
-        комментарии станут важными. Также при их помощи вы заставите Python игнорировать<br>
-        какие-либо части кода. Чтобы закомментировать строку, поставьте перед ней знак <em>'#'</em>.<br>
-        Например:
-    </p>
-    <code>#
-    </code>
-    <p>Это комментарий
-    </p>
-    <p>Комментарии можно вставлять в любое место в строке, но помните, что Python<br>
-        проигнорирует всё, что идёт после <em>'#'</em>.
-    </p>
-    <a href="#list">Заглавие</a>
+    <table width="700" align="center">
+        <tr width="100%">
+            <td width="60%">
+                <h1 id="list">HOW-TO: Программа на Python, Часть 2</h1>
+                <ul>
+                    <li>
+                        <a href="index1.html"><em>Программа на Python — часть 1</em></a>
+                    </li>
+                    <li>
+                        <a href="#"><em>Программа на Python — часть 2</em></a>
+                    </li>
+                    <li>
+                        <a href="index3.html"><em>Программа на Python — часть 3</em></a>
+                    </li>
+                </ul>
+                <h2>Содержание</h2>
+                <h3>HOW-TO: Программа на Python, Часть 2</h3>
+            </td>
+            <td width="40%">
+                <img src="python.png" width="230" title="python" alt="python">
+            </td>
+        </tr>
+        <tr width="100%">
+            <td colspan="2">
+                <ul>
+                    <li>
+                        <a href="#s1">Списки</a>
+                    </li>
+                    <li>
+                        <a href="#s2">Комментарии</a>
+                    </li>
+                </ul>
+                <hr>
+                <p>Впрошлом уроке мы рассмотрели простую программу, которая использовала raw_input<br>
+                    для получения ответа пользователя, простые типы переменных и простой цикл «<b>for</b>». В<br>
+                    этом уроке мы рассмотрим ещё больше типов переменных и напишем ещё больше<br>
+                    программ.
+                </p>
+                <h2 id="s1">Списки</h2>
+                <p>Давайте рассмотрим другой тип переменных, который называется <em>списки</em>. В других<br>
+                    языках программирования они называются <em>массивами</em>. Если мы обратимся к аналогии с<br>
+                    коробками для обуви, то массив (список) представляет собой несколько склеенных друг с<br>
+                    другом коробок с одинаковыми вещами. Например, в одной коробке лежат вилки, в<br>
+                    другой — ножи, в третьей — ложки. Посмотрим на простой список— список месяцев. Мы<br>
+                    запрограммируем его так:
+                </p>
+                <code>months =<br>
+                ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+                </code>
+                <p>Чтобы создать список, мы заключили все значения в квадратные скобки (<b>'['</b> и <b>']'</b> ).
+                    Мы<br>
+                    назвали наш список <em>'months'</em>. Чтобы использовать список, мы дадим команду print<br>
+                    <b>months[0]</b> или <b>months[1]</b> (которые выведут на экран <em>'Jan'</em> или <em>'Feb'</em>).
+                    Помните:
+                    счет<br>
+                    начинается с нуля. Чтобы найти длину списка, можно использовать такую функцию:
+                </p>
+                <code>print len(months)
+                </code>
+                <p>которая вернёт 12.</p>
+                <p>Ещё один пример списков — категории в поваренной книге. Например…
+                </p>
+                <code>categories = ['Main dish','Meat','Fish','Soup', 'Cookies']
+                </code>
+                <p>Таким образом, в <b>categories[0]</b> хранится <em>'Main dish'</em>, а в <b>categories[4]</b> —
+                    <em>'Cookies'</em>. Всё<br>
+                    очень просто. Я уверен, вы сможете придумать много других примеров использования<br>
+                    списков.
+                </p>
+                <a href="#list">Заглавие</a>
+                <hr>
+                <h2 id="s2">Комментарии</h2>
+                <p>Далее, мы должны обсудить комментарии. Комментарии важны по нескольким причинам.<br>
+                    Они не только говорят вам или другим людям, что вы пытаетесь делать, но и напомнят<br>
+                    вам через полгода, что же вы хотели сделать. Когда вы будете писать много программ,<br>
+                    комментарии станут важными. Также при их помощи вы заставите Python игнорировать<br>
+                    какие-либо части кода. Чтобы закомментировать строку, поставьте перед ней знак <em>'#'</em>.<br>
+                    Например:
+                </p>
+                <code>#
+                </code>
+                <p>Это комментарий
+                </p>
+                <p>Комментарии можно вставлять в любое место в строке, но помните, что Python<br>
+                    проигнорирует всё, что идёт после <em>'#'</em>.
+                </p>
+                <a href="#list">Заглавие</a>
+            </td>
+        </tr>
+    </table>
+    <table width="500" align="center">
+        <tr>
+            <td>
+                <form action="index1.html">
+                    <input type="image"
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAFm0lEQVRIie2WT2xcxR3HP+/v/n279u7aie3YxE6CHDcNCU6DqaiiqOmhrmgqtYpUguCGOHBA4lghVao4cOcCvVU09ERliVoKVBVVRQikCkRQJyHVmthmY3vX6/339u2+eW+mhzXEbjZZt1LbS3/S6Gne/GY+v6/ezPcN/D/+S6Ft7xydPnO/vFmlmwmM5ISwUxNKt/pB+boKXN2v5c2gnlcydIH53YLNHuOzAMKZeKqYOX6+lBgGux/MeGc0cKFdJtcsMFC+9lu7sWgppcRuCniQ4tkgNjizuuf0y+XBk5DOMZVLcTAb4fFcnYQV8Ommw9U1xc1iEa9cRaveZKpw8Q2zsTSvlJr7dxTPKjs7fX3sZy+rwZN8fyLKs99JcmJUsjcNhp4C4Bmg3Aj5YjXHhasOv/ksyd8ifc9NLf2+36r+nQfBje2dPcMT3yhd2H/ul2rsJC99N8VLpyJMDelELIO3LlX45HaLT263OLg3iqFrDKYMHnvIZKrf5KNynCV9z7dy7nLNEFUJ3Not+NDK6JOvt4a+x4uPpXn6UYOIpdMOFO9crXFupo8ffNvh8HCEC5cqjPSbtAOFUoqxjMlo3OTiahQhwulMbeHCbsGzwhl/auWhnxw9fSjD08dNDB3aQvKXmy5PTqfYl7HQNY2orRNIRUso2kLiCUU7UAwkDaRv8nElQV9jKWn5GzWl7oXr2ztKNxLFzCPnSfdz5oBFKCWbruRK3uPMkSQHBiMYemc/rlYCNt3OeHnruelKql7I9FBALJNmPXPkrKZbiW6Kd24uI7mvFB+mL5VmICqouDrlRsjMoTiTw9FOcUqxXBZ8+IVLO1DfTA1DRX5TcvFOHze9JB5tvNgI+yLpSYLig8HCTk1iZ3jEAddXuH7Io+NRZg7eLTqU8PbH1W4iyEbhSsnaWjkOdh/KTk9obg+w0q0EVpJ+S1BqSk7uj/H4weTOCYbGiz8c6AqutxQLHvz6czoOYSTAsBJwdu8v/vrCxjkQAHz1drbrOV5r2TiVNqejFpapdUvpGk5UYzK3BVXbR+ZWXzkxxyt3X2zsAOsqcAlcPnRj5MMo6prGiXFFOr47eKEKv7vBXT8ULoYSm7JL7k6wX8vTLkNTsqZFePM2LL8FF34Kw32dnKYPP3oT3i91WU0BIZ2z4vkQ1NBEY6VbkTuOkxnU87lmAdrlzgk34M8b8MI7sF7v5MRteOPHcCwNtLdaAMgtsLnV/A0GvAKmqN7oBt5pIEPj+6PSp5SePNrnxDiWDBmzBG5LsFAImdlvELc1snH4+ZTkT9c9RqKC0ajPmC0YtQUjlqDRatIqfcX46rtzprd+OZTyHgP55801bzcWrUTxyvmKk2Rfto+4qaE08Fx4/X2f5085ZB2ddFxnMtFEAtrWN9UUNAPF5UqF9ManOM1br7Wl/GNvxR2vPpBub6wUjewTwkpzOGuQimrELYXnhyyu+0wOWcxfcyk1BHFbEbcUCVNhKMGlpTrV5QUOr7/3qvSqK93U3g98ywhdO+d+mb8hc6fWQoc9MYvBlNn5WYSKy/kWa/WQiKkRMTVsA+5UBO/mayx9eZ1jhblfGc07H4hAzivVDdsd3IEHXirbXL5daulPfNRM4nsaKVPgxEwsXcfQQKmQ9bLLB4sef1gsw9JVDq+/92oHGs6r+1HpcefSNGZ1XcdzHn5uPXPkbDk2ApEU8UTHt5uNNvh1BrwCg7XP55zmrdeEH9pBKB8I7QnuwDU0jVlNtxJhJD2p7PRExwbBUGJTE40VU1RvqEC4oZTzUkp6MIHelz2UUijFPNKHoMh2w//akcLenHtC753yn4meir8OpZtgJBF2CqVbgEJXAbpfwwzqKPmv6d4VWDgTFDPHx0qJ4b3Y/RnMeOdiHbgN2uVyrllYHShfW7Ebi/TaVP/z+AdepIYmBZsLNwAAAABJRU5ErkJggg==">
+                </form>
+            </td>
+            <td align="center">
+                <form action="#list">
+                    <input type="image"
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAFRUlEQVRIie2WTWycxRnHf/N+7ee7X16vHdvEsEnAmDROmjSUiIiGpgd8aQ8NB4SExYETB6QcOEC4RJyQKlXKvahq4cChyoGoLVZFE6GGUtIEAjgk2qSbsLZje3e93nc3u/O+MxzWhF28jtULpzzSSDPzPjO/5//Mxztw334kE92NPfuPbuY3rQ0rhhkfk05iQht2DDSG9itGu1aw/LWCVoEEztwL9tmns3fr1haBTQNIN39sKbNvZjk2Ak4arGjnq+9Bq0y2UWKwfOltp34drTVbBbAVeNqP5H6+MHTkRDl3EJJZJrMJdg6EeCK7Rsz2uVhxubCoubK0xHL5yRmxemVmsvS3U1a9iNb6nvDNwNPaGfjJV9t/e0LnDvLLfJgXfhbnwAOK4ST89TMB2PzusE25HvD1QpZ3Lrj88fM4X4RSL08W/5K2V6/dE252N4ZG8neVfvngsyf19oMcP5Tg+FMhJrcZhGyTf3xRZ3rK5ZGRMO9fXOOhXIhcwuTxcYvJtMXH5ShFY2hP1rtZMeWqBArfzb84f7eK0S+a0vDTJ3TuAK/sT/DcXhPHEtSainNzdX6128WNmsTCBs9MuZybq7PaCAiU5vCuMK8/mYKBPN8MHnrZMAyEEP0QGxRPS/ehY7fGf7P3yK4Mz++zMA1oScXXCy0OPRwjl7AwDYEQAscSDCdszl/zcCxBy9cMxk1U2+Lf1RipejFit1cqWndUb6pYG6a9lJmaIZnm6A6bQCkqnqK4IjmQjzKatrHM7xUYhiCbNDk8EefmiqTiKVabAfu3+UQySW5ndh8Thh3rp7h3c5nxB5ajI6QSSQbDkqpnYJuCx0ZD5HMOprExbYYQjGVsHt8R5d1P1jhdTHKlGadJi2ZklLFQcgJ/6fSGcd0N6SQewckw5YLX1tSaATuHHCbHIn2h3TY+6LA/n2bet6l5ZuesOym0k8z38/9Bqu00dpy0LVluKEZSDlPbIz3p3cxMQ/CLXQav/nS9QwBmDEw7Br8efu0/H9jd/n3P8eIdB7faQhOw2qqTjJg8sydKxOkEUPEU5YZAasF4GiI2vPUhXF4SXK2uQ3X3jKcX3jzQm+0esKH9Cr7Hv7wIhSCMWQVuwL6U4MgkRJyO3x8+NTj+z079vy/C3lH4sAhn/telFkB6mFpWVB9xveB2rUCrDA3Fogjd7R+WvYOEZnP77oA22+DXELJ+q59bzxpb/loh2yhBq9yZYL1ETejOne6z5K4N2OtSLKC9wmCzhCVX5/qBexRrFcjB8qW3l4eemEllIky4NgYwHhI02mFMoQkUxA2fgykfgCAIUWsKtoXaHIoHKGBuTVL1FsnVLr+nfeltCQbOOPXrxJY+mam6ccYGUkQtgaHg97MtTAHLjYCWDxPr18Kfzt8hZAnW6gE7o9DwNeerVZIrF3EbV0+1lDq7ZaoBtNY8uHD2JKXPuVSqErfapMMK35e0pMS1FQPR7wvapyUlCUcRt9pcKlUx579kx8q5k7IdOEr121r9/05XzcAzs96Na3Mqe2QxcBmK2OQSFiHbIGSJDcUxYb4q+XuhRvHGV+wtnX7DbMx/JH01q7s2Yvdd3Q8MUDD9ZnygcbOwfMd46uNGnHZTkLAkbsTCNgxMAVoH3C57fHS9yfvXy1C8wKO3PzjZgQazWvdu/27wPd9cQnDUMAya7sMv3c7sPlaOjEIoQTQWBqBRb0F7jcFmiVzt8ntu4+op2Q4cP1AboPB/vLm0ZlYpTbh2hfF64c9joeSEdpL5zjUIppYVIeu3LLk6p33ptZQ6q5SiD/O+3bcfz74FH+gyuRt8+xMAAAAASUVORK5CYII=">
+                </form>
+            </td>
+            <td align="right">
+                <form action="index3.html">
+                    <input type="image"
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAFKUlEQVRIie2WSWxVVRjHf3d68323fUPLVArFARonFIuihhBxYaOiicjGaFcujCYaTVwY3RAT1wYT3RiH6IaFQSIJU4wYUQaRCpQy5NWU2rlv6hv67rn3HBcPawuPVhfGDf/k5N5zvu+c3/fde893D9zUTf1H0uZ27rpv6438upVuRjFiK0QgvlbpVhQUuvJyulvMmN50RklfAPsWgv32y6HZe3ORwLoBhN2xfSKxvmcyugwCzWBG6lavDLUsqcow6Wzvp4HSAEopFgtgMXC3F255YLR1yzvZli5wUnSm4tySDPJgapqo5XE6Z3NqTHFhYoLJ7MM9WuFCT+fw/l1maRCl1ILwG4G7VSB55/mVz76jWrp4tCPEi/fH2NAmWeKAoccBeAHIlnwujqb46pTN52dinAs2vdI5+HWzVbi8INyY22ld1jGbad+q53aqlV28sSnOG5uDdC7VCVoGxapi7xmPs8OSdEwjZOm0xA02tpt0Npscy0YY1FvvSpWv5AxREEDmr/XHRjILgm8danvy45mlj/DaRofn7zUIWjo1T1ETiqmSoqsjyG2tJofPuzSFFcJXKKVYmTBpi5jsHw0hhN+VKPZ98U/B3cJevX2o/el7ttya4Pn1JoYONSGpCsmMkLQ6BqtSFvGQRnvCZO8ZFzugcD1JzVOkYwbSNTmej9JUGgxb7lROqTp8LlifC1a6YU0k7u7BaWbrGgtfSnJlSbZcv+bKktG8oDIjAUjaGjs2hOkdUYwV6/ZC1ee+pR7hhMN44o7tmm5FG73j+R+XEWubjCyjKe6QDglyJR1fztvqTBR9xoolnlhvE7I0ljg6OzZE+OiHEp5b48BoExeqMarUqIaXsyLorMWb2HMteF7GIhC/nUCCu20ou4qBvMa0DF3X/ihZHO4Xs/OWODqvbrbpLSY4MWlRLBv1vR5oQgWcjkUzVrrVjBWj2RJMViTb7o1y/+pAo3nXKWlrfPCkwS9fwUiOek00omBYUdi25O2Tr0zt0LTZaPVGi4zNBBjM66xOG43MN9TqJLSFuKYQA+wZfW/DY2LuyDywrrwcXpmfymEOFBw+O9Ewrhvq4EU4XpgDFmUMJXKNfOc9at0tZqhloSIZ04K8eQze/PWaGQqQ8OEmePmhv4f3noOnvrlq14GqC14RTZSGGoHnpWR605lUZRhq2foO1wFvTpsBqvD6uvnQ7y8rnjlwNVPzanOnSFeHMUWhf9GMlfRFOtv76WTrgz1NiTBrbWteZJ6Cx9cEeOsxa3bs6GXB+9+5bLQACyTQPy3Il8doKZ7drTxRXhQM7AuUBohOnOjJ2zFWJJuImBpKA03VHdptRdiqg3+7UuOToyXSpiJt1n0qnuLnfB5n6jR25dKumpRHGoEb1mqnNpWZMJKbheWwLmkQD2lELEXEUlRcn3TMYLzos/vkNGiSiKWImgpDCY4OTlO40se68YM7ZbUw5Ev5j38Slwy/bKTKv1/ul6ktY75Na9iiJW4StHQ0DfpGXPpGXDQNgqZGwICRvOBApsjg7+e5Z3jPu0Zl5EfhyUNK/b3+YmCAjOFVY8nKlczkjL75WCWGW9WImwI7bGLpOoYGSvmMZ8v8OFDl24EsDJ5i3fjBnXWof0jNpV4DXvDMpWls1XWdqn3bS+OJO7Znw8shGCcSDQFQKdXAnSZdHaaleHa3Xbm0S7h+wPPldVD4F2cupTgkpSJUvEB7KfPliqCzVgWcjnoZBEOJnCZKQ6Yo9CtPlGtSHpFS0oB5U/+f/gRVa2THSAIE4QAAAABJRU5ErkJggg==">
+                </form>
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>
