@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="25"
+   height="25"
+   viewBox="0 0 6.6145832 6.6145835"
+   version="1.1"
+   id="svg7439"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="button_left.svg">
+  <defs
+     id="defs7433">
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7354"
+       id="radialGradient7356"
+       cx="86.556549"
+       cy="100.83036"
+       fx="86.556549"
+       fy="100.83036"
+       r="6.6145835"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.46790755,-1.3142799,3.8221648,1.3607602,-339.33416,77.38395)" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient7354">
+      <stop
+         style="stop-color:#0000dd;stop-opacity:1;"
+         offset="0"
+         id="stop7350" />
+      <stop
+         style="stop-color:#0000dd;stop-opacity:0;"
+         offset="1"
+         id="stop7352" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="11.2"
+     inkscape:cx="5.3779053"
+     inkscape:cy="10.728439"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7436">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-290.3854)">
+    <g
+       transform="matrix(0.49999999,0,0,0.49999999,-39.970982,243.30115)"
+       id="g7392">
+      <circle
+         r="6.6145835"
+         cy="100.83036"
+         cx="86.556549"
+         id="path5678"
+         style="opacity:1;fill:url(#radialGradient7356);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+      <g
+         transform="translate(30.572776,-26.858356)"
+         style="fill:#ffffff;fill-opacity:1"
+         id="g7385">
+        <rect
+           style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.87038827;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+           id="rect7363"
+           width="2.3623512"
+           height="7.4650292"
+           x="126.52436"
+           y="-59.777199"
+           ry="1.5119047"
+           transform="rotate(90)" />
+        <rect
+           style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+           id="rect7365"
+           width="5.6696429"
+           height="2.4568453"
+           x="119.36255"
+           y="67.04158"
+           ry="1.2284226"
+           transform="rotate(37.810087)" />
+        <rect
+           style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+           id="rect7365-7"
+           width="5.6696429"
+           height="2.4568453"
+           x="-47.945839"
+           y="129.08861"
+           ry="1.2284226"
+           transform="rotate(-42.425765)" />
+      </g>
+    </g>
+  </g>
+</svg>
