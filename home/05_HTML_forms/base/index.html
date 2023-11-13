@@ -85,7 +85,7 @@
                         <legend>Оставьте Ваш отзыв</legend>
                         <input type="text" name="name" id="name" required>
                         <label for="name"> * Имя</label><br>
-                        <input type="email" name="email" id="email" autofocus required>
+                        <input type="email" name="email" id="email" pattern="^([^ ]+@[^ ]+\.[a-z]{2,6}|)$" autofocus required>
                         <label for="email"> * e-mail</label><br>
                         <textarea name="review" placeholder="Форма отправки" cols="20" rows="1"></textarea><br>
                         <input type="submit" value="Отправить"><br>
@@ -147,7 +147,7 @@
                 <p><strong>Валидация данных HTML5:</strong></p>
                 <form name="valid" method="post" action="http://fe.it-academy.by/TestForm.php" target="_blank">
                     <fieldset>
-                        <input type="name" name="FIO" id="FIO" placeholder="Только русские буквы" pattern="/^\w[ЁёА-я\s/$]" title="Только русские буквы"><br>
+                        <input type="name" name="FIO" id="FIO" placeholder="Только русские буквы" pattern="(^[А-Я][а-я])" title="Только русские буквы"><br>
                         <label for="tel"><em>Телефонный номер в формате<br>+XXX-XX-XXXXXXX, где X - любое число</em></label><br>
                         <input type="tel" name="tel" id="tel" autofocus="on" placeholder="+375-29-1234567" pattern="(\+375)(25|29|33|44)(\d{7})"><br>
                         <input type="submit" value="Проверить">
