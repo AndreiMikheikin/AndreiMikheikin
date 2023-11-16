@@ -1,0 +1,20 @@
+body {
+    text-size-adjust: auto;
+
+    table { background-color: blanchedalmond;
+        tr td {
+            @font-face {
+                font-family: Marutya;
+                src: url(font/Marutya.ttf);
+            }
+
+            p.letter {
+                font-family: Marutya;
+                font-style: italic;
+                line-height: 0.6cm;
+                text-align: justify;
+                text-indent: 1cm;
+            }
+        }
+    }
+}

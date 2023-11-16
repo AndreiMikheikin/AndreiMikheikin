@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+</head>
+
+<body>
+    <form name="form" method="post" action="http://fe.it-academy.by/TestForm.php" target="_blank">
+        <fieldset>
+            <legend>Контактная информация</legend>
+            <label>Имя*
+                <input type="text" name="name" pattern="^[А-Я][а-я]{1.25}" required autofocus>
+            </label><br>
+            <label>Телефон
+                <input type="tel" name="phonenumber" pattern="^(\+375|80)(25|29|33|44)(\d{7})$">
+            </label><br>
+            <label>Email*
+                <input type="email" name="email" pattern="^([^ ]+@[^ ]+\.[a-z]{2,6}|)$" required>
+            </label>            
+        </fieldset>
+        <fieldset>
+            <legend>Персональная информация</legend>
+            <label>Возраст
+                <input type="number" name="age" value="18" min="18" step="1">
+            </label><br>
+            <label>Пол
+                <select name="sex">
+                    <option value="W" selected>Женщина</option>
+                    <option value="M">Мужчина</option>
+                </select>
+            </label><br>
+            <label>Перечислите личные качества
+                <textarea name="values"cols="20" rows="5"></textarea>
+            </label>
+        </fieldset>
+        <fieldset>
+            <legend>Выберите ваших любимых животных</legend>
+            <label>
+                <input type="checkbox" name="animals" value="1">Зебра
+            </label>
+            <label>
+                <input type="checkbox" name="animals" value="2">Кошак
+            </label>
+            <label>
+                <input type="checkbox" name="animals" value="3">Анаконда
+            </label>
+            <label>
+                <input type="checkbox" name="animals" value="4">Человек
+            </label><br>
+            <label>
+                <input type="checkbox" name="animals" value="5">Слон
+            </label>
+            <label>
+                <input type="checkbox" name="animals" value="6">Антилопа
+            </label>
+            <label>
+                <input type="checkbox" name="animals" value="7">Голубь
+            </label>
+            <label>
+                <input type="checkbox" name="animals" value="8">Краб
+            </label>
+        </fieldset>
+        <input type="submit" value="Отправить информацию">
+    </form>
+</body>
