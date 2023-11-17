@@ -1,0 +1,37 @@
+body {
+    div {
+        .cards {
+            background-image: url(https://stigmat19.github.io/scsite/static/media/cards.7e0a18f0.png);
+            height: 190px;
+            width: 140px;
+            float: left;
+        }
+        .cards1 {
+            background-image: url(https://stigmat19.github.io/scsite/static/media/cards.7e0a18f0.png);
+            height: 190px;
+            width: 140px;
+            display: inline-block;
+            margin-left: -20px;
+        }
+        #num1 {
+            background-position-x: 140px;
+            background-position-y: 0px;
+        }
+        #num2 {
+            background-position-x: 0px;
+            background-position-y: 786px;
+        }
+        #num3 {
+            background-position-x: 283px;
+            background-position-y: 1184px;
+        }
+        #num4 {
+            background-position-x: -144px;
+            background-position-y: 388px;
+        }
+        #num5 {
+            background-position-x: 0px;
+            background-position-y: 190px;
+        }        
+    }
+}
