@@ -1,0 +1,35 @@
+body {
+    background: grey;
+    div.nav{
+        float: left;
+        background: rgb(184, 184, 184);
+        width: 15em;
+        margin-right: .2em;
+        position: absolute;
+        ul {
+            margin-left: -20px;
+            list-style: square;
+            ul {
+            background: skyblue;
+                li {
+                    background: yellowgreen;
+                }
+            }    
+        }
+    }
+    div.wrap {
+        margin-left: 15.2em;
+        background: darkgray;   
+        img {
+            float: right;
+            height: 30px;
+            width: 30px;
+        }
+        div.text {
+            background: goldenrod;
+            padding: .5em;
+            margin-bottom: .2em;
+            position: relative;
+        }
+    }
+}
