@@ -26,6 +26,9 @@ body {
             width: 30px;
         }
         div.text {
+            height: 100px;
+            overflow: scroll;
+            overflow-x: hidden;
             background: goldenrod;
             padding: .5em;
             margin-bottom: .2em;
