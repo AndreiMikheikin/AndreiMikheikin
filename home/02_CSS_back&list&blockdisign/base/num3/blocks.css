@@ -5,9 +5,11 @@ body {
         background: rgb(184, 184, 184);
         width: 15em;
         margin-right: .2em;
-        position: absolute;
+        position: fixed;
         ul {
-            margin-left: -20px;
+            padding: .57em;
+            padding-left: 1.5em;
+            /* margin-left: -20px; */
             list-style: square;
             ul {
             background: skyblue;
@@ -18,7 +20,7 @@ body {
         }
     }
     div.wrap {
-        margin-left: 15.2em;
+        margin-left: 15.1em;
         background: darkgray;   
         img {
             float: right;
@@ -26,10 +28,17 @@ body {
             width: 30px;
         }
         div.text {
-            height: 100px;
-            overflow: scroll;
+            /* height: 200px; */
+            text-align: justify;
+            
+            /* Подскажите, почему только overflow влияет на
+            то, будет ли .text обтекать .img? */
+            
+            /* overflow: scroll; */
             overflow-x: hidden;
+            overflow-y: visible;
             background: goldenrod;
+            /* border-top: .1px; */
             padding: .5em;
             margin-bottom: .2em;
             position: relative;
