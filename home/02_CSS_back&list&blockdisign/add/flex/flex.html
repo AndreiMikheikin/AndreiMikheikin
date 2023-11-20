@@ -10,33 +10,36 @@
             padding: 0px;
         }
         .wrap {
-            background-color: aliceblue;
-            display: inline-flex;
-            
+            display: flex;
+            background-color: rgb(37, 100, 37);
         }
         .nav {
-            background-color: bisque;
-            margin: 1px;
-            display: flex;
-            flex-direction: column;
             width: 15em;
-            height: 200px;
+            padding: 5px;
+            margin-left: 10px;
+        }
+        ul {
+            background-color: greenyellow;
+            li {
+                background-color: green;
+                margin: .1em;
+                margin-left: 1em;
+            }
         }
         .content {
-            background-color: bisque;
-            margin: 1px;
-            margin-bottom: .2em;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 300px;
-
+            background-color: brown;
         }
-        ul, li { margin-left:1em ;}
+        .text {
+            background-color: rgb(33, 228, 33);
+            margin-bottom: .2em;
+            padding: 5px;
+            text-align: justify;
+        }
         .img {
             display: flex;
             flex-direction: row-reverse;
         }
+        .footer {background-color: rgb(42, 165, 58);}
     </style>
 </head>
 <body>
@@ -55,12 +58,12 @@
             </ul>
         </div>
         <div class="content">
-            <div calss="text">
+            <div class="text">
                 <h2>Post1</h2>
                 <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit alias ipsa quaerat sit non beatae voluptatem nemo tempore recusandae ab, vel aspernatur facilis unde assumenda consectetur, quos dolores laborum autem.</p>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi tempora sunt ab ipsum, beatae magni est modi inventore rem nobis illum non laboriosam recusandae nisi ut harum soluta voluptatibus temporibus!</p>
             </div>
-            <div calss="text">
+            <div class="text">
                 <h2>Post2</h2>
                 <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit alias ipsa quaerat sit non beatae voluptatem nemo tempore recusandae ab, vel aspernatur facilis unde assumenda consectetur, quos dolores laborum autem.</p>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi tempora sunt ab ipsum, beatae magni est modi inventore rem nobis illum non laboriosam recusandae nisi ut harum soluta voluptatibus temporibus!</p>
@@ -70,6 +73,6 @@
             </div>
         </div>
     </div>
-    <div><h2>Footer</h2></div>
+    <div class="footer"><h2>Footer</h2></div>
 </body>
 </html>
