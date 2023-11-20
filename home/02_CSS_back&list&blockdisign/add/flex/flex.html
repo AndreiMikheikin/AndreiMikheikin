@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flex</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+        .wrap {
+            background-color: aliceblue;
+            display: inline-flex;
+            
+        }
+        .nav {
+            background-color: bisque;
+            margin: 1px;
+            display: flex;
+            flex-direction: column;
+            width: 15em;
+            height: 200px;
+        }
+        .content {
+            background-color: bisque;
+            margin: 1px;
+            margin-bottom: .2em;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 300px;
+
+        }
+        ul, li { margin-left:1em ;}
+        .img {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="nav">
+            <h2>nav</h2>
+            <ul>1
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+            </ul>
+            <ul>2
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+            </ul>
+        </div>
+        <div class="content">
+            <div calss="text">
+                <h2>Post1</h2>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit alias ipsa quaerat sit non beatae voluptatem nemo tempore recusandae ab, vel aspernatur facilis unde assumenda consectetur, quos dolores laborum autem.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi tempora sunt ab ipsum, beatae magni est modi inventore rem nobis illum non laboriosam recusandae nisi ut harum soluta voluptatibus temporibus!</p>
+            </div>
+            <div calss="text">
+                <h2>Post2</h2>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit alias ipsa quaerat sit non beatae voluptatem nemo tempore recusandae ab, vel aspernatur facilis unde assumenda consectetur, quos dolores laborum autem.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi tempora sunt ab ipsum, beatae magni est modi inventore rem nobis illum non laboriosam recusandae nisi ut harum soluta voluptatibus temporibus!</p>
+                <div class="img">
+                    <img src="email.svg" alt="email">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div><h2>Footer</h2></div>
+</body>
+</html>
