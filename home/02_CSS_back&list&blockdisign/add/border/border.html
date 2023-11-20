@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        div {
+            margin-left: 1px;
+        }
+        .b1 {
+            border: 30px solid;
+            border-image: url(border.png) 60 round round;
+            width: 20%;
+            padding: 5px;
+            float: left;
+            background-color: rebeccapurple;
+
+            p {
+                font: 24px sans-serif;
+                text-align: justify;
+                color: goldenrod;
+            }
+        }
+    </style>
+    <title>Border</title>
+</head>
+
+<body>
+    <div class="b1">
+        <p>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ea quia similique debitis aut non sit inventore
+            alias quasi suscipit explicabo, magni, eligendi blanditiis cumque accusantium consectetur tempora mollitia
+            animi. Eveniet.
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam enim amet dolorum, aliquid nostrum debitis
+            quasi sed ipsam, quam voluptatibus placeat expedita laboriosam consequatur voluptas neque quo atque quae.
+            Perferendis.
+        </p>
+    </div>
+
+
+    <div style="border-style:solid; border-width: 30px; max-width: 20%;
+    			border-image-source: url(border.png) ;
+    			border-image-slice: 120;
+    			border-image-repeat: stretch; 
+    			border-image-width: 2;
+                background-color: olivedrab;
+                float: left;">
+
+        <p style="color: rgb(51, 7, 95);
+                font: 24px sans-serif;
+                text-align: justify;
+                color: goldenrod;">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis saepe harum qui obcaecati numquam facilis
+            laborum exercitationem ea. Natus sunt exercitationem deleniti ducimus numquam pariatur provident ut, atque
+            assumenda! Nobis?
+        <p style="color: rgb(51, 7, 95);
+                font: 24px sans-serif;
+                text-align: justify;
+                color: goldenrod;">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Autem voluptatibus
+            quos, labore quo dolorum unde ut inventore magni eveniet veritatis exercitationem, odit expedita sit
+            corrupti! Nulla quibusdam corporis aspernatur exercitationem!
+        </p>
+    </div>
+
+
+    <div style="background: 
+  			url(b-tl.png) no-repeat top left,
+  			url(b-tr.png) no-repeat top right,
+  			url(b-bl.png) no-repeat bottom left,
+  			url(b-br.png) no-repeat bottom right,
+  			url(b-l.png) repeat-y left,  
+  			url(b-t.png) repeat-x top, 
+  			url(b-r.png) repeat-y right, 
+  			url(b-b.png) repeat-x bottom;
+            width: 20%; 
+            padding: 25px;
+            float: left;">
+
+        <p style="color: rgb(51, 7, 95);
+            font: 24px sans-serif;
+            text-align: justify;
+            color: gold;">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum cum minima corporis, itaque voluptatibus,
+            aperiam, id delectus consectetur tempore eos corrupti tempora ratione! Alias quod, sint vitae laboriosam
+            deserunt asperiores.
+        </p>
+        <p style="color: rgb(51, 7, 95);
+            font: 24px sans-serif;
+            text-align: justify;
+            color: gold;">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit ad quisquam ipsum harum dicta odit esse? Alias, suscipit sunt nemo magnam ratione voluptatem illum quaerat, molestias earum totam recusandae ipsam.
+        </p>
+    </div>
+
+
+    <div style="float: left; width:20%; background: url(b-l.png) repeat-y left">
+        <div style="background: url(b-t.png) repeat-x top">
+        <div style="background: url(b-r.png) repeat-y right">
+        <div style="background: url(b-b.png) repeat-x bottom">
+            <div style="background: url(b-tl.png) no-repeat top left">
+            <div style="background: url(b-tr.png) no-repeat top right">
+            <div style="background: url(b-bl.png) no-repeat bottom left">
+            <div style="background: url(b-br.png) no-repeat bottom right">
+                <div style=" padding: 25px;">
+                    <p style="color: rgb(51, 7, 95);
+                        font: 24px sans-serif;
+                        text-align: justify;
+                        color: gold;">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat impedit quasi omnis quas incidunt. Facilis sint deleniti ducimus tempora rerum doloremque eius sunt autem, at corrupti voluptatum perferendis quo iste?
+                    </p>
+                </div>
+            </div>
+            </div>
+            </div>
+            </div>
+        </div>
+        </div>
+        </div>
+ 
+
+
+</body>
+
+</html>
