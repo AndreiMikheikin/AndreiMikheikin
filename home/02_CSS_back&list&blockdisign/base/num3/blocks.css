@@ -1,44 +1,43 @@
 body {
     background: grey;
-    div.nav{
+    & div.nav{
         float: left;
         background: rgb(184, 184, 184);
         width: 15em;
         margin-right: .2em;
         position: fixed;
-        ul {
+        & ul {
             padding: .57em;
             padding-left: 1.5em;
             /* margin-left: -20px; */
             list-style: square;
-            ul {
+            & ul {
             background: skyblue;
-                li {
+                & li {
                     background: yellowgreen;
                 }
             }    
         }
     }
-    div.wrap {
+    & div.wrap {
         margin-left: 15.1em;
         background: darkgray;   
-        img {
+        & img {
             float: right;
             height: 30px;
             width: 30px;
         }
-        div.text {
+        & div.text {
             /* height: 200px; */
             text-align: justify;
             
             /* Подскажите, почему только overflow влияет на
             то, будет ли .text обтекать .img? */
             
-            /* overflow: scroll; */
+            overflow: scroll;
             overflow-x: hidden;
             overflow-y: visible;
             background: goldenrod;
-            /* border-top: .1px; */
             padding: .5em;
             margin-bottom: .2em;
             position: relative;
