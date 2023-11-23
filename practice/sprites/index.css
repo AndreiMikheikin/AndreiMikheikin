@@ -1,0 +1,51 @@
+body{
+    margin: 5;
+    padding: 5;
+}
+div {
+    width: 70px;
+    height: 560px;
+    display: flex;
+    flex-direction: column;
+}
+
+//---------------------------------------
+.field-a{
+    position: absolute;
+}
+.field-b{
+    position: absolute;
+    margin-left: 70px;
+}
+.field-c{
+    position: absolute;
+    margin-left: 140px;
+}
+.field-d{
+    position: absolute;
+    margin-left: 210px;
+}
+.field-e{
+    position: absolute;
+    margin-left: 280px;
+}
+.field-f{
+    position: absolute;
+    margin-left: 350px;
+}
+.field-g{
+    position: absolute;
+    margin-left: 420px;
+}
+.field-h{
+    position: absolute;
+    margin-left: 490px;
+}
+//---------------------------------------
+.black {
+    background-color: rgb(193,99,65);
+}
+.white {
+    background-color: rgb(245,205,92);
+}
+//---------------------------------------
