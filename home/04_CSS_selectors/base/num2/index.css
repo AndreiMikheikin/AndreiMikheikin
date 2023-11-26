@@ -1,0 +1,22 @@
+* {margin: 0; padding: 0; box-sizing: border-box;}
+table {
+    width: 600px;
+    background-color: aliceblue;
+}
+th {
+    background-color: grey;
+}
+td {
+    border-left: 1px dashed grey;
+    border-bottom: 1px dashed grey;
+}
+td:first-child {
+    border-left: none;
+    font-weight: bold;
+}
+tr:not(:first-child):nth-child(odd) {
+    background-color: #c8c8c8;
+}
+tr:not(:first-child):hover {
+    background-color: rgb(168, 168, 219);
+}
