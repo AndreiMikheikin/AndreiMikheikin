@@ -1,0 +1,48 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+h1 {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+li {
+    margin-left: 30px;
+    list-style-image: url(img/list.png);
+}
+div {
+    width: 500px;
+    height: 120px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border: gray 1px solid;
+    border-radius: 0px 15px 0px 15px;
+}
+p {
+    text-indent: 30px;
+}
+a[href*="#1"]::before {
+    content: url(img/doc.png);
+}
+a[href*="#2"]:not(.li)::after {
+    content: url(img/word.png);
+}
+a[href*="#3"]::before {
+    content: url(img/doc.png);
+}
+a[href*="#4"]:not(.li)::after {
+    content: url(img/pdf.png);
+}
+a[href*="#5"]::before {
+    content: url(img/doc.png);
+}
+a[href*="#6"]:not(.li)::after {
+    content: url(img/zip.png);
+}
+h2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}

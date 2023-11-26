@@ -20,7 +20,7 @@ body {
         }
     }
     & div.wrap {
-        margin-left: 15.1em;
+        margin-left: 15em;
         background: darkgray;   
         & img {
             float: right;
@@ -28,12 +28,7 @@ body {
             width: 30px;
         }
         & div.text {
-            /* height: 200px; */
             text-align: justify;
-            
-            /* Подскажите, почему только overflow влияет на
-            то, будет ли .text обтекать .img? */
-            
             overflow: scroll;
             overflow-x: hidden;
             overflow-y: visible;
