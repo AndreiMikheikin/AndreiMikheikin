@@ -24,6 +24,6 @@ td {
 }
 td p::before {content: counter(list);}
 p {
-    font-size: xx-large;
+    font-size: 45px;
     font-weight: bold;
 }
