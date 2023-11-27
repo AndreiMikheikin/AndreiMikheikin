@@ -1,0 +1,15 @@
+code {
+    background-color: black;
+    color: green;
+    width: 400px;
+    height: 80px;
+    overflow: auto;
+    display: block;
+}
+ul li{
+    width: 350px;
+    list-style: upper-roman;
+    & ul li {
+        list-style: lower-roman;
+    }
+}
