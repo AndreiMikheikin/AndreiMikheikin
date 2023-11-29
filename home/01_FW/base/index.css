@@ -1,3 +1,7 @@
+.main {
+    min-width: 500px;
+    max-width: 1220px;
+}
 code {
     background-color: black;
     color: green;
