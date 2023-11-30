@@ -79,8 +79,7 @@ ul li ul li:hover>a {
 }
 
 @media all and (max-width: 920px) {
-    ul li {
-        position: relative;
+    ul>li {
         display: block;
     }
 
