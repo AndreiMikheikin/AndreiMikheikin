@@ -59,6 +59,21 @@
            </tr>
         </table>
         <p style="text-transform: uppercase; text-align: center;">данные о сотрудниках</p>
+        <input type="button" id="btn" value="Nothing to show">
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        $(Document).ready(function($) {
+            $('tr:not(:first-child)').click(function(){
+                $('tr:hover').hide();
+                $('#btn').val('Show');
+            })
+            $('#btn').click(function(){
+                $('tr:hidden').show();
+                $('#btn').val('Nothing to show');
+            })
+        });
+    </script>
 </body>
 </html>
