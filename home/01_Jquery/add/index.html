@@ -41,37 +41,29 @@
             </fieldset>
     </form>
 
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
-        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script>
         $(Document).ready(function ($) {
-           /*  var input1 = document.getElementById('pswrd');
-            var input2 = document.getElementById('pswrdchck');
-            var regexp = /[A-Za-z0-9]{5,}/g; */
-
-            document.getElementById('pswrd').addEventListener('keyup', function(){
-                var input1 = document.getElementById('pswrd');
-                var regexp = /[A-Za-z0-9]{5,}/g;
-                $('#pswrd').keyup(function () {
-                    if (input1.value !== regexp) {
-                        $('#pswrd').css('backgroundColor', 'red');
-                    } else {
-                        $('#pswrd').css('backgroundColor', 'green');
-                    }
-                });
-            });
-            document.getElementById('pswrdchck').addEventListener('keyup', function(){
-                var input1 = document.getElementById('pswrd');
-                var input2 = document.getElementById('pswrdchck');
-                $('#pswrdchck').keyup(function () {
-                    if (input2.value !== input1.value) {
-                        $(this).css('backgroundColor', 'red');
-                    } else {
-                        $(this).css('backgroundColor', 'green');
-                    }
-                });
-            });
-        });
+            $('#pswrd').keyup(function chckPattern() {
+                let input1 = document.getElementById("pswrd").value;
+                let regexp = /[A-Z-a-z]{5,}/;
+                if (regexp.test(input1)) {
+                    $('#pswrd').css('backgroundColor', 'green'); 
+                } else {
+                    $('#pswrd').css('backgroundColor', 'red');
+                }
+            })
+            $('#pswrdchck').keyup(function chckPswrd() {
+                let input1 = document.getElementById("pswrd").value;
+                let input2 = document.getElementById("pswrdchck").value;
+                if (input2 !== input1) {
+                    $('#pswrdchck').css('backgroundColor', 'red'); 
+                } else {
+                    $('#pswrdchck').css('backgroundColor', 'green');
+                }
+            })
+        })
     </script>
 </body>
 
