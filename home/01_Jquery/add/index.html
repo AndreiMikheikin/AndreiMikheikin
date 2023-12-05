@@ -47,7 +47,7 @@
         $(Document).ready(function ($) {
             $('#pswrd').keyup(function chckPattern() {
                 let input1 = document.getElementById("pswrd").value;
-                let regexp = /[A-Z-a-z]{5,}/;
+                let regexp = /[A-z0-9]{5,}/;
                 if (regexp.test(input1)) {
                     $('#pswrd').css('backgroundColor', 'green'); 
                 } else {
