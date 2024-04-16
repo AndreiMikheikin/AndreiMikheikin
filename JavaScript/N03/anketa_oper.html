@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>анкета</p>
+    <script>
+
+        var surname=prompt('Введите фамилию:');
+        while (surname.trim().length < 2 || !/^[А-ЯЁ][а-яё]*-?[а-яё]*$/.test(surname.trim())) {
+            surname = prompt('Поле не может быть пустым, содержит только русские буквы, начинается с заглавной, не содержит пробелов. Введите фамилию:');
+        }
+        var name=prompt('Введите имя:');
+        while (name.trim().length < 2 || !/^[А-ЯЁ][а-яё]*-?[а-яё]*$/.test(name.trim())) {
+            name = prompt('Поле не может быть пустым, содержит только русские буквы, начинается с заглавной, не содержит пробелов. Введите имя:');
+        }
+        var pname=prompt('Введите отчество:');
+        while (pname.trim().length < 2 || !/^[А-ЯЁ][а-яё]*-?[а-яё]*$/.test(pname.trim())) {
+            pname = prompt('Поле не может быть пустым, содержит только русские буквы, начинается с заглавной, не содержит пробелов. Введите отчество:');
+        }
+
+        var ageStr=prompt('Введите ваш возраст:');
+        var age=parseInt(ageStr);
+        while (isNaN(age) || age >= 120) {
+            if (isNaN(age)) {
+                ageStr = prompt('Введите ваш возраст цифрами:');
+            } else {
+                ageStr = prompt('Анкета только для тех, кому меньше 120 лет. Введите ваш возраст:');
+            }
+            age = parseInt(ageStr);
+        }
+
+        var gender=confirm('Выберите пол ("ОК"-"М" или "Отмена"-"Ж"):');
+        switch (gender) {
+            case true:
+                var sex='М';
+                break;
+            case false:
+                var sex='Ж';
+                break;
+        }
+
+        var a=( 'ваше ФИО: '+ (surname) + ' ' + (name) + ' ' + (pname) + '\n' +
+                'ваш возраст в годах: ' + (age) + '\n' +
+                'ваш возраст в днях: ' + (age*365) + '\n' +
+                'через 5 лет вам будет: ' + (age+5) + '\n' +
+                'ваш пол: ' + (sex) + '\n' +
+                'вы на пенсии: '
+            );
+        var b=(age<58)?'нет':'да';
+        var c=(age<63)?'нет':'да';    
+
+        switch (sex) {
+            case 'М':
+                var alertMsg=(a+c);
+                break;   
+            case 'Ж':
+                var alertMsg=(a+b);
+                break;
+            };
+        
+        alert(alertMsg);
+        
+    </script>
+</body>
+</html>
