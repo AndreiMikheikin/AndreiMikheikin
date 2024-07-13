@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница аутентификации</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script type="module" src="src/auth.js"></script>
+</head>
+<body>
+    <div class="container" id="auth-container">
+        <h2 id="form-title">Вход</h2>
+        <div class="role-selection">
+            <button class="admin" onclick="selectRole('admin')">Администратор</button>
+            <button class="user" onclick="selectRole('user')">Пользователь</button>
+        </div>
+        <form id="auth-form" onsubmit="handleSubmit(event)">
+            <input type="hidden" id="role" name="role">
+            <input type="email" id="email" name="email" placeholder="Email" required oninput="validateForm()">
+            <input type="password" id="password" name="password" placeholder="Пароль" required oninput="validateForm()">
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Подтвердите пароль" style="display: none;" oninput="validateForm()">
+            <div id="password-requirements" class="password-requirements" style="display: none;">
+                <div class="requirement" id="length-check">
+                    <span class="check">✓</span> Не менее 8 символов
+                </div>
+                <div class="requirement" id="lowercase-check">
+                    <span class="check">✓</span> Минимум одна строчная буква
+                </div>
+                <div class="requirement" id="uppercase-check">
+                    <span class="check">✓</span> Минимум одна заглавная буква
+                </div>
+                <div class="requirement" id="number-check">
+                    <span class="check">✓</span> Минимум одна цифра
+                </div>
+                <div class="requirement" id="match-check">
+                    <span class="check">✓</span> Пароли совпадают
+                </div>
+            </div>
+            <button type="submit" id="submit-btn" disabled>Войти</button>
+        </form>
+        <div class="toggle-link" id="toggle-link" onclick="toggleForm()">Нет аккаунта? Регистрация</div>
+        <div class="forgot-password-link" onclick="toggleForgotPasswordForm()">Забыли пароль?</div>
+    </div>
+
+    <div class="container" id="forgot-password-container" style="display: none;">
+        <h2>Восстановление пароля</h2>
+        <form id="forgot-password-form" onsubmit="handleForgotPassword(event)">
+            <input type="email" id="forgot-email" name="forgot-email" placeholder="Email" required oninput="validateForgotPasswordForm()">
+            <button type="submit" id="forgot-submit-btn" disabled>Отправить ссылку для сброса</button>
+        </form>
+        <div class="toggle-link" onclick="toggleForgotPasswordForm()">Вернуться</div>
+    </div>
+</body>
+</html>
