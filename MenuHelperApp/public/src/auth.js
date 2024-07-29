@@ -2,14 +2,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "API_KEY",
-    authDomain: "AUTH_DOMAIN",
-    databaseURL: "DATABASE_URL",
-    projectId: "PROJECT_ID",
-    storageBucket: "STORAGE_BUCKET",
-    messagingSenderId: "MESSAGING_SENDER_ID",
-    appId: "APP_ID",
-    measurementId: "MEASUREMENT_ID"
+    apiKey: "AIzaSyAjJIU3lCSJivMJ9UbihXD1dqu8ivf-8OU ",
+    authDomain: "menuhelperapp.firebaseapp.com",
+    projectId: "menuhelperapp",
+    storageBucket: "menuhelperapp.appspot.com",
+    messagingSenderId: "118002716868",
+    appId: "1:118002716868:web:2623db6910ab0771c87991"
 };
 
 const app = initializeApp(firebaseConfig);
