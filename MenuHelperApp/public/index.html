@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Страница аутентификации</title>
     <link rel="stylesheet" href="styles.css">
-    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script type="module" src="src/auth.js"></script>
 </head>
 <body>
+    <!-- Контейнер аутентификации -->
     <div class="container" id="auth-container">
         <h2 id="form-title">Вход</h2>
         <div class="role-selection">
@@ -44,6 +42,25 @@
         <div class="forgot-password-link" onclick="toggleForgotPasswordForm()">Забыли пароль?</div>
     </div>
 
+    <!-- Контейнер панели администратора -->
+    <div class="container desktop" id="admin-dashboard-container" style="display: none; width: 100%; height: 100vh;">
+        <h2>Добро пожаловать, Администратор!</h2>
+        <button onclick="logout()">Выйти</button>
+        <div id="admin-dashboard-content" class="desktop">
+            <!-- Иконки будут загружены из admin.js -->
+        </div>
+    </div>
+
+    <!-- Контейнер панели пользователя -->
+    <div class="container" id="user-dashboard-container" style="display: none;">
+        <h2>Добро пожаловать, Пользователь!</h2>
+        <div id="user-dashboard-content">
+            <!-- Содержимое панели пользователя -->
+        </div>
+        <button onclick="logout()">Выйти</button>
+    </div>
+
+    <!-- Контейнер восстановления пароля -->
     <div class="container" id="forgot-password-container" style="display: none;">
         <h2>Восстановление пароля</h2>
         <form id="forgot-password-form" onsubmit="handleForgotPassword(event)">
@@ -52,5 +69,10 @@
         </form>
         <div class="toggle-link" onclick="toggleForgotPasswordForm()">Вернуться</div>
     </div>
+    
+    <!-- Загрузка основного скрипта -->
+    <script type="module" src="src/main.js"></script>
+    <script type="module" src="src/auth.js"></script>
+    <script type="module" src="src/admin.js"></script>
 </body>
 </html>

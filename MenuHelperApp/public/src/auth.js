@@ -1,8 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
+// Конфигурация Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyAjJIU3lCSJivMJ9UbihXD1dqu8ivf-8OU ",
+    apiKey: "AIzaSyAjJIU3lCSJivMJ9UbihXD1dqu8ivf-8OU",
     authDomain: "menuhelperapp.firebaseapp.com",
     projectId: "menuhelperapp",
     storageBucket: "menuhelperapp.appspot.com",
@@ -10,25 +11,11 @@ const firebaseConfig = {
     appId: "1:118002716868:web:2623db6910ab0771c87991"
 };
 
-const app = initializeApp(firebaseConfig);
+// Инициализация Firebase
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Выбор роли
-window.selectRole = function(role) {
-    document.getElementById('role').value = role;
-
-    const roleButtons = document.querySelectorAll('.role-selection button');
-    roleButtons.forEach(button => {
-        button.classList.remove('selected');
-    });
-
-    const selectedButton = document.querySelector(`.role-selection button.${role}`);
-    selectedButton.classList.add('selected');
-
-    validateForm();
-}
-
-// Проверка валидности формы
+// Валидация формы
 window.validateForm = function() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -65,15 +52,31 @@ window.validateForm = function() {
     toggleCheckMark('number-check', hasNumber);
     toggleCheckMark('match-check', doPasswordsMatch);
 }
+window.validateForm = validateForm; // Присваиваем функцию глобальному объекту
 
-// Вспомогательная функция для переключения видимости галочек
+// Выбор роли пользователя
+function selectRole(role) {
+    document.getElementById('role').value = role;
+
+    const roleButtons = document.querySelectorAll('.role-selection button');
+    roleButtons.forEach(button => {
+        button.classList.remove('selected');
+    });
+
+    const selectedButton = document.querySelector(`.role-selection button.${role}`);
+    selectedButton.classList.add('selected');
+
+    validateForm();
+}
+window.selectRole = selectRole; // Присваиваем функцию глобальному объекту
+
 function toggleCheckMark(id, condition) {
     const checkMark = document.getElementById(id).querySelector('.check');
     checkMark.style.display = condition ? 'inline-block' : 'none';
 }
 
-// Обработчик отправки формы входа/регистрации
-window.handleSubmit = function(event) {
+// Обработка отправки формы
+function handleSubmit(event) {
     event.preventDefault();
     const email = event.target.email.value;
     const password = event.target.password.value;
@@ -86,38 +89,43 @@ window.handleSubmit = function(event) {
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log('User registered:', user);
-                // Дополнительные действия после регистрации
+                alert('Регистрация успешна!');
+                showPanel(role);
             })
             .catch((error) => {
                 console.error('Error registering:', error);
-                if (error.code === 'auth/email-already-in-use') {
-                    alert('Этот email уже используется.');
-                } else {
-                    alert('Ошибка при регистрации.');
-                }
+                alert('Ошибка при регистрации. Повторите попытку.');
             });
     } else {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log('User signed in:', user);
-                // Дополнительные действия после входа
+                alert('Вход выполнен успешно!');
+                showPanel(role);
             })
             .catch((error) => {
                 console.error('Error signing in:', error);
-                if (error.code === 'auth/user-not-found') {
-                    alert('Пользователь с таким email не найден.');
-                } else if (error.code === 'auth/wrong-password') {
-                    alert('Неверный пароль.');
-                } else {
-                    alert('Ошибка при входе.');
-                }
+                alert('Ошибка при входе. Повторите попытку.');
             });
     }
 }
+window.handleSubmit = handleSubmit; // Присваиваем функцию глобальному объекту
 
-// Переключение между формами входа и регистрации
-window.toggleForm = function() {
+// Показать панель по роли
+function showPanel(role) {
+    if (role === 'admin') {
+        document.getElementById('admin-dashboard-container').style.display = 'block';
+        document.getElementById('user-dashboard-container').style.display = 'none';
+    } else if (role === 'user') {
+        document.getElementById('admin-dashboard-container').style.display = 'none';
+        document.getElementById('user-dashboard-container').style.display = 'block';
+    }
+    document.getElementById('auth-container').style.display = 'none';
+}
+
+// Переключение формы между Входом и Регистрацией
+function toggleForm() {
     const title = document.getElementById('form-title');
     const confirmPassword = document.getElementById('confirm-password');
     const requirements = document.getElementById('password-requirements');
@@ -141,9 +149,25 @@ window.toggleForm = function() {
     submitBtn.textContent = isLogin ? 'Зарегистрироваться' : 'Войти';
     validateForm();
 }
+window.toggleForm = toggleForm; // Присваиваем функцию глобальному объекту
 
-// Переключение между формами входа и восстановления пароля
-window.toggleForgotPasswordForm = function() {
+// Функция выхода из аккаунта
+function logout() {
+    signOut(auth).then(() => {
+        console.log('User signed out');
+        alert('Выход выполнен успешно!');
+        document.getElementById('auth-container').style.display = 'block';
+        document.getElementById('admin-dashboard-container').style.display = 'none';
+        document.getElementById('user-dashboard-container').style.display = 'none';
+    }).catch((error) => {
+        console.error('Error signing out:', error);
+        alert('Ошибка при выходе.');
+    });
+}
+window.logout = logout; // Присваиваем функцию глобальному объекту
+
+// Переключение формы восстановления пароля
+function toggleForgotPasswordForm() {
     const authContainer = document.getElementById('auth-container');
     const forgotPasswordContainer = document.getElementById('forgot-password-container');
 
@@ -153,9 +177,10 @@ window.toggleForgotPasswordForm = function() {
     document.getElementById('forgot-email').value = '';
     validateForgotPasswordForm();
 }
+window.toggleForgotPasswordForm = toggleForgotPasswordForm; // Присваиваем функцию глобальному объекту
 
-// Проверка валидности формы восстановления пароля
-window.validateForgotPasswordForm = function() {
+// Валидация формы восстановления пароля
+function validateForgotPasswordForm() {
     const email = document.getElementById('forgot-email').value;
     const isEmailValid = email !== '';
 
@@ -163,9 +188,10 @@ window.validateForgotPasswordForm = function() {
     forgotSubmitBtn.disabled = !isEmailValid;
     forgotSubmitBtn.classList.toggle('active', isEmailValid);
 }
+window.validateForgotPasswordForm = validateForgotPasswordForm; // Присваиваем функцию глобальному объекту
 
-// Обработчик отправки формы восстановления пароля
-window.handleForgotPassword = function(event) {
+// Обработка отправки формы восстановления пароля
+function handleForgotPassword(event) {
     event.preventDefault();
     const email = event.target['forgot-email'].value;
 
@@ -190,3 +216,4 @@ window.handleForgotPassword = function(event) {
             alert('Ошибка при проверке email.');
         });
 }
+window.handleForgotPassword = handleForgotPassword; // Присваиваем функцию глобальному объекту
