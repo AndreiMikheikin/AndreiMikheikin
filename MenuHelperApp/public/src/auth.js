@@ -1,22 +1,10 @@
-import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+// src/auth.js
 
-// Конфигурация Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyAjJIU3lCSJivMJ9UbihXD1dqu8ivf-8OU",
-    authDomain: "menuhelperapp.firebaseapp.com",
-    projectId: "menuhelperapp",
-    storageBucket: "menuhelperapp.appspot.com",
-    messagingSenderId: "118002716868",
-    appId: "1:118002716868:web:2623db6910ab0771c87991"
-};
+// Импорт необходимых модулей из Firebase
+import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, fetchSignInMethodsForEmail } from './../../firebase-config.js';
 
-// Инициализация Firebase
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-// Валидация формы
-window.validateForm = function() {
+// Валидация формы аутентификации
+function validateForm() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
@@ -28,54 +16,50 @@ window.validateForm = function() {
 
     const isRegistration = document.getElementById('form-title').textContent === 'Регистрация';
 
-    let isLengthValid = password.length >= 8;
-    let hasLowercase = /[a-z]/.test(password);
-    let hasUppercase = /[A-Z]/.test(password);
-    let hasNumber = /[0-9]/.test(password);
-    let doPasswordsMatch = password === confirmPassword;
+    // Проверка требований к паролю
+    const isLengthValid = password.length >= 8;
+    const hasLowercase = /[a-z]/.test(password);
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const doPasswordsMatch = password === confirmPassword;
 
-    let areRequirementsMet = isLengthValid && hasLowercase && hasUppercase && hasNumber && doPasswordsMatch;
+    const areRequirementsMet = isLengthValid && hasLowercase && hasUppercase && hasNumber && doPasswordsMatch;
 
     const submitBtn = document.getElementById('submit-btn');
-    if (isRegistration) {
-        submitBtn.disabled = !(isEmailValid && isPasswordValid && isRoleSelected && areRequirementsMet);
-    } else {
-        submitBtn.disabled = !(isEmailValid && isPasswordValid && isRoleSelected);
-    }
+    submitBtn.disabled = isRegistration 
+        ? !(isEmailValid && isPasswordValid && isRoleSelected && areRequirementsMet) 
+        : !(isEmailValid && isPasswordValid && isRoleSelected);
+    
     submitBtn.classList.toggle('active', !submitBtn.disabled);
 
     document.getElementById('password-requirements').style.display = isRegistration ? 'block' : 'none';
 
+    // Обновление статуса проверки требований к паролю
     toggleCheckMark('length-check', isLengthValid);
     toggleCheckMark('lowercase-check', hasLowercase);
     toggleCheckMark('uppercase-check', hasUppercase);
     toggleCheckMark('number-check', hasNumber);
     toggleCheckMark('match-check', doPasswordsMatch);
 }
-window.validateForm = validateForm; // Присваиваем функцию глобальному объекту
+
+// Функция для отображения и скрытия галочек
+function toggleCheckMark(id, condition) {
+    const checkMark = document.getElementById(id).querySelector('.check');
+    checkMark.style.display = condition ? 'inline-block' : 'none';
+}
 
 // Выбор роли пользователя
 function selectRole(role) {
     document.getElementById('role').value = role;
 
     const roleButtons = document.querySelectorAll('.role-selection button');
-    roleButtons.forEach(button => {
-        button.classList.remove('selected');
-    });
+    roleButtons.forEach(button => button.classList.remove('selected'));
 
-    const selectedButton = document.querySelector(`.role-selection button.${role}`);
-    selectedButton.classList.add('selected');
-
+    document.querySelector(`.role-selection button.${role}`).classList.add('selected');
     validateForm();
 }
-window.selectRole = selectRole; // Присваиваем функцию глобальному объекту
 
-function toggleCheckMark(id, condition) {
-    const checkMark = document.getElementById(id).querySelector('.check');
-    checkMark.style.display = condition ? 'inline-block' : 'none';
-}
-
-// Обработка отправки формы
+// Обработка отправки формы аутентификации
 function handleSubmit(event) {
     event.preventDefault();
     const email = event.target.email.value;
@@ -87,8 +71,7 @@ function handleSubmit(event) {
     if (isRegistration) {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                const user = userCredential.user;
-                console.log('User registered:', user);
+                console.log('User registered:', userCredential.user);
                 alert('Регистрация успешна!');
                 showPanel(role);
             })
@@ -99,8 +82,7 @@ function handleSubmit(event) {
     } else {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                const user = userCredential.user;
-                console.log('User signed in:', user);
+                console.log('User signed in:', userCredential.user);
                 alert('Вход выполнен успешно!');
                 showPanel(role);
             })
@@ -110,18 +92,12 @@ function handleSubmit(event) {
             });
     }
 }
-window.handleSubmit = handleSubmit; // Присваиваем функцию глобальному объекту
 
-// Показать панель по роли
+// Показать панель в зависимости от роли пользователя
 function showPanel(role) {
-    if (role === 'admin') {
-        document.getElementById('admin-dashboard-container').style.display = 'block';
-        document.getElementById('user-dashboard-container').style.display = 'none';
-    } else if (role === 'user') {
-        document.getElementById('admin-dashboard-container').style.display = 'none';
-        document.getElementById('user-dashboard-container').style.display = 'block';
-    }
     document.getElementById('auth-container').style.display = 'none';
+    document.getElementById('admin-dashboard-container').style.display = role === 'admin' ? 'block' : 'none';
+    document.getElementById('user-dashboard-container').style.display = role === 'user' ? 'block' : 'none';
 }
 
 // Переключение формы между Входом и Регистрацией
@@ -138,33 +114,31 @@ function toggleForm() {
     document.getElementById('confirm-password').value = '';
 
     const checkMarks = document.querySelectorAll('.check');
-    checkMarks.forEach(check => {
-        check.style.display = 'none';
-    });
+    checkMarks.forEach(check => check.style.display = 'none');
 
     title.textContent = isLogin ? 'Регистрация' : 'Вход';
-    toggleLink.textContent = !isLogin ? 'Нет аккаунта? Регистрация' : 'Есть аккаунт? Авторизация';
+    toggleLink.textContent = isLogin ? 'Есть аккаунт? Авторизация' : 'Нет аккаунта? Регистрация';
     confirmPassword.style.display = isLogin ? 'block' : 'none';
     requirements.style.display = isLogin ? 'block' : 'none';
     submitBtn.textContent = isLogin ? 'Зарегистрироваться' : 'Войти';
     validateForm();
 }
-window.toggleForm = toggleForm; // Присваиваем функцию глобальному объекту
 
-// Функция выхода из аккаунта
+// Выход из аккаунта
 function logout() {
-    signOut(auth).then(() => {
-        console.log('User signed out');
-        alert('Выход выполнен успешно!');
-        document.getElementById('auth-container').style.display = 'block';
-        document.getElementById('admin-dashboard-container').style.display = 'none';
-        document.getElementById('user-dashboard-container').style.display = 'none';
-    }).catch((error) => {
-        console.error('Error signing out:', error);
-        alert('Ошибка при выходе.');
-    });
+    signOut(auth)
+        .then(() => {
+            console.log('User signed out');
+            alert('Выход выполнен успешно!');
+            document.getElementById('auth-container').style.display = 'block';
+            document.getElementById('admin-dashboard-container').style.display = 'none';
+            document.getElementById('user-dashboard-container').style.display = 'none';
+        })
+        .catch((error) => {
+            console.error('Error signing out:', error);
+            alert('Ошибка при выходе.');
+        });
 }
-window.logout = logout; // Присваиваем функцию глобальному объекту
 
 // Переключение формы восстановления пароля
 function toggleForgotPasswordForm() {
@@ -177,7 +151,6 @@ function toggleForgotPasswordForm() {
     document.getElementById('forgot-email').value = '';
     validateForgotPasswordForm();
 }
-window.toggleForgotPasswordForm = toggleForgotPasswordForm; // Присваиваем функцию глобальному объекту
 
 // Валидация формы восстановления пароля
 function validateForgotPasswordForm() {
@@ -188,7 +161,6 @@ function validateForgotPasswordForm() {
     forgotSubmitBtn.disabled = !isEmailValid;
     forgotSubmitBtn.classList.toggle('active', isEmailValid);
 }
-window.validateForgotPasswordForm = validateForgotPasswordForm; // Присваиваем функцию глобальному объекту
 
 // Обработка отправки формы восстановления пароля
 function handleForgotPassword(event) {
@@ -216,4 +188,13 @@ function handleForgotPassword(event) {
             alert('Ошибка при проверке email.');
         });
 }
-window.handleForgotPassword = handleForgotPassword; // Присваиваем функцию глобальному объекту
+
+// Присваиваем функции глобальному объекту для использования в HTML
+window.validateForm = validateForm;
+window.selectRole = selectRole;
+window.handleSubmit = handleSubmit;
+window.toggleForm = toggleForm;
+window.logout = logout;
+window.toggleForgotPasswordForm = toggleForgotPasswordForm;
+window.validateForgotPasswordForm = validateForgotPasswordForm;
+window.handleForgotPassword = handleForgotPassword;

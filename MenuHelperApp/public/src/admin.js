@@ -1,6 +1,7 @@
 import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { initializeDragAndDrop } from './main.js';
 
 // Конфигурация Firebase
 const firebaseConfig = {
@@ -18,22 +19,57 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 // Загрузка панели администратора
-function loadAdminDashboard() {
+window.loadAdminDashboard = function loadAdminDashboard() {
+    console.log('Loading admin dashboard...');
     const adminContent = document.getElementById('admin-dashboard-content');
     adminContent.innerHTML = `
-        <div class="icon-container" onclick="showAddDishForm()">
-            <img src="path/to/add_dish_icon.png" alt="Добавить блюдо">
+        <div class="icon-container" id="icon1" draggable="true">
+            <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
             <p>Добавить блюдо</p>
         </div>
-        <div class="icon-container" onclick="showMenu()">
-            <img src="path/to/view_menu_icon.png" alt="Просмотр меню">
+        <div class="icon-container" id="icon2" draggable="true">
+            <img src="images/icons/view_menu_icon.svg" alt="Просмотр меню">
             <p>Просмотр меню</p>
         </div>
-        <div class="icon-container" onclick="calculatePurchases()">
-            <img src="path/to/calculate_purchases_icon.png" alt="Подсчет закупок">
+        <div class="icon-container" id="icon3" draggable="true">
+            <img src="images/icons/calculate_purchases_icon.svg" alt="Подсчет закупок">
             <p>Подсчет закупок</p>
         </div>
     `;
+
+    // Обработчики двойного клика и касания
+    document.getElementById('icon1').addEventListener('dblclick', showAddDishForm);
+    document.getElementById('icon2').addEventListener('dblclick', showMenu);
+    document.getElementById('icon3').addEventListener('dblclick', calculatePurchases);
+
+    // Для мобильных устройств
+    document.getElementById('icon1').addEventListener('touchend', handleTouchEnd);
+    document.getElementById('icon2').addEventListener('touchend', handleTouchEnd);
+    document.getElementById('icon3').addEventListener('touchend', handleTouchEnd);
+
+    initializeDragAndDrop();
+}
+
+// Переменные для отслеживания касаний
+let lastTouchTime = 0;
+
+// Функция для обработки касаний
+function handleTouchEnd(event) {
+    const currentTime = new Date().getTime();
+    const tapLength = currentTime - lastTouchTime;
+
+    if (tapLength < 500 && tapLength > 0) {
+        // Двойное касание
+        if (event.currentTarget.id === 'icon1') {
+            showAddDishForm();
+        } else if (event.currentTarget.id === 'icon2') {
+            showMenu();
+        } else if (event.currentTarget.id === 'icon3') {
+            calculatePurchases();
+        }
+    }
+
+    lastTouchTime = currentTime;
 }
 
 // Показ формы добавления блюда
@@ -47,6 +83,7 @@ window.showAddDishForm = function showAddDishForm() {
             <input type="number" id="dish-price" name="dish-price" placeholder="Цена" required>
             <button type="submit">Добавить</button>
         </form>
+        <button class="back-button" onclick="loadAdminDashboard()">Назад</button>
     `;
 }
 
@@ -69,7 +106,7 @@ window.handleAddDish = async function handleAddDish(event) {
 // Показ меню
 window.showMenu = async function showMenu() {
     const adminContent = document.getElementById('admin-dashboard-content');
-    adminContent.innerHTML = `<h3>Меню</h3><div id="menu-list">Загрузка...</div>`;
+    adminContent.innerHTML = `<h3>Меню</h3><div id="menu-list">Загрузка...</div><button class="back-button" onclick="loadAdminDashboard()">Назад</button>`;
 
     try {
         const querySnapshot = await getDocs(collection(db, 'menu'));
@@ -101,6 +138,7 @@ window.calculatePurchases = function calculatePurchases() {
             <button type="submit">Подсчитать</button>
         </form>
         <div id="purchase-result"></div>
+        <button class="back-button" onclick="loadAdminDashboard()">Назад</button>
     `;
 
     loadDishesIntoSelect();
@@ -145,6 +183,17 @@ window.logout = function logout() {
 }
 
 // Загрузка панели администратора при загрузке скрипта
-window.onload = function() {
+window.onload = function () {
     loadAdminDashboard();
 }
+
+// Адаптивность интерфейса
+window.onresize = function () {
+    const adminContent = document.getElementById('admin-dashboard-content');
+    if (window.innerWidth < 768) {
+        adminContent.classList.add('mobile-view');
+    } else {
+        adminContent.classList.remove('mobile-view');
+    }
+}
+
