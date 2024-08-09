@@ -17,7 +17,6 @@
   ],
   "hosting": {
     "site": "menuhelper",
-    "public": "public",
-    // You can add more configurations here if needed
+    "public": "public"
   }
 }
