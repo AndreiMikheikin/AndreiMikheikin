@@ -1,8 +1,19 @@
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Глобальные стили */
 body {
-    font-family: 'Georgia', serif; /* Шрифт с засечками */
-    background-color: #ffffff; /* Белый фон */
-    color: #2c2a49; /* Темно-синий цвет текста */
+    font-family: 'Georgia', serif;
+    background-color: #888;
+    color: #2c2a49;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,12 +33,20 @@ body {
     text-align: center;
 }
 
+.container h3 {
+    font-size: 20px;
+    color: #2c2a49;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
 .container h2 {
     font-size: 24px;
-    color: #d4af37; /* Золотисто-желтый цвет */
+    color: #d4af37;
     margin-bottom: 10px;
-    text-transform: uppercase; /* Заглавные буквы */
-    letter-spacing: 2px; /* Расстояние между буквами */
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .container h1 {
@@ -45,36 +64,44 @@ body {
 .container form {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
 }
 
 .container form input,
-.container form button {
+.container form button,
+.container form textarea,
+.container form select {
+    width: 100%;
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 4px;
     font-size: 16px;
 }
 
-.container form input {
+.container form input,
+.container form textarea,
+.container form select {
     border: 1px solid #ccc;
     transition: border-color 0.3s ease;
 }
 
-.container form input:focus {
+.container form input:focus,
+.container form textarea:focus,
+.container form select:focus {
     outline: none;
     border-color: #2c2a49;
 }
 
 .container form button {
-    background-color: #d4af37; /* Золотисто-желтый */
+    background-color: #d4af37;
     border: none;
-    color: #ffffff; /* Белый цвет текста */
+    color: #ffffff;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .container form button:hover {
-    background-color: #b59631; /* Темнее золотисто-желтого */
+    background-color: #b59631;
 }
 
 .role-selection {
@@ -87,15 +114,9 @@ body {
     padding: 10px;
     border: 1px solid #2c2a49;
     border-radius: 4px;
+    background-color: transparent;
     cursor: pointer;
-    background-color: #ffffff;
-    color: #2c2a49;
     transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.role-selection button.selected {
-    background-color: #d4af37;
-    color: #ffffff;
 }
 
 .role-selection button:hover {
@@ -103,7 +124,13 @@ body {
     color: #ffffff;
 }
 
-.toggle-link, .forgot-password-link {
+.role-selection .selected {
+    background-color: #d4af37;
+    color: #ffffff;
+}
+
+.toggle-link,
+.forgot-password-link {
     text-align: center;
     margin-top: 10px;
     color: #d4af37;
@@ -111,7 +138,8 @@ body {
     transition: color 0.3s ease;
 }
 
-.toggle-link:hover, .forgot-password-link:hover {
+.toggle-link:hover,
+.forgot-password-link:hover {
     color: #b59631;
 }
 
@@ -147,9 +175,11 @@ body {
     overflow: hidden;
 }
 
-#admin-dashboard-container, #user-dashboard-container {
+#admin-dashboard-container,
+#user-dashboard-container {
     padding: 20px;
     background-color: #ffffff;
+    min-height: 400px;
 }
 
 #admin-dashboard-content {
@@ -157,13 +187,14 @@ body {
     justify-content: space-around;
     flex-wrap: wrap;
     width: 100%;
-    height: 400px; /* Высота контейнера для иконок */
-    position: relative; /* Обязательно для абсолютного позиционирования иконок */
+    height: auto;
+    min-height: 200px;
+    position: relative;
 }
 
 .icon-container {
-    width: 50px;
-    height: 50px;
+    width: 150px;
+    height: 150px;
     text-align: center;
     cursor: pointer;
     position: absolute; /* Абсолютное позиционирование иконок */
@@ -172,6 +203,28 @@ body {
     align-items: center;
     justify-content: center;
     margin: 10px;
+    opacity: 0;
+    animation: fade-in 0.5s forwards;
+}
+
+#icon1 {
+    top: 20px;
+    left: 30px;
+}
+
+#icon2 {
+    top: 20px;
+    left: 130px;
+}
+
+#icon3 {
+    top: 20px;
+    left: 230px;
+}
+
+#icon4 {
+    top: 20px;
+    left: 340px;
 }
 
 .icon-container img {
@@ -197,3 +250,205 @@ body {
 .not-allowed {
     cursor: not-allowed;
 }
+
+.ingredient {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+textarea {
+    resize: none;
+    height: 100px;
+}
+
+.back-button {
+    background-color: #d4af37;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #b59631;
+}
+
+.category {
+    margin-bottom: 20px;
+}
+
+.category h4 {
+    font-size: 22px;
+    color: #2c2a49;
+    margin-bottom: 10px;
+}
+
+.dish-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dish-card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.dish-card h5 {
+    font-size: 18px;
+    color: #2c2a49;
+    margin: 0;
+    flex: 2;
+}
+
+.dish-card p {
+    font-size: 14px;
+    color: #2c2a49;
+    margin: 0;
+    flex: 3;
+}
+
+.price-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.price-input {
+    width: 60px;
+    padding: 5px;
+}
+
+.edit-button,
+.save-button,
+.cancel-button,
+.delete-button {
+    padding: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #d4af37;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button:hover,
+.save-button:hover,
+.cancel-button:hover,
+.delete-button:hover {
+    background-color: #b59631;
+}
+
+.save-button,
+.cancel-button {
+    display: none;
+}
+
+/* Стили для модального окна */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+ul {
+    list-style: none;
+}
+
+.close-button, .modal-close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus,
+.modal-close-button:hover,
+.modal-close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Стили для заказов и дополнительных услуг */
+.order-item, .service {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.order-item p {
+    width: 80px;
+    margin: 0 10px;
+    flex: 2;
+}
+
+.order-item input[type="number"],
+.order-item span,
+.service input[name="service-quantity"],
+.service input[name="service-price"],
+.service input[name="service-total"] {
+    width: 50px;
+    padding: 2px;
+    margin: 0 5px;
+}
+
+.order-item .remove-button, .service .remove-service {
+    background-color: #d9534f;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.order-item .remove-button:hover, .service .remove-service:hover {
+    background-color: #c9302c;
+}
+
+@media print {
+    .modal-close-button {
+        display: none;
+    }
+    
+    #confirm-print {
+        display: none;
+    }
+    ul li {
+        text-align: left;
+    }
+    p {
+        text-align: right;
+    }
+}
+
+

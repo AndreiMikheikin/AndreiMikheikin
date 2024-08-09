@@ -2,6 +2,7 @@
 
 // Импорт необходимых модулей из Firebase
 import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, fetchSignInMethodsForEmail } from './../../firebase-config.js';
+import { showWelcomeModal } from '../src/main.js'
 
 // Валидация формы аутентификации
 function validateForm() {
@@ -73,6 +74,7 @@ function handleSubmit(event) {
             .then((userCredential) => {
                 console.log('User registered:', userCredential.user);
                 alert('Регистрация успешна!');
+                showWelcomeModal();
                 showPanel(role);
             })
             .catch((error) => {
@@ -84,6 +86,7 @@ function handleSubmit(event) {
             .then((userCredential) => {
                 console.log('User signed in:', userCredential.user);
                 alert('Вход выполнен успешно!');
+                showWelcomeModal();
                 showPanel(role);
             })
             .catch((error) => {
@@ -187,6 +190,12 @@ function handleForgotPassword(event) {
             console.error('Error checking email:', error);
             alert('Ошибка при проверке email.');
         });
+}
+
+// Скрытие приветственного модального окна
+window.hideWelcomeModal = function hideWelcomeModal() {
+    const modal = document.getElementById('welcome-modal');
+    modal.style.display = 'none';
 }
 
 // Присваиваем функции глобальному объекту для использования в HTML

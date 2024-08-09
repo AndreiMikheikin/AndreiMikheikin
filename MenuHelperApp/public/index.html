@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Страница аутентификации</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <!-- Контейнер аутентификации -->
     <div class="container" id="auth-container">
@@ -18,7 +20,8 @@
             <input type="hidden" id="role" name="role">
             <input type="email" id="email" name="email" placeholder="Email" required oninput="validateForm()">
             <input type="password" id="password" name="password" placeholder="Пароль" required oninput="validateForm()">
-            <input type="password" id="confirm-password" name="confirm-password" placeholder="Подтвердите пароль" style="display: none;" oninput="validateForm()">
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Подтвердите пароль"
+                style="display: none;" oninput="validateForm()">
             <div id="password-requirements" class="password-requirements" style="display: none;">
                 <div class="requirement" id="length-check">
                     <span class="check">✓</span> Не менее 8 символов
@@ -42,9 +45,17 @@
         <div class="forgot-password-link" onclick="toggleForgotPasswordForm()">Забыли пароль?</div>
     </div>
 
+    <!-- Приветственное модальное окно -->
+    <div class="modal" id="welcome-modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="hideWelcomeModal()">&times;</span>
+            <h2>Добро пожаловать, Администратор!</h2>
+        </div>
+    </div>
+
     <!-- Контейнер панели администратора -->
-    <div class="container desktop" id="admin-dashboard-container" style="display: none; width: 100%; height: 100vh;">
-        <h2>Добро пожаловать, Администратор!</h2>
+    <div class="container desktop" id="admin-dashboard-container" style="display: none;">
+        <h2>Рабочий стол</h2>
         <button onclick="logout()">Выйти</button>
         <div id="admin-dashboard-content" class="desktop">
             <!-- Иконки будут загружены из admin.js -->
@@ -64,15 +75,17 @@
     <div class="container" id="forgot-password-container" style="display: none;">
         <h2>Восстановление пароля</h2>
         <form id="forgot-password-form" onsubmit="handleForgotPassword(event)">
-            <input type="email" id="forgot-email" name="forgot-email" placeholder="Email" required oninput="validateForgotPasswordForm()">
+            <input type="email" id="forgot-email" name="forgot-email" placeholder="Email" required
+                oninput="validateForgotPasswordForm()">
             <button type="submit" id="forgot-submit-btn" disabled>Отправить ссылку для сброса</button>
         </form>
         <div class="toggle-link" onclick="toggleForgotPasswordForm()">Вернуться</div>
     </div>
-    
+
     <!-- Загрузка основного скрипта -->
     <script type="module" src="src/main.js"></script>
     <script type="module" src="src/auth.js"></script>
     <script type="module" src="src/admin.js"></script>
 </body>
+
 </html>

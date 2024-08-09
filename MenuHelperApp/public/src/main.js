@@ -1,48 +1,85 @@
-// Функция для инициализации функциональности перетаскивания иконок
-function initializeDragAndDrop() {
-    console.log("Initializing drag and drop");
-
+// Инициализация перетаскивания иконок
+export function initializeDragAndDrop() {
     const iconContainers = document.querySelectorAll('.icon-container');
-    let draggingIcon = null;
-    let offsetX = 0;
-    let offsetY = 0;
 
     iconContainers.forEach(icon => {
-        icon.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            draggingIcon = icon;
-            offsetX = e.clientX - draggingIcon.getBoundingClientRect().left;
-            offsetY = e.clientY - draggingIcon.getBoundingClientRect().top;
-
-            draggingIcon.style.zIndex = '1000';
-            draggingIcon.classList.add('dragging');
-        });
+        icon.addEventListener('dragstart', handleDragStart);
+        icon.addEventListener('dragend', handleDragEnd);
     });
 
-    document.addEventListener('mousemove', (e) => {
-        if (draggingIcon) {
-            e.preventDefault();
-            const container = document.getElementById('admin-dashboard-content');
-            const containerRect = container.getBoundingClientRect();
-
-            let newLeft = e.clientX - offsetX - containerRect.left;
-            let newTop = e.clientY - offsetY - containerRect.top;
-
-            // Ограничение перемещения внутри контейнера
-            newLeft = Math.max(0, Math.min(containerRect.width - draggingIcon.clientWidth, newLeft));
-            newTop = Math.max(0, Math.min(containerRect.height - draggingIcon.clientHeight, newTop));
-
-            draggingIcon.style.left = `${newLeft}px`;
-            draggingIcon.style.top = `${newTop}px`;
-        }
-    });
-
-    document.addEventListener('mouseup', () => {
-        if (draggingIcon) {
-            draggingIcon.classList.remove('dragging');
-            draggingIcon = null;
-        }
-    });
+    document.getElementById('admin-dashboard-content').addEventListener('dragover', handleDragOver);
+    document.getElementById('admin-dashboard-content').addEventListener('drop', handleDrop);
 }
 
-export { initializeDragAndDrop };
+function handleDragStart(event) {
+    event.currentTarget.classList.add('dragging');
+    event.dataTransfer.setData('text/plain', event.currentTarget.id);
+}
+
+function handleDragEnd(event) {
+    event.currentTarget.classList.remove('dragging');
+}
+
+function handleDragOver(event) {
+    event.preventDefault();
+}
+
+function handleDrop(event) {
+    event.preventDefault();
+    const id = event.dataTransfer.getData('text/plain');
+    const draggableElement = document.getElementById(id);
+    const dropzone = event.target;
+    
+    const offsetX = event.clientX - dropzone.getBoundingClientRect().left;
+    const offsetY = event.clientY - dropzone.getBoundingClientRect().top;
+    
+    draggableElement.style.left = `${offsetX - (draggableElement.offsetWidth / 2)}px`;
+    draggableElement.style.top = `${offsetY - (draggableElement.offsetHeight / 2)}px`;
+
+    saveIconPositions();
+}
+
+// Сохранение позиций иконок в локальное хранилище
+export function saveIconPositions() {
+    const iconContainers = document.querySelectorAll('.icon-container');
+    const positions = Array.from(iconContainers).map(icon => ({
+        id: icon.id,
+        left: icon.style.left,
+        top: icon.style.top
+    }));
+    localStorage.setItem('iconPositions', JSON.stringify(positions));
+}
+
+// Загрузка позиций иконок из локального хранилища
+export function loadIconPositions() {
+    const positions = JSON.parse(localStorage.getItem('iconPositions'));
+    if (positions) {
+        positions.forEach(pos => {
+            const icon = document.getElementById(pos.id);
+            if (icon) {
+                icon.style.left = pos.left;
+                icon.style.top = pos.top;
+            }
+        });
+    }
+}
+
+// Инициализация перетаскивания и загрузка позиций после загрузки страницы
+window.addEventListener('load', () => {
+    initializeDragAndDrop();
+    loadIconPositions();
+    window.addEventListener('beforeunload', saveIconPositions);
+});
+
+// Показ приветственного модального окна
+export function showWelcomeModal() {
+    const modal = document.getElementById('welcome-modal');
+    modal.style.display = 'block';
+}
+
+// Скрытие приветственного модального окна
+export function hideWelcomeModal() {
+    const modal = document.getElementById('welcome-modal');
+    modal.style.display = 'none';
+    showAdminDashboard(); // Показать панель администратора после скрытия модального окна
+}
