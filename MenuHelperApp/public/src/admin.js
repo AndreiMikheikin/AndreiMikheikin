@@ -63,7 +63,7 @@ window.loadAdminDashboard = function loadAdminDashboard() {
     loadIconPositions();
 }
 
-// Добавление обработчика событий иконок
+// Функция для обработки двойного клика и касаний на иконках
 function addIconEventListeners() {
     document.getElementById(ICON1_ID).addEventListener('dblclick', showAddDishForm);
     document.getElementById(ICON2_ID).addEventListener('dblclick', showMenu);
@@ -171,12 +171,25 @@ window.handleAddDish = async function handleAddDish(event) {
 
 // Показ меню
 window.showMenu = async function showMenu() {
-    const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
-    adminContent.innerHTML = `<h3>Меню</h3><div id="menu-list">Загрузка...</div><button class="back-button" onclick="loadAdminDashboard()">Назад</button>`;
+const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
+    adminContent.innerHTML = `
+        <h3>Меню</h3>
+        <div id="loading-indicator" style="display: none;">
+            <p>Загрузка, пожалуйста подождите...</p>
+            <div class="spinner"></div>
+        </div>
+        <div id="menu-list"></div>
+        <button class="back-button" onclick="loadAdminDashboard()">Назад</button>
+    `;
+
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const menuList = document.getElementById('menu-list');
+
+    // Показываем индикатор загрузки
+    loadingIndicator.style.display = 'flex';
 
     try {
         const querySnapshot = await getDocs(collection(db, 'menu'));
-        const menuList = document.getElementById('menu-list');
         menuList.innerHTML = '';
 
         // Организация блюд по категориям
@@ -241,6 +254,9 @@ window.showMenu = async function showMenu() {
     } catch (error) {
         console.error('Ошибка при загрузке меню:', error);
         alert(`Ошибка при загрузке меню: ${error.message}`);
+    } finally {
+        // Скрываем индикатор загрузки
+        loadingIndicator.style.display = 'none';
     }
 }
 
@@ -328,6 +344,10 @@ window.showPurchaseCalculationForm = function showPurchaseCalculationForm() {
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
         <h3>Подсчет необходимых закупок</h3>
+        <div id="loading-indicator" style="display: none;">
+            <p>Загрузка, пожалуйста подождите...</p>
+            <div class="spinner"></div>
+        </div>
         <form id="purchase-calculation-form">
             <label for="calculation-order-date">Выберите дату заказа:</label>
             <input type="date" id="calculation-order-date" name="calculation-order-date">
@@ -384,7 +404,6 @@ function addDateToList() {
     dateInput.value = '';
 }
 
-// Функция для расчета закупок
 async function calculatePurchases() {
     const ingredientsList = document.getElementById('ingredients-list');
     ingredientsList.innerHTML = '<h4>Необходимые ингредиенты и их вес:</h4>';
@@ -397,6 +416,10 @@ async function calculatePurchases() {
     }
 
     const ingredientsMap = new Map();
+
+    // Показываем индикатор загрузки
+    const loadingIndicator = document.getElementById('loading-indicator');
+    loadingIndicator.style.display = 'flex';
 
     try {
         for (const dateElement of dateElements) {
@@ -429,8 +452,12 @@ async function calculatePurchases() {
     } catch (error) {
         console.error('Ошибка при расчете закупок:', error);
         alert(`Ошибка при расчете закупок: ${error.message}`);
+    } finally {
+        // Скрываем индикатор загрузки
+        loadingIndicator.style.display = 'none';
     }
 }
+
 
 // Функция для получения ингредиентов конкретного блюда
 async function getIngredientsForDish(dishName, quantity, ingredientsMap) {

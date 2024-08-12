@@ -1,8 +1,9 @@
 // src/auth.js
 
 // Импорт необходимых модулей из Firebase
-import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, fetchSignInMethodsForEmail } from './../../firebase-config.js';
-import { showWelcomeModal } from '../src/main.js'
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, fetchSignInMethodsForEmail } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+import { showWelcomeModal } from '../src/main.js';
 
 // Конфигурация Firebase
 const firebaseConfig = {
@@ -16,7 +17,6 @@ const firebaseConfig = {
 
 // Инициализация Firebase
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const db = getFirestore(app);
 const auth = getAuth(app);
 
 // Валидация формы аутентификации

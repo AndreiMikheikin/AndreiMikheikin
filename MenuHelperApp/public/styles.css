@@ -12,7 +12,7 @@
 /* Глобальные стили */
 body {
     font-family: 'Georgia', serif;
-    background-color: #888;
+    background-color: #f7f7f7;
     color: #2c2a49;
     display: flex;
     justify-content: center;
@@ -22,92 +22,160 @@ body {
     padding: 20px;
 }
 
-.container {
+/* Контейнеры */
+.container,
+#admin-dashboard-container,
+#user-dashboard-container {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(44, 42, 73, 0.1);
     width: 100%;
-    max-width: 600px;
+    max-width: 1200px;
     margin-bottom: 20px;
     text-align: center;
 }
 
-.container h3 {
-    font-size: 20px;
-    color: #2c2a49;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+/* Стили для кнопки выхода */
+.logout {
+    background-color: #d4af37; /* Цвет фона кнопки */
+    border: none; /* Убирает границу */
+    color: #ffffff; /* Цвет текста */
+    cursor: pointer; /* Курсор при наведении */
+    padding: 10px 20px; /* Внутренние отступы */
+    border-radius: 4px; /* Закругление углов */
+    font-size: 16px; /* Размер шрифта */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Плавные переходы */
 }
 
-.container h2 {
-    font-size: 24px;
-    color: #d4af37;
+.logout:hover {
+    background-color: #b59631; /* Цвет фона кнопки при наведении */
+}
+
+.logout:focus {
+    outline: none; /* Убирает стандартное обрамление фокуса */
+    box-shadow: 0 0 5px rgba(44, 42, 73, 0.2); /* Добавляет тень при фокусе */
+}
+
+/* Заголовки */
+.container h1, .container h2, .container h3, .category h4, .dish-card h5 {
+    color: #2c2a49;
     margin-bottom: 10px;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
 .container h1 {
     font-size: 32px;
     line-height: 1.3;
-    margin-bottom: 20px;
+    color: #2c2a49;
 }
 
-.container p {
+.container h2 {
+    font-size: 24px;
+    color: #d4af37;
+    letter-spacing: 2px;
+}
+
+.container h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #2c2a49;
+}
+
+.category h4 {
+    font-size: 22px;
+    color: #2c2a49;
+}
+
+.dish-card h5 {
+    font-size: 18px;
+    color: #2c2a49;
+}
+
+/* Текст */
+.container p,
+.dish-card p,
+.order-item p {
     font-size: 16px;
     color: #2c2a49;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
-.container form {
+/* Иконки */
+#admin-dashboard-content {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    position: relative;
+}
+
+.icon-container {
+    width: 150px;
+    height: 150px;
+    text-align: center;
+    cursor: pointer;
+    position: absolute;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    opacity: 0;
+    animation: fade-in 0.5s forwards;
 }
 
-.container form input,
+.icon-container img {
+    width: 55px;
+    height: 70px;
+}
+
+.icon-container p {
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    color: #2c2a49;
+}
+
+.icon-container:hover {
+    border-color: #d4af37;
+}
+
+.dragging {
+    opacity: 0.5;
+}
+
+.not-allowed {
+    cursor: not-allowed;
+}
+
+/* Кнопки */
 .container form button,
-.container form textarea,
-.container form select {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-.container form input,
-.container form textarea,
-.container form select {
-    border: 1px solid #ccc;
-    transition: border-color 0.3s ease;
-}
-
-.container form input:focus,
-.container form textarea:focus,
-.container form select:focus {
-    outline: none;
-    border-color: #2c2a49;
-}
-
-.container form button {
+.edit-button,
+.save-button,
+.cancel-button,
+.delete-button,
+.back-button {
     background-color: #d4af37;
     border: none;
     color: #ffffff;
     cursor: pointer;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 5px;
     transition: background-color 0.3s ease;
 }
 
-.container form button:hover {
+.container form button:hover,
+.edit-button:hover,
+.save-button:hover,
+.cancel-button:hover,
+.delete-button:hover,
+.back-button:hover {
     background-color: #b59631;
-}
-
-.role-selection {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
 }
 
 .role-selection button {
@@ -143,212 +211,76 @@ body {
     color: #b59631;
 }
 
-.password-requirements {
-    margin: 10px 0;
-    font-size: 0.9em;
-    color: #555;
-}
-
-.password-requirements .requirement {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-}
-
-.password-requirements .requirement .check {
-    display: none;
-    width: 20px;
-    height: 20px;
-    margin-right: 5px;
-    color: green;
-}
-
-.password-requirements .requirement.valid .check {
-    display: inline-block;
-}
-
-.desktop {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    padding: 20px;
-    overflow: hidden;
-}
-
-#admin-dashboard-container,
-#user-dashboard-container {
-    padding: 20px;
-    background-color: #ffffff;
-    min-height: 400px;
-}
-
-#admin-dashboard-content {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    width: 100%;
-    height: auto;
-    min-height: 200px;
-    position: relative;
-}
-
-.icon-container {
-    width: 150px;
-    height: 150px;
-    text-align: center;
-    cursor: pointer;
-    position: absolute; /* Абсолютное позиционирование иконок */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 10px;
-    opacity: 0;
-    animation: fade-in 0.5s forwards;
-}
-
-#icon1 {
-    top: 20px;
-    left: 30px;
-}
-
-#icon2 {
-    top: 20px;
-    left: 130px;
-}
-
-#icon3 {
-    top: 20px;
-    left: 230px;
-}
-
-#icon4 {
-    top: 20px;
-    left: 340px;
-}
-
-.icon-container img {
-    width: 55px;
-    height: 70px;
-}
-
-.icon-container p {
-    margin: 0;
-    padding: 0;
-    font-size: 12px;
+/* Поля ввода */
+.container form input,
+.container form textarea,
+.container form select {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 5px;
+    font-size: 16px;
     color: #2c2a49;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.icon-container:hover {
+/* Стили при фокусе */
+.container form input:focus,
+.container form textarea:focus,
+.container form select:focus {
     border-color: #2c2a49;
+    outline: none;
+    box-shadow: 0 0 5px rgba(44, 42, 73, 0.2);
 }
 
-.dragging {
-    opacity: 0.5;
+/* Стили для текстовых полей ввода */
+.container form input[type="text"],
+.container form input[type="email"],
+.container form input[type="password"],
+.container form input[type="tel"] {
+    width: 100%;
+    box-sizing: border-box; /* Учитывает padding и border в ширину */
 }
 
-.not-allowed {
-    cursor: not-allowed;
+/* Стили для числовых полей ввода */
+.container form input[type="number"] {
+    width: auto;
+    text-align: right;
 }
 
-.ingredient {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+/* Стили для текстовых областей (textarea) */
+.container form textarea {
+    width: 100%;
+    resize: vertical; /* Позволяет изменять размер только по вертикали */
+    min-height: 100px;
 }
 
-textarea {
-    resize: none;
-    height: 100px;
+/* Стили для выпадающих списков (select) */
+.container form select {
+    width: 100%;
+    box-sizing: border-box; /* Учитывает padding и border в ширину */
 }
 
-.back-button {
+/* Стили для кнопок внутри форм */
+.container form button {
     background-color: #d4af37;
     border: none;
-    color: #ffffff;
+    color: #fff;
     cursor: pointer;
     padding: 10px;
     border-radius: 4px;
     transition: background-color 0.3s ease;
 }
 
-.back-button:hover {
+.container form button:hover {
     background-color: #b59631;
 }
 
-.category {
-    margin-bottom: 20px;
-}
-
-.category h4 {
-    font-size: 22px;
-    color: #2c2a49;
-    margin-bottom: 10px;
-}
-
-.dish-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.dish-card {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-}
-
-.dish-card h5 {
-    font-size: 18px;
-    color: #2c2a49;
-    margin: 0;
-    flex: 2;
-}
-
-.dish-card p {
-    font-size: 14px;
-    color: #2c2a49;
-    margin: 0;
-    flex: 3;
-}
-
-.price-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-}
-
-.price-input {
-    width: 60px;
-    padding: 5px;
-}
-
-.edit-button,
-.save-button,
-.cancel-button,
-.delete-button {
-    padding: 5px;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    background-color: #d4af37;
-    color: white;
-    transition: background-color 0.3s ease;
-}
-
-.edit-button:hover,
-.save-button:hover,
-.cancel-button:hover,
-.delete-button:hover {
-    background-color: #b59631;
-}
-
-.save-button,
-.cancel-button {
-    display: none;
+.container form input:focus,
+.container form textarea:focus,
+.container form select:focus {
+    outline: none;
+    border-color: #2c2a49;
 }
 
 /* Стили для модального окна */
@@ -361,7 +293,6 @@ textarea {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgb(0, 0, 0);
     background-color: rgba(0, 0, 0, 0.4);
     padding-top: 60px;
 }
@@ -372,10 +303,6 @@ textarea {
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
-}
-
-ul {
-    list-style: none;
 }
 
 .close-button, .modal-close-button {
@@ -392,6 +319,37 @@ ul {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+/* Индикатор загрузки */
+#loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: #b59631;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 1000;
+}
+#loading-indicator p {
+    font-size: 14px;
+    color: #f4f4f4;
+}
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #d4af37;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Стили для заказов и дополнительных услуг */
@@ -435,6 +393,9 @@ ul {
     background-color: #c9302c;
 }
 
+/* Медиа-запросы для адаптивного дизайна */
+
+/* Печатная форма */
 @media print {
     .modal-close-button {
         display: none;
@@ -451,4 +412,185 @@ ul {
     }
 }
 
+/* Малые экраны (телефоны) */
+@media (max-width: 600px) {
+    .container,
+    #admin-dashboard-container,
+    #user-dashboard-container {
+        padding: 15px;
+    }
+
+    .icon-container {
+        width: 120px;
+        height: 120px;
+        font-size: 10px;
+    }
+
+    .icon-container img {
+        width: 45px;
+        height: 60px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    .dish-card h5 {
+        font-size: 16px;
+    }
+
+    .dish-card p,
+    .order-item p {
+        font-size: 14px;
+    }
+
+    #icon1 {
+        top: 10px;
+        left: 10px;
+    }
+
+    #icon2 {
+        top: 10px;
+        left: 120px;
+    }
+
+    #icon3 {
+        top: 120px;
+        left: 10px;
+    }
+
+    #icon4 {
+        top: 120px;
+        left: 120px;
+    }
+}
+
+/* Средние экраны (планшеты) */
+@media (min-width: 601px) and (max-width: 992px) {
+    .container,
+    #admin-dashboard-container,
+    #user-dashboard-container {
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    .icon-container {
+        width: 140px;
+        height: 140px;
+    }
+
+    .icon-container img {
+        width: 50px;
+        height: 65px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+
+    .dish-card h5 {
+        font-size: 17px;
+    }
+
+    .dish-card p,
+    .order-item p {
+        font-size: 15px;
+    }
+
+    #icon1 {
+        top: 15px;
+        left: 20px;
+    }
+
+    #icon2 {
+        top: 15px;
+        left: 150px;
+    }
+
+    #icon3 {
+        top: 150px;
+        left: 20px;
+    }
+
+    #icon4 {
+        top: 150px;
+        left: 150px;
+    }
+}
+
+/* Большие экраны (десктопы) */
+@media (min-width: 993px) {
+    .container,
+    #admin-dashboard-container,
+    #user-dashboard-container {
+        max-width: 600px;
+    }
+
+    .icon-container {
+        width: 150px;
+        height: 150px;
+    }
+
+    .icon-container img {
+        width: 55px;
+        height: 70px;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+
+    .dish-card h5 {
+        font-size: 18px;
+    }
+
+    .dish-card p,
+    .order-item p {
+        font-size: 16px;
+    }
+
+    #icon1 {
+        top: 20px;
+        left: 30px;
+    }
+
+    #icon2 {
+        top: 20px;
+        left: 130px;
+    }
+
+    #icon3 {
+        top: 20px;
+        left: 230px;
+    }
+
+    #icon4 {
+        top: 20px;
+        left: 340px;
+    }
+}
 
