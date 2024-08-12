@@ -1,3 +1,5 @@
+import { loadAdminDashboard } from './admin.js';
+
 const ICON1_ID = 'icon1';
 const ICON2_ID = 'icon2';
 const ICON3_ID = 'icon3';
@@ -12,25 +14,6 @@ export function saveIconPositions() {
         top: icon.style.top
     }));
     localStorage.setItem('iconPositions', JSON.stringify(positions));
-}
-
-// Загрузка позиций иконок из локального хранилища
-export function loadIconPositions() {
-    const positions = JSON.parse(localStorage.getItem('iconPositions'));
-    if (positions) {
-        const dropzone = document.getElementById('admin-dashboard-content');
-        positions.forEach(pos => {
-            const icon = document.getElementById(pos.id);
-            if (icon) {
-                // Пропорциональная адаптация
-                const left = parseFloat(pos.left) * (dropzone.offsetWidth / window.innerWidth);
-                const top = parseFloat(pos.top) * (dropzone.offsetHeight / window.innerHeight);
-                
-                icon.style.left = `${left}px`;
-                icon.style.top = `${top}px`;
-            }
-        });
-    }
 }
 
 // Инициализация перетаскивания иконок
@@ -80,13 +63,6 @@ function handleDrop(event) {
     saveIconPositions();
 }
 
-// Инициализация перетаскивания и загрузка позиций после загрузки страницы
-window.addEventListener('load', () => {
-    initializeDragAndDrop();
-    loadIconPositions();
-    window.addEventListener('beforeunload', saveIconPositions);
-});
-
 // Функция для обработки двойного клика и касаний на иконках
 export function addIconEventListeners() {
     document.getElementById(ICON1_ID).addEventListener('dblclick', showAddDishForm);
@@ -120,16 +96,74 @@ function handleTouchEnd(event) {
     }, 200);
 }
 
+let startY = 0; // Начальная позиция по оси Y
 
-// Показ приветственного модального окна
-export function showWelcomeModal() {
+// Показ приветственного модального окна с логином пользователя
+export function showWelcomeModal(username) {
     const modal = document.getElementById('welcome-modal');
+    
+    // Извлечение логина без доменной зоны
+    const displayName = username.split('@')[0];
+    
+    // Вставка имени в сообщение
+    const welcomeMessage = document.getElementById('welcome-message');
+    welcomeMessage.textContent = `Добро пожаловать, ${displayName}!`;
+    
     modal.style.display = 'block';
+
+    // Добавляем обработчики касания для swipe up
+    modal.addEventListener('touchstart', handleTouchStart);
+    modal.addEventListener('touchend', handleTouchEndGesture);
+
+    // Добавляем обработчик клика на кнопку закрытия
+    const closeButton = document.getElementById('close-button');
+    closeButton.addEventListener('click', hideWelcomeModal);
 }
 
 // Скрытие приветственного модального окна
-export function hideWelcomeModal() {
+function hideWelcomeModal() {
     const modal = document.getElementById('welcome-modal');
     modal.style.display = 'none';
+
+    // Убираем обработчики касания после закрытия модального окна
+    modal.removeEventListener('touchstart', handleTouchStart);
+    modal.removeEventListener('touchend', handleTouchEndGesture);
+
+    // Убираем обработчик клика с кнопки закрытия
+    const closeButton = document.getElementById('close-button');
+    closeButton.removeEventListener('click', hideWelcomeModal);
+
     showAdminDashboard(); // Показать панель администратора после скрытия модального окна
+}
+
+// Показ панели администратора
+function showAdminDashboard() {
+    const adminContainer = document.getElementById('admin-dashboard-container');
+    adminContainer.style.display = 'block';
+    loadAdminDashboard(); // Вызов функции напрямую
+}
+
+// Функция для обработки начала касания (для жестов)
+function handleTouchStart(event) {
+    const touch = event.touches[0];
+    startX = touch.clientX; // Сохранение начальной позиции X
+    startY = touch.clientY; // Сохранение начальной позиции Y
+}
+
+// Функция для обработки конца касания (для жестов)
+function handleTouchEndGesture(event) {
+    const touch = event.changedTouches[0];
+    const deltaY = touch.clientY - startY;
+
+    // Обработка свайпа вверх (закрытие модального окна)
+    if (Math.abs(deltaY) > 50 && deltaY < 0) {
+        handleSwipeUp(event);
+    }
+}
+
+// Функция для обработки свайпа вверх
+function handleSwipeUp(event) {
+    event.stopPropagation(); // Остановка распространения события на родительские элементы
+    console.log('Swipe up detected - closing modal');
+    hideWelcomeModal();
 }

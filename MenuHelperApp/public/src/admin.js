@@ -2,7 +2,7 @@
 import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { initializeDragAndDrop, loadIconPositions, addIconEventListeners } from './main.js';
+import { initializeDragAndDrop, saveIconPositions, addIconEventListeners } from './main.js';
 
 // Конфигурация Firebase
 const firebaseConfig = {
@@ -21,16 +21,16 @@ const auth = getAuth(app);
 
 // IDs DOM элементов
 const ADMIN_DASHBOARD_CONTENT_ID = 'admin-dashboard-content';
-const INGREDIENTS_CONTAINER_ID = 'ingredients-container';
 const ICON1_ID = 'icon1';
 const ICON2_ID = 'icon2';
 const ICON3_ID = 'icon3';
 const ICON4_ID = 'icon4';
+const INGREDIENTS_CONTAINER_ID = 'ingredients-container';
 
 // Загрузка панели администратора
-window.loadAdminDashboard = function loadAdminDashboard() {
+export function loadAdminDashboard() {
     console.log('Loading admin dashboard...');
-    const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
+    const adminContent = document.getElementById('admin-dashboard-content'); // Исправьте если нужно
     adminContent.innerHTML = `
         <div class="icon-container" id="${ICON1_ID}" draggable="true">
             <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
@@ -50,9 +50,29 @@ window.loadAdminDashboard = function loadAdminDashboard() {
         </div>
     `;
 
-    addIconEventListeners();
-    initializeDragAndDrop();
-    loadIconPositions();
+    addIconEventListeners(); // Добавляем события на иконки
+    initializeDragAndDrop(); // Инициализируем drag-and-drop
+    loadIconPositions(); // Загружаем сохраненные позиции иконок
+    window.addEventListener('beforeunload', saveIconPositions);
+
+    // Загрузка позиций иконок из локального хранилища
+    function loadIconPositions() {
+        const positions = JSON.parse(localStorage.getItem('iconPositions'));
+        if (positions) {
+            const dropzone = document.getElementById('admin-dashboard-content');
+            positions.forEach(pos => {
+                const icon = document.getElementById(pos.id);
+                if (icon) {
+                    // Пропорциональная адаптация
+                    const left = parseFloat(pos.left) * (dropzone.offsetWidth / window.innerWidth);
+                    const top = parseFloat(pos.top) * (dropzone.offsetHeight / window.innerHeight);
+
+                    icon.style.left = `${left}px`;
+                    icon.style.top = `${top}px`;
+                }
+            });
+        }
+    }
 }
 
 // Показ формы добавления блюда
@@ -129,7 +149,7 @@ window.handleAddDish = async function handleAddDish(event) {
 
 // Показ меню
 window.showMenu = async function showMenu() {
-const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
+    const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
         <h3>Меню</h3>
         <div id="loading-indicator" style="display: none;">
@@ -397,7 +417,7 @@ async function calculatePurchases() {
                 const menuItems = orderData.menuItems;
 
                 console.log(`Обработка заказа с ${menuItems.length} элементами меню на дату ${date}`);
-                
+
                 for (const item of menuItems) {
                     await getIngredientsForDish(item.name, item.quantity, ingredientsMap);
                 }
@@ -892,10 +912,10 @@ window.logout = function logout() {
     });
 }
 
-// Загрузка панели администратора при загрузке скрипта
+/* // Загрузка панели администратора при загрузке скрипта
 window.onload = function () {
     loadAdminDashboard();
-}
+} */
 
 // Адаптивность интерфейса
 window.onresize = function () {

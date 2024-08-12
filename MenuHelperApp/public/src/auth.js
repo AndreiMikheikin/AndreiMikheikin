@@ -89,7 +89,9 @@ function handleSubmit(event) {
             .then((userCredential) => {
                 console.log('User registered:', userCredential.user);
                 alert('Регистрация успешна!');
-                showWelcomeModal();
+                
+                // Передаем email пользователя в showWelcomeModal
+                showWelcomeModal(userCredential.user.email);
                 showPanel(role);
             })
             .catch((error) => {
@@ -101,7 +103,9 @@ function handleSubmit(event) {
             .then((userCredential) => {
                 console.log('User signed in:', userCredential.user);
                 alert('Вход выполнен успешно!');
-                showWelcomeModal();
+                
+                // Передаем email пользователя в showWelcomeModal
+                showWelcomeModal(userCredential.user.email);
                 showPanel(role);
             })
             .catch((error) => {
@@ -110,6 +114,7 @@ function handleSubmit(event) {
             });
     }
 }
+
 
 // Показать панель в зависимости от роли пользователя
 function showPanel(role) {
@@ -205,12 +210,6 @@ function handleForgotPassword(event) {
             console.error('Error checking email:', error);
             alert('Ошибка при проверке email.');
         });
-}
-
-// Скрытие приветственного модального окна
-window.hideWelcomeModal = function hideWelcomeModal() {
-    const modal = document.getElementById('welcome-modal');
-    modal.style.display = 'none';
 }
 
 // Присваиваем функции глобальному объекту для использования в HTML

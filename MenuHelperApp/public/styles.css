@@ -36,6 +36,10 @@ body {
     text-align: center;
 }
 
+#admin-dashboard-container {
+    display: none;
+}
+
 /* Стили для кнопки выхода */
 .logout {
     background-color: #d4af37; /* Цвет фона кнопки */
