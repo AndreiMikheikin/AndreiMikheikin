@@ -28,6 +28,54 @@ const ICON4_ID = 'icon4';
 const INGREDIENTS_CONTAINER_ID = 'ingredients-container';
 
 // Загрузка панели администратора
+window.loadAdminDashboard = function loadAdminDashboard() {
+    console.log('Loading admin dashboard...');
+    const adminContent = document.getElementById('admin-dashboard-content'); // Исправьте если нужно
+    adminContent.innerHTML = `
+        <div class="icon-container" id="${ICON1_ID}" draggable="true">
+            <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
+            <p>Добавить блюдо</p>
+        </div>
+        <div class="icon-container" id="${ICON2_ID}" draggable="true">
+            <img src="images/icons/view_menu_icon.svg" alt="Просмотр меню">
+            <p>Просмотр меню</p>
+        </div>
+        <div class="icon-container" id="${ICON3_ID}" draggable="true">
+            <img src="images/icons/calculate_purchases_icon.svg" alt="Подсчет закупок">
+            <p>Подсчет закупок</p>
+        </div>
+        <div class="icon-container" id="${ICON4_ID}" draggable="true">
+            <img src="images/icons/order_icon.svg" alt="Оформление заказа">
+            <p>Оформление заказа</p>
+        </div>
+    `;
+
+    addIconEventListeners(); // Добавляем события на иконки
+    initializeDragAndDrop(); // Инициализируем drag-and-drop
+    loadIconPositions(); // Загружаем сохраненные позиции иконок
+    window.addEventListener('beforeunload', saveIconPositions);
+
+    // Загрузка позиций иконок из локального хранилища
+    function loadIconPositions() {
+        const positions = JSON.parse(localStorage.getItem('iconPositions'));
+        if (positions) {
+            const dropzone = document.getElementById('admin-dashboard-content');
+            positions.forEach(pos => {
+                const icon = document.getElementById(pos.id);
+                if (icon) {
+                    // Пропорциональная адаптация
+                    const left = parseFloat(pos.left) * (dropzone.offsetWidth / window.innerWidth);
+                    const top = parseFloat(pos.top) * (dropzone.offsetHeight / window.innerHeight);
+
+                    icon.style.left = `${left}px`;
+                    icon.style.top = `${top}px`;
+                }
+            });
+        }
+    }
+}
+
+//экспорт загрузки панели администратора
 export function loadAdminDashboard() {
     console.log('Loading admin dashboard...');
     const adminContent = document.getElementById('admin-dashboard-content'); // Исправьте если нужно
@@ -912,10 +960,10 @@ window.logout = function logout() {
     });
 }
 
-/* // Загрузка панели администратора при загрузке скрипта
+// Загрузка панели администратора при загрузке скрипта
 window.onload = function () {
     loadAdminDashboard();
-} */
+}
 
 // Адаптивность интерфейса
 window.onresize = function () {
