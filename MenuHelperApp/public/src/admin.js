@@ -76,25 +76,44 @@ function addIconEventListeners() {
     document.getElementById(ICON4_ID).addEventListener('touchend', handleTouchEnd);
 }
 
+document.getElementById(ICON1_ID).addEventListener('touchstart', handleTouchStart);
+document.getElementById(ICON2_ID).addEventListener('touchstart', handleTouchStart);
+document.getElementById(ICON3_ID).addEventListener('touchstart', handleTouchStart);
+document.getElementById(ICON4_ID).addEventListener('touchstart', handleTouchStart);
+
 // Переменные для отслеживания касаний
 let lastTouchTime = 0;
 
-// Функция для обработки касаний
+let startTouchY = 0;
+
+function handleTouchStart(event) {
+    startTouchY = event.touches[0].clientY;
+}
+
 function handleTouchEnd(event) {
+    event.preventDefault();
     const currentTime = new Date().getTime();
     const tapLength = currentTime - lastTouchTime;
-
-    if (tapLength < 500 && tapLength > 0) {
-        const targetId = event.currentTarget.id;
-        if (targetId === ICON1_ID) {
-            showAddDishForm();
-        } else if (targetId === ICON2_ID) {
-            showMenu();
-        } else if (targetId === ICON3_ID) {
-            calculatePurchases();
+    
+    const endTouchY = event.changedTouches[0].clientY;
+    const touchMoveDistance = Math.abs(endTouchY - startTouchY);
+    
+    // Если расстояние перемещения меньше определенного значения, считаем это нажатием
+    if (touchMoveDistance < 10) {
+        if (tapLength < 500 && tapLength > 0) {
+            const targetId = event.currentTarget.id;
+            if (targetId === ICON1_ID) {
+                showAddDishForm();
+            } else if (targetId === ICON2_ID) {
+                showMenu();
+            } else if (targetId === ICON3_ID) {
+                calculatePurchases();
+            } else if (targetId === ICON4_ID) {
+                showOrderForm();
+            }
         }
+        lastTouchTime = currentTime;
     }
-    lastTouchTime = currentTime;
 }
 
 // Показ формы добавления блюда
