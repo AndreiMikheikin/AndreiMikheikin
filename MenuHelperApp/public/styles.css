@@ -111,6 +111,8 @@ body {
     height: auto;
     min-height: 200px;
     position: relative;
+    overflow-y: auto;
+    padding: 20px;
 }
 
 .icon-container {

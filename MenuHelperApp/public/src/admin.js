@@ -2,7 +2,7 @@
 import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { initializeDragAndDrop, loadIconPositions } from './main.js';
+import { initializeDragAndDrop, loadIconPositions, addIconEventListeners } from './main.js';
 
 // Конфигурация Firebase
 const firebaseConfig = {
@@ -21,19 +21,11 @@ const auth = getAuth(app);
 
 // IDs DOM элементов
 const ADMIN_DASHBOARD_CONTENT_ID = 'admin-dashboard-content';
+const INGREDIENTS_CONTAINER_ID = 'ingredients-container';
 const ICON1_ID = 'icon1';
 const ICON2_ID = 'icon2';
 const ICON3_ID = 'icon3';
 const ICON4_ID = 'icon4';
-const INGREDIENTS_CONTAINER_ID = 'ingredients-container';
-const PURCHASE_RESULT_ID = 'purchase-result';
-
-// Показ панели администратора
-function showAdminDashboard() {
-    const adminContainer = document.getElementById('admin-dashboard-container');
-    adminContainer.style.display = 'block';
-    loadAdminDashboard();
-}
 
 // Загрузка панели администратора
 window.loadAdminDashboard = function loadAdminDashboard() {
@@ -61,59 +53,6 @@ window.loadAdminDashboard = function loadAdminDashboard() {
     addIconEventListeners();
     initializeDragAndDrop();
     loadIconPositions();
-}
-
-// Функция для обработки двойного клика и касаний на иконках
-function addIconEventListeners() {
-    document.getElementById(ICON1_ID).addEventListener('dblclick', showAddDishForm);
-    document.getElementById(ICON2_ID).addEventListener('dblclick', showMenu);
-    document.getElementById(ICON3_ID).addEventListener('dblclick', showPurchaseCalculationForm);
-    document.getElementById(ICON4_ID).addEventListener('dblclick', showOrderForm);
-
-    document.getElementById(ICON1_ID).addEventListener('touchend', handleTouchEnd);
-    document.getElementById(ICON2_ID).addEventListener('touchend', handleTouchEnd);
-    document.getElementById(ICON3_ID).addEventListener('touchend', handleTouchEnd);
-    document.getElementById(ICON4_ID).addEventListener('touchend', handleTouchEnd);
-}
-
-document.getElementById(ICON1_ID).addEventListener('touchstart', handleTouchStart);
-document.getElementById(ICON2_ID).addEventListener('touchstart', handleTouchStart);
-document.getElementById(ICON3_ID).addEventListener('touchstart', handleTouchStart);
-document.getElementById(ICON4_ID).addEventListener('touchstart', handleTouchStart);
-
-// Переменные для отслеживания касаний
-let lastTouchTime = 0;
-
-let startTouchY = 0;
-
-function handleTouchStart(event) {
-    startTouchY = event.touches[0].clientY;
-}
-
-function handleTouchEnd(event) {
-    event.preventDefault();
-    const currentTime = new Date().getTime();
-    const tapLength = currentTime - lastTouchTime;
-    
-    const endTouchY = event.changedTouches[0].clientY;
-    const touchMoveDistance = Math.abs(endTouchY - startTouchY);
-    
-    // Если расстояние перемещения меньше определенного значения, считаем это нажатием
-    if (touchMoveDistance < 10) {
-        if (tapLength < 500 && tapLength > 0) {
-            const targetId = event.currentTarget.id;
-            if (targetId === ICON1_ID) {
-                showAddDishForm();
-            } else if (targetId === ICON2_ID) {
-                showMenu();
-            } else if (targetId === ICON3_ID) {
-                calculatePurchases();
-            } else if (targetId === ICON4_ID) {
-                showOrderForm();
-            }
-        }
-        lastTouchTime = currentTime;
-    }
 }
 
 // Показ формы добавления блюда
