@@ -295,7 +295,7 @@ window.showMenu = async function showMenu() {
                             <button class="save-button" data-id="${dish.id}" style="display:none">Сохранить</button>
                             <button class="cancel-button" style="display:none">Отменить</button>
                         </div>
-                        <button class="delete-button" data-id="${dish.id}">(X)</button>
+                        <button class="delete-button" data-id="${dish.id}">✖</button>
                     `;
                     dishContainer.appendChild(dishCard);
                 });

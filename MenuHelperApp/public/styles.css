@@ -1,3 +1,10 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Keyframes for animations */
 @keyframes fade-in {
     from {
         opacity: 0;
@@ -9,7 +16,12 @@
     }
 }
 
-/* Глобальные стили */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Global styles */
 body {
     font-family: 'Georgia', serif;
     background-color: #f7f7f7;
@@ -22,57 +34,75 @@ body {
     padding: 20px;
 }
 
-/* Контейнеры */
+/* Containers */
 .container,
+#auth-container,
 #admin-dashboard-container,
-#user-dashboard-container {
+#forgot-password-container {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(44, 42, 73, 0.1);
     width: 100%;
-    max-width: 1200px;
+    max-width: 1460px;
     margin-bottom: 20px;
     text-align: center;
+    z-index: 1;
 }
 
 #admin-dashboard-container {
     display: none;
 }
 
-/* Стили для кнопки выхода */
+/* Canvas background */
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -10;
+}
+
+/* Logout button */
 .logout {
-    background-color: #d4af37; /* Цвет фона кнопки */
-    border: none; /* Убирает границу */
-    color: #ffffff; /* Цвет текста */
-    cursor: pointer; /* Курсор при наведении */
-    padding: 10px 20px; /* Внутренние отступы */
-    border-radius: 4px; /* Закругление углов */
-    font-size: 16px; /* Размер шрифта */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Плавные переходы */
+    background-color: #d4af37;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
 }
 
 .logout:hover {
-    background-color: #b59631; /* Цвет фона кнопки при наведении */
+    background-color: #b59631;
 }
 
 .logout:focus {
-    outline: none; /* Убирает стандартное обрамление фокуса */
-    box-shadow: 0 0 5px rgba(44, 42, 73, 0.2); /* Добавляет тень при фокусе */
+    outline: none;
+    box-shadow: 0 0 5px rgba(44, 42, 73, 0.2);
 }
 
-/* Заголовки */
-.container h1, .container h2, .container h3, .category h4, .dish-card h5 {
+/* Headings */
+.container h1, 
+.container h2, 
+.container h3, 
+.category h4, 
+.dish-card h5 {
     color: #2c2a49;
     margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    z-index: 1;
 }
 
 .container h1 {
     font-size: 32px;
     line-height: 1.3;
-    color: #2c2a49;
 }
 
 .container h2 {
@@ -84,32 +114,30 @@ body {
 .container h3 {
     font-size: 20px;
     margin-bottom: 15px;
-    color: #2c2a49;
 }
 
 .category h4 {
     font-size: 22px;
-    color: #2c2a49;
 }
 
 .dish-card h5 {
     font-size: 18px;
-    color: #2c2a49;
 }
 
-/* Текст */
+/* Text */
 .container p,
 .dish-card p,
 .order-item p {
     font-size: 16px;
     color: #2c2a49;
     margin-bottom: 10px;
+    z-index: 1;
 }
 
-/* Иконки */
+/* Icons */
 #admin-dashboard-content {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     flex-wrap: wrap;
     width: 100%;
     height: auto;
@@ -117,9 +145,12 @@ body {
     position: relative;
     overflow-y: auto;
     padding: 20px;
+    z-index: 1;
 }
 
 .icon-container {
+    border-radius: 5px;
+    background-color: rgba(44, 42, 73, 0.3);
     width: 150px;
     height: 150px;
     text-align: center;
@@ -130,8 +161,9 @@ body {
     align-items: center;
     justify-content: center;
     margin: 10px;
-    opacity: 0;
+    padding: 5px;
     animation: fade-in 0.5s forwards;
+    z-index: 1;
 }
 
 .icon-container img {
@@ -143,7 +175,6 @@ body {
     margin: 0;
     padding: 0;
     font-size: 12px;
-    color: #2c2a49;
 }
 
 .icon-container:hover {
@@ -158,7 +189,7 @@ body {
     cursor: not-allowed;
 }
 
-/* Кнопки */
+/* Buttons */
 .container form button,
 .edit-button,
 .save-button,
@@ -173,6 +204,7 @@ body {
     border-radius: 4px;
     margin-top: 5px;
     transition: background-color 0.3s ease;
+    z-index: 1;
 }
 
 .container form button:hover,
@@ -184,6 +216,7 @@ body {
     background-color: #b59631;
 }
 
+/* Role selection buttons */
 .role-selection button {
     padding: 10px;
     border: 1px solid #2c2a49;
@@ -217,7 +250,7 @@ body {
     color: #b59631;
 }
 
-/* Поля ввода */
+/* Form fields */
 .container form input,
 .container form textarea,
 .container form select {
@@ -228,9 +261,9 @@ body {
     font-size: 16px;
     color: #2c2a49;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    max-width: 500px;
 }
 
-/* Стили при фокусе */
 .container form input:focus,
 .container form textarea:focus,
 .container form select:focus {
@@ -239,61 +272,35 @@ body {
     box-shadow: 0 0 5px rgba(44, 42, 73, 0.2);
 }
 
-/* Стили для текстовых полей ввода */
 .container form input[type="text"],
 .container form input[type="email"],
 .container form input[type="password"],
 .container form input[type="tel"] {
     width: 100%;
-    box-sizing: border-box; /* Учитывает padding и border в ширину */
+    box-sizing: border-box;
 }
 
-/* Стили для числовых полей ввода */
 .container form input[type="number"] {
     width: auto;
     text-align: right;
 }
 
-/* Стили для текстовых областей (textarea) */
 .container form textarea {
     width: 100%;
-    resize: vertical; /* Позволяет изменять размер только по вертикали */
+    resize: vertical;
     min-height: 100px;
 }
 
-/* Стили для выпадающих списков (select) */
 .container form select {
     width: 100%;
-    box-sizing: border-box; /* Учитывает padding и border в ширину */
+    box-sizing: border-box;
 }
 
-/* Стили для кнопок внутри форм */
-.container form button {
-    background-color: #d4af37;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-.container form button:hover {
-    background-color: #b59631;
-}
-
-.container form input:focus,
-.container form textarea:focus,
-.container form select:focus {
-    outline: none;
-    border-color: #2c2a49;
-}
-
-/* Стили для модального окна */
+/* Modal */
 .modal {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     left: 0;
     top: 0;
     width: 100%;
@@ -311,15 +318,13 @@ body {
     width: 80%;
 }
 
-.close-button, .modal-close-button {
+.modal-close-button {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
 
-.close-button:hover,
-.close-button:focus,
 .modal-close-button:hover,
 .modal-close-button:focus {
     color: black;
@@ -327,7 +332,7 @@ body {
     cursor: pointer;
 }
 
-/* Индикатор загрузки */
+/* Loading indicator */
 #loading-indicator {
     position: fixed;
     top: 50%;
@@ -340,10 +345,12 @@ body {
     text-align: center;
     z-index: 1000;
 }
+
 #loading-indicator p {
     font-size: 14px;
     color: #f4f4f4;
 }
+
 .spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);
     border-left: 4px solid #d4af37;
@@ -353,13 +360,9 @@ body {
     animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Стили для заказов и дополнительных услуг */
-.order-item, .service {
+/* Order and service items */
+.order-item,
+.service {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -385,7 +388,8 @@ body {
     margin: 0 5px;
 }
 
-.order-item .remove-button, .service .remove-service {
+.order-item .remove-button,
+.service .remove-service {
     background-color: #d9534f;
     border: none;
     color: white;
@@ -395,40 +399,44 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.order-item .remove-button:hover, .service .remove-service:hover {
+.order-item .remove-button:hover,
+.service .remove-service:hover {
     background-color: #c9302c;
 }
 
-/* Медиа-запросы для адаптивного дизайна */
+/* Media queries for responsive design */
 
-/* Печатная форма */
+/* Print */
 @media print {
     .modal-close-button {
         display: none;
     }
-    
+
     #confirm-print {
         display: none;
     }
+
     ul li {
         text-align: left;
     }
+
     p {
         text-align: right;
     }
 }
 
-/* Малые экраны (телефоны) */
+/* Small screens (phones) */
 @media (max-width: 600px) {
     .container,
+    #auth-container,
     #admin-dashboard-container,
-    #user-dashboard-container {
+    #forgot-password-container {
         padding: 15px;
     }
 
     .icon-container {
-        width: 120px;
-        height: 120px;
+        width: 80px;
+        height: 80px;
         font-size: 10px;
     }
 
@@ -465,32 +473,33 @@ body {
 
     #icon2 {
         top: 10px;
-        left: 120px;
+        left: 95px;
     }
 
     #icon3 {
-        top: 120px;
-        left: 10px;
+        top: 10px;
+        left: 180px;
     }
 
     #icon4 {
-        top: 120px;
-        left: 120px;
+        top: 10px;
+        left: 265px;
     }
 }
 
-/* Средние экраны (планшеты) */
+/* Medium screens (tablets) */
 @media (min-width: 601px) and (max-width: 992px) {
     .container,
+    #auth-container,
     #admin-dashboard-container,
-    #user-dashboard-container {
+    #forgot-password-container {
         max-width: 100%;
         padding: 20px;
     }
 
     .icon-container {
-        width: 140px;
-        height: 140px;
+        width: 100px;
+        height: 100px;
     }
 
     .icon-container img {
@@ -520,37 +529,38 @@ body {
     }
 
     #icon1 {
-        top: 15px;
-        left: 20px;
+        top: 10px;
+        left: 10px;
     }
 
     #icon2 {
-        top: 15px;
-        left: 150px;
+        top: 10px;
+        left: 125px;
     }
 
     #icon3 {
-        top: 150px;
-        left: 20px;
+        top: 10px;
+        left: 230px;
     }
 
     #icon4 {
-        top: 150px;
-        left: 150px;
+        top: 10px;
+        left: 335px;
     }
 }
 
-/* Большие экраны (десктопы) */
+/* Large screens (desktops) */
 @media (min-width: 993px) {
     .container,
+    #auth-container,
     #admin-dashboard-container,
-    #user-dashboard-container {
+    #forgot-password-container {
         max-width: 600px;
     }
 
     .icon-container {
-        width: 150px;
-        height: 150px;
+        width: 120px;
+        height: 120px;
     }
 
     .icon-container img {
@@ -580,23 +590,22 @@ body {
     }
 
     #icon1 {
-        top: 20px;
-        left: 30px;
+        top: 10px;
+        left: 10px;
     }
 
     #icon2 {
-        top: 20px;
-        left: 130px;
+        top: 10px;
+        left: 135px;
     }
 
     #icon3 {
-        top: 20px;
-        left: 230px;
+        top: 10px;
+        left: 260px;
     }
 
     #icon4 {
-        top: 20px;
-        left: 340px;
+        top: 10px;
+        left: 385px;
     }
 }
-

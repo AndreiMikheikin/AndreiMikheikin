@@ -90,7 +90,6 @@ function handleSubmit(event) {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log('User registered:', userCredential.user);
-                alert('Регистрация успешна!');
 
                 // Добавляем пользователя в Firestore
                 const user = userCredential.user;
@@ -117,7 +116,7 @@ function handleSubmit(event) {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log('User signed in:', userCredential.user);
-                alert('Вход выполнен успешно!');
+
 
                 // Передаем email пользователя в showWelcomeModal
                 showWelcomeModal(userCredential.user.email);
@@ -173,7 +172,6 @@ function logout() {
     signOut(auth)
         .then(() => {
             console.log('User signed out');
-            alert('Выход выполнен успешно!');
             document.getElementById('auth-container').style.display = 'block';
             document.getElementById('admin-dashboard-container').style.display = 'none';
             document.getElementById('user-dashboard-container').style.display = 'none';
