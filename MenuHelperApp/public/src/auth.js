@@ -3,6 +3,7 @@
 // Импорт необходимых модулей из Firebase
 import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, fetchSignInMethodsForEmail } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 import { showWelcomeModal } from '../src/main.js';
 
 // Конфигурация Firebase
@@ -18,6 +19,7 @@ const firebaseConfig = {
 // Инициализация Firebase
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 // Валидация формы аутентификации
 function validateForm() {
@@ -89,9 +91,22 @@ function handleSubmit(event) {
             .then((userCredential) => {
                 console.log('User registered:', userCredential.user);
                 alert('Регистрация успешна!');
-                
+
+                // Добавляем пользователя в Firestore
+                const user = userCredential.user;
+                const userRef = doc(db, 'users', user.uid);
+                setDoc(userRef, {
+                    email: user.email,
+                    role: role,
+                    createdAt: new Date()
+                }).then(() => {
+                    console.log('User added to Firestore');
+                }).catch((error) => {
+                    console.error('Error adding user to Firestore:', error);
+                });
+
                 // Передаем email пользователя в showWelcomeModal
-                showWelcomeModal(userCredential.user.email);
+                showWelcomeModal(user.email);
                 showPanel(role);
             })
             .catch((error) => {
@@ -103,7 +118,7 @@ function handleSubmit(event) {
             .then((userCredential) => {
                 console.log('User signed in:', userCredential.user);
                 alert('Вход выполнен успешно!');
-                
+
                 // Передаем email пользователя в showWelcomeModal
                 showWelcomeModal(userCredential.user.email);
                 showPanel(role);
@@ -121,6 +136,12 @@ function showPanel(role) {
     document.getElementById('auth-container').style.display = 'none';
     document.getElementById('admin-dashboard-container').style.display = role === 'admin' ? 'block' : 'none';
     document.getElementById('user-dashboard-container').style.display = role === 'user' ? 'block' : 'none';
+
+    if (role !== 'admin' && role !== 'user') {
+        console.error('Неизвестная роль:', role);
+        alert('Ошибка: неизвестная роль пользователя.');
+        return;
+    }
 }
 
 // Переключение формы между Входом и Регистрацией

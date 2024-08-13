@@ -126,6 +126,12 @@ export function loadAdminDashboard() {
 // Показ формы добавления блюда
 window.showAddDishForm = function showAddDishForm() {
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
+
+    if (!adminContent) {
+        console.error('Element with ID "admin-dashboard-content" not found.');
+        return;
+    }
+
     adminContent.innerHTML = `
     <h3>Добавить блюдо</h3>
     <form id="add-dish-form" onsubmit="handleAddDish(event)">
@@ -152,7 +158,7 @@ window.showAddDishForm = function showAddDishForm() {
 
 // Добавление поля ингредиента
 function addIngredientField() {
-    const ingredientsContainer = document.getElementById(INGREDIENTS_CONTAINER_ID);
+    const ingredientsContainer = document.getElementById('ingredients-container');
     const ingredientDiv = document.createElement('div');
     ingredientDiv.classList.add('ingredient');
     ingredientDiv.innerHTML = `
@@ -165,30 +171,45 @@ function addIngredientField() {
 // Обработка добавления блюда
 window.handleAddDish = async function handleAddDish(event) {
     event.preventDefault();
+
+    // Проверка обязательных полей
     const category = document.getElementById('category-name').value;
     const name = document.getElementById('dish-name').value;
+    const description = document.getElementById('dish-description').value;
+    const totalWeight = document.getElementById('dish-total-weight').value;
+    const price = document.getElementById('dish-price').value;
+
+    if (!category || !name || !description || !totalWeight || !price) {
+        alert('Пожалуйста, заполните все обязательные поля');
+        return;
+    }
 
     const ingredients = [];
     const ingredientDivs = document.querySelectorAll(`#${INGREDIENTS_CONTAINER_ID} .ingredient`);
     ingredientDivs.forEach(div => {
         const ingredientName = div.querySelector('input[name="ingredient-name"]').value;
         const ingredientWeight = div.querySelector('input[name="ingredient-weight"]').value;
-        ingredients.push({ name: ingredientName, weight: ingredientWeight });
+        if (ingredientName && ingredientWeight) {
+            ingredients.push({ name: ingredientName, weight: ingredientWeight });
+        }
     });
 
-    const description = document.getElementById('dish-description').value;
-    const totalWeight = document.getElementById('dish-total-weight').value;
-    const price = document.getElementById('dish-price').value;
-
     try {
-        // Добавляем блюдо в базу данных
-        const dishData = { category, name, ingredients, description, totalWeight, price };
-        const docRef = await addDoc(collection(db, 'menu'), dishData);
+        // Получаем текущего пользователя
+        const user = auth.currentUser;
 
-        console.log('Блюдо успешно добавлено:', docRef.id, dishData);
+        if (user) {
+            // Создаем документ блюда в подколлекции menu для этого пользователя
+            const dishData = { category, name, ingredients, description, totalWeight, price };
+            const docRef = await addDoc(collection(db, `users/${user.uid}/menu`), dishData);
 
-        alert('Блюдо добавлено');
-        loadAdminDashboard();
+            console.log('Блюдо успешно добавлено:', docRef.id, dishData);
+
+            alert('Блюдо добавлено');
+            await loadAdminDashboard();
+        } else {
+            throw new Error('Пользователь не аутентифицирован');
+        }
     } catch (error) {
         console.error('Ошибка при добавлении блюда:', error);
         alert(`Ошибка при добавлении блюда: ${error.message}`);
@@ -215,68 +236,91 @@ window.showMenu = async function showMenu() {
     loadingIndicator.style.display = 'flex';
 
     try {
-        const querySnapshot = await getDocs(collection(db, 'menu'));
-        menuList.innerHTML = '';
+        const auth = getAuth();
+        const user = auth.currentUser;
 
-        // Организация блюд по категориям
-        const categories = {};
-        querySnapshot.forEach((doc) => {
-            const dish = doc.data();
-            const category = dish.category ? dish.category : 'Без категории';
-            if (!categories[category]) {
-                categories[category] = [];
-            }
-            categories[category].push({ id: doc.id, ...dish });
-            console.log('Получено блюдо с сервера:', { id: doc.id, ...dish });
-        });
+        if (user) {
+            const userUid = user.uid;
 
-        // Отображение блюд по категориям
-        for (const category in categories) {
-            const categoryDiv = document.createElement('div');
-            categoryDiv.classList.add('category');
-            categoryDiv.innerHTML = `<h4>Категория: ${category}</h4>`;
-            menuList.appendChild(categoryDiv);
+            // Получаем подколлекцию menu для текущего пользователя
+            const userMenuRef = collection(db, `users/${userUid}/menu`);
+            const querySnapshot = await getDocs(userMenuRef);
+            menuList.innerHTML = '';
 
-            const dishContainer = document.createElement('div');
-            dishContainer.classList.add('dish-container');
-            categoryDiv.appendChild(dishContainer);
-
-            categories[category].forEach((dish) => {
-                const ingredients = Array.isArray(dish.ingredients) && dish.ingredients.length > 0 ? dish.ingredients.map(ingredient => ingredient.name).join(', ') : 'Нет ингредиентов';
-                const dishCard = document.createElement('div');
-                dishCard.classList.add('dish-card');
-                dishCard.innerHTML = `
-                    <h5>${dish.name}</h5>
-                    <p>Ингредиенты: ${ingredients}</p>
-                    <p>Вес: ${dish.totalWeight ? dish.totalWeight : 'Не указано'} гр</p>
-                    <div class="price-container">
-                        <input type="number" value="${dish.price}" class="price-input" data-id="${dish.id}" data-original-value="${dish.price}" disabled> руб.
-                        <button class="edit-button">Редактировать</button>
-                        <button class="save-button" data-id="${dish.id}" style="display:none">Сохранить</button>
-                        <button class="cancel-button" style="display:none">Отменить</button>
-                    </div>
-                    <button class="delete-button" data-id="${dish.id}">(X)</button>
+            // Проверяем, пустое ли меню
+            if (querySnapshot.empty) {
+                menuList.innerHTML = `
+                    <p>Ваше меню пока пусто. <a href="#" onclick="showAddDishForm()">Добавьте первое блюдо!</a></p>
                 `;
-                dishContainer.appendChild(dishCard);
+                return;
+            }
+
+
+            // Организация блюд по категориям
+            const categories = {};
+            querySnapshot.forEach((doc) => {
+                const dish = doc.data();
+                const category = dish.category ? dish.category : 'Без категории';
+                if (!categories[category]) {
+                    categories[category] = [];
+                }
+                categories[category].push({ id: doc.id, ...dish });
+                console.log('Получено блюдо с сервера:', { id: doc.id, ...dish });
             });
+
+            // Отображение блюд по категориям
+            for (const category in categories) {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.classList.add('category');
+                categoryDiv.innerHTML = `<h4>Категория: ${category}</h4>`;
+                menuList.appendChild(categoryDiv);
+
+                const dishContainer = document.createElement('div');
+                dishContainer.classList.add('dish-container');
+                categoryDiv.appendChild(dishContainer);
+
+                categories[category].forEach((dish) => {
+                    const ingredients = Array.isArray(dish.ingredients) && dish.ingredients.length > 0
+                        ? dish.ingredients.map(ingredient => ingredient.name).join(', ')
+                        : 'Нет ингредиентов';
+                    const dishCard = document.createElement('div');
+                    dishCard.classList.add('dish-card');
+                    dishCard.innerHTML = `
+                        <h5>${dish.name}</h5>
+                        <p>Ингредиенты: ${ingredients}</p>
+                        <p>Вес: ${dish.totalWeight ? dish.totalWeight : 'Не указано'} гр</p>
+                        <div class="price-container">
+                            <input type="number" value="${dish.price}" class="price-input" data-id="${dish.id}" data-original-value="${dish.price}" disabled> руб.
+                            <button class="edit-button">Редактировать</button>
+                            <button class="save-button" data-id="${dish.id}" style="display:none">Сохранить</button>
+                            <button class="cancel-button" style="display:none">Отменить</button>
+                        </div>
+                        <button class="delete-button" data-id="${dish.id}">(X)</button>
+                    `;
+                    dishContainer.appendChild(dishCard);
+                });
+            }
+
+            // Добавление обработчиков событий для кнопок редактирования, сохранения, отмены и удаления
+            document.querySelectorAll('.edit-button').forEach(button => {
+                button.addEventListener('click', handleEditClick);
+            });
+
+            document.querySelectorAll('.save-button').forEach(button => {
+                button.addEventListener('click', handleSaveClick);
+            });
+
+            document.querySelectorAll('.cancel-button').forEach(button => {
+                button.addEventListener('click', handleCancelClick);
+            });
+
+            document.querySelectorAll('.delete-button').forEach(button => {
+                button.addEventListener('click', handleDeleteClick);
+            });
+        } else {
+            console.error('Пользователь не аутентифицирован');
+            alert('Пожалуйста, войдите в систему, чтобы просмотреть меню.');
         }
-
-        // Добавление обработчиков событий для кнопок редактирования, сохранения, отмены и удаления
-        document.querySelectorAll('.edit-button').forEach(button => {
-            button.addEventListener('click', handleEditClick);
-        });
-
-        document.querySelectorAll('.save-button').forEach(button => {
-            button.addEventListener('click', handleSaveClick);
-        });
-
-        document.querySelectorAll('.cancel-button').forEach(button => {
-            button.addEventListener('click', handleCancelClick);
-        });
-
-        document.querySelectorAll('.delete-button').forEach(button => {
-            button.addEventListener('click', handleDeleteClick);
-        });
     } catch (error) {
         console.error('Ошибка при загрузке меню:', error);
         alert(`Ошибка при загрузке меню: ${error.message}`);
@@ -284,7 +328,8 @@ window.showMenu = async function showMenu() {
         // Скрываем индикатор загрузки
         loadingIndicator.style.display = 'none';
     }
-}
+};
+
 
 function handleEditClick(event) {
     const button = event.target;
@@ -312,8 +357,15 @@ function handleSaveClick(event) {
 
     console.log('Сохранение новой цены:', { dishId, newPrice });
 
-    // Сохранение новой цены в Firestore
-    updateDoc(doc(db, 'menu', dishId), { price: newPrice })
+    // Получаем текущего пользователя
+    const user = auth.currentUser;
+    if (!user) {
+        alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+        return;
+    }
+
+    // Сохранение новой цены в Firestore в коллекции текущего пользователя
+    updateDoc(doc(db, `users/${user.uid}/menu`, dishId), { price: newPrice })
         .then(() => {
             console.log('Цена успешно обновлена:', { dishId, newPrice });
             alert('Цена успешно обновлена');
@@ -327,6 +379,7 @@ function handleSaveClick(event) {
             alert(`Ошибка при обновлении цены: ${error.message}`);
         });
 }
+
 
 function handleCancelClick(event) {
     const button = event.target;
@@ -351,12 +404,20 @@ function handleDeleteClick(event) {
     const confirmation = confirm('Вы уверены, что хотите удалить это блюдо?');
     if (confirmation) {
         console.log('Удаление блюда:', { dishId });
-        // Удаление блюда из Firestore
-        deleteDoc(doc(db, 'menu', dishId))
+
+        // Получаем текущего пользователя
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return;
+        }
+
+        // Удаление блюда из Firestore в коллекции текущего пользователя
+        deleteDoc(doc(db, `users/${user.uid}/menu`, dishId))
             .then(() => {
                 console.log('Блюдо успешно удалено:', { dishId });
                 alert('Блюдо успешно удалено');
-                showMenu();
+                showMenu(); // Обновляем меню после удаления блюда
             })
             .catch(error => {
                 console.error('Ошибка при удалении блюда:', error);
@@ -448,12 +509,21 @@ async function calculatePurchases() {
     loadingIndicator.style.display = 'flex';
 
     try {
+        // Получаем текущего пользователя
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return;
+        }
+
+        // Проходим по каждой выбранной дате
         for (const dateElement of dateElements) {
             const date = dateElement.getAttribute('data-date');
             console.log(`Загрузка заказов на дату: ${date}`);
 
-            // Запрос заказов на указанную дату
-            const querySnapshot = await getDocs(query(collection(db, 'orders'), where('orderDate', '==', date)));
+            // Запрос заказов на указанную дату для конкретного пользователя
+            const userOrdersRef = collection(db, `users/${user.uid}/orders`);
+            const querySnapshot = await getDocs(query(userOrdersRef, where('orderDate', '==', date)));
 
             if (querySnapshot.empty) {
                 console.warn(`Заказы на дату ${date} не найдены.`);
@@ -467,7 +537,7 @@ async function calculatePurchases() {
                 console.log(`Обработка заказа с ${menuItems.length} элементами меню на дату ${date}`);
 
                 for (const item of menuItems) {
-                    await getIngredientsForDish(item.name, item.quantity, ingredientsMap);
+                    await getIngredientsForDish(user.uid, item.name, item.quantity, ingredientsMap);
                 }
             }
         }
@@ -486,10 +556,12 @@ async function calculatePurchases() {
 
 
 // Функция для получения ингредиентов конкретного блюда
-async function getIngredientsForDish(dishName, quantity, ingredientsMap) {
+async function getIngredientsForDish(userId, dishName, quantity, ingredientsMap) {
     console.log(`Загрузка ингредиентов для блюда: ${dishName}`);
 
-    const querySnapshot = await getDocs(query(collection(db, 'menu'), where('name', '==', dishName)));
+    // Запрос ингредиентов конкретного блюда из меню пользователя
+    const userMenuRef = collection(db, `users/${userId}/menu`);
+    const querySnapshot = await getDocs(query(userMenuRef, where('name', '==', dishName)));
 
     if (querySnapshot.empty) {
         console.warn(`Блюдо ${dishName} не найдено в меню.`);
@@ -620,8 +692,16 @@ async function loadOrderByDate() {
     const loadOrderDate = document.getElementById('load-order-date').value;
 
     try {
-        // Запрос к базе данных Firestore
-        const querySnapshot = await getDocs(query(collection(db, 'orders'), where('orderDate', '==', loadOrderDate)));
+        // Получаем текущего пользователя
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return;
+        }
+
+        // Запрос к базе данных Firestore, фильтрация по дате заказа и ID пользователя
+        const userOrdersRef = collection(db, `users/${user.uid}/orders`);
+        const querySnapshot = await getDocs(query(userOrdersRef, where('orderDate', '==', loadOrderDate)));
 
         if (querySnapshot.empty) {
             alert('Заказ на эту дату не найден.');
@@ -700,7 +780,16 @@ window.loadMenuItems = async function loadMenuItems() {
     const menuItemsSelect = document.getElementById('menu-items');
 
     try {
-        const menuSnapshot = await getDocs(collection(db, 'menu'));
+        // Получаем текущего пользователя
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return;
+        }
+
+        // Запрос к базе данных Firestore для получения блюд конкретного пользователя
+        const userMenuRef = collection(db, `users/${user.uid}/menu`);
+        const menuSnapshot = await getDocs(userMenuRef);
 
         menuSnapshot.forEach(doc => {
             const dish = doc.data();
@@ -936,12 +1025,21 @@ async function saveOrder() {
     };
 
     try {
+        // Получаем текущего пользователя
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return;
+        }
+
+        const userOrdersRef = collection(db, `users/${user.uid}/orders`);
+
         if (currentOrderId) {
             // Обновление существующего заказа
-            await updateDoc(doc(db, 'orders', currentOrderId), orderData);
+            await updateDoc(doc(userOrdersRef, currentOrderId), orderData);
         } else {
             // Создание нового заказа
-            await addDoc(collection(db, 'orders'), orderData);
+            await addDoc(userOrdersRef, orderData);
         }
         alert('Заказ успешно сохранен.');
     } catch (error) {
@@ -949,6 +1047,7 @@ async function saveOrder() {
         alert(`Ошибка при сохранении заказа: ${error.message}`);
     }
 }
+
 
 // Функция выхода
 window.logout = function logout() {
