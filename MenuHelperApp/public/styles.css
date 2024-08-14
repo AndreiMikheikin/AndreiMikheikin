@@ -4,9 +4,19 @@
     padding: 0;
     box-sizing: border-box;
     transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 /* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 @keyframes fade-in {
     from {
         opacity: 0;
@@ -251,7 +261,7 @@ canvas {
 }
 
 .back-button::before {
-    content: "\01F830"; /* Символ "стрелка влево" */
+    content: "\2190"; /* Символ "стрелка влево" */
 }
 
 /* Кнопки выбора роли */
