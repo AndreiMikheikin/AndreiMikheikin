@@ -3,8 +3,9 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    list-style: none;
     transition: all 0.3s ease;
-    animation: fadeIn 0.5s ease-in-out;
+    animation: fade-in 0.3s ease ;
 }
 
 /* Анимации */
@@ -36,7 +37,7 @@
 /* Глобальные стили */
 body {
     font-family: 'Georgia', serif;
-    background-color: #f7f7f7;
+    background: none;
     color: #2c2a49;
     display: flex;
     justify-content: center;
@@ -70,12 +71,13 @@ body {
 /* Фон для canvas */
 canvas {
     display: block;
-    width: 100%;
-    height: 100%;
-    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
     top: 0;
     left: 0;
-    z-index: -10;
+    z-index: 0;
+    /* border: 5px solid red; */
 }
 
 /* Кнопка выхода из системы */
@@ -238,7 +240,7 @@ canvas {
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 28px;
+    font-size: 18px;
     cursor: pointer;
     background: none;
     border: none;

@@ -1,88 +1,197 @@
-const canvas = document.getElementById('triangleCanvas');
-const ctx = canvas.getContext('2d');
+// Функция для плавного перехода между двумя цветами
+function lerpColor(startColor, endColor, amount) {
+    const startRGB = hexToRgb(startColor).split(',').map(Number);
+    const endRGB = hexToRgb(endColor).split(',').map(Number);
+    const r = Math.round(startRGB[0] + (endRGB[0] - startRGB[0]) * amount);
+    const g = Math.round(startRGB[1] + (endRGB[1] - startRGB[1]) * amount);
+    const b = Math.round(startRGB[2] + (endRGB[2] - startRGB[2]) * amount);
+    return `rgb(${r},${g},${b})`;
+}
 
-let leaves = [];
-let colors = ['#228B22', '#32CD32', '#006400']; // Оттенки зелёного для листьев
+// Функция для преобразования HEX-кода цвета в RGB
+function hexToRgb(hex) {
+    let bigint = parseInt(hex.slice(1), 16);
+    let r = (bigint >> 16) & 255;
+    let g = (bigint >> 8) & 255;
+    let b = bigint & 255;
+    return `${r},${g},${b}`;
+}
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+class Carrot {
+    constructor(x, y, size) {
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.color = '#FFFFFF'; // Изначально белый цвет
+        this.hoverColor = '#FFA500'; // Цвет при наведении мыши
+        this.opacity = 0;
+        this.targetOpacity = 0;
+        this.tailColor = '#FFFFFF';
+        this.hoverTailColor = '#32CD32'; // Цвет хвостика при наведении мыши
+    }
 
-// Конструктор листа петрушки
-function ParsleyLeaf(x, y, size) {
-    this.x = x;
-    this.y = y;
-    this.size = size;
-    this.color = '#FFFFFF'; // Изначально цвет белый
-    this.opacity = 0;       // Изначальная прозрачность 0
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
 
-    // Метод отрисовки листа петрушки
-    this.draw = function() {
-        // Получаем размеры и положение контейнера admin-dashboard-container
-        const container = document.getElementById('admin-dashboard-container');
-        const containerRect = container.getBoundingClientRect();
-
-        // Проверка, попадает ли лист в контейнер
-        if (this.x + this.size > containerRect.left &&
-            this.x - this.size < containerRect.right &&
-            this.y + this.size > containerRect.top &&
-            this.y - this.size < containerRect.bottom) {
-            return; // Если попадает, не рисуем лист
-        }
-
-        // Отрисовка листа петрушки
+        // Рисуем хвостик морковки
         ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
+        ctx.moveTo(-this.size / 6, 1.5 * this.size);
+        ctx.lineTo(0, this.size);
+        ctx.lineTo(this.size / 6, 1.4 * this.size);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(${hexToRgb(this.tailColor)}, ${this.opacity})`;
+        ctx.fill();
 
-        // Формируем контуры листа петрушки
-        for (let i = 0; i < 5; i++) {
-            let angle = (i * 72 + 45) * Math.PI / 180;
-            let leafX = this.x + this.size * Math.cos(angle);
-            let leafY = this.y + this.size * Math.sin(angle);
-            ctx.lineTo(leafX, leafY);
-        }
-
+        // Рисуем саму морковку
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-this.size / 2.5, this.size);
+        ctx.lineTo(this.size / 2.5, this.size);
         ctx.closePath();
         ctx.fillStyle = `rgba(${hexToRgb(this.color)}, ${this.opacity})`;
         ctx.fill();
-    };
 
-    // Метод обновления состояния листа
-    this.update = function(mouseX, mouseY) {
+        ctx.restore();
+    }
+
+    update(mouseX, mouseY) {
         let dx = this.x - mouseX;
         let dy = this.y - mouseY;
         let dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 50) { // Уменьшенный радиус до 50 пикселей
-            this.opacity = Math.max(0.2, 1 - dist / 300); // Плавное изменение прозрачности
-            this.color = colors[Math.floor(Math.random() * colors.length)]; // Изменение цвета
+        if (dist < 50) {
+            this.targetOpacity = 1;
+            this.color = this.hoverColor;        // Используем цвет при наведении
+            this.tailColor = this.hoverTailColor; // Используем цвет хвостика при наведении
         } else {
-            // Возврат к изначальным значениям
-            this.color = '#FFFFFF';
-            this.opacity = 0;
+            this.targetOpacity = 0;
+            this.color = '#FFFFFF'; // Возвращаем белый цвет
+            this.tailColor = '#FFFFFF'; // Возвращаем белый цвет хвостика
         }
 
-        this.draw();
-    };
-}
-
-// Генерация листьев
-function init() {
-    leaves = [];
-    for (let i = 0; i < 300; i++) { // Количество листьев
-        let size = Math.random() * 10 + 10; // Размер листьев
-        let x = Math.random() * canvas.width;
-        let y = Math.random() * canvas.height;
-
-        leaves.push(new ParsleyLeaf(x, y, size));
+        // Обновляем только если есть изменения
+        if (this.opacity !== this.targetOpacity) {
+            this.opacity += (this.targetOpacity - this.opacity) * 0.05;
+            if (this.opacity < 0.01) this.opacity = 0;
+        }
     }
 }
 
-// Анимационный цикл
+class ParsleyBranch {
+    constructor(x, y, size) {
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.color = '#FFFFFF';
+        this.hoverColor = '#32CD32'; // Цвет при наведении мыши
+        this.opacity = 0;
+        this.targetOpacity = 0;
+    }
+
+    draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.strokeStyle = `rgba(${hexToRgb(this.color)}, ${this.opacity})`;
+        ctx.lineWidth = 2;
+
+        // Главный стебель
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, -this.size);
+        ctx.stroke();
+
+        // Листья
+        for (let i = 0; i < 5; i++) {
+            let angle = (Math.random() * 20 - 10) * Math.PI / 180;
+            let branchLength = this.size * (Math.random() * 0.5 + 0.5);
+
+            ctx.save();
+            ctx.translate(0, -this.size / 2);
+            ctx.rotate(angle);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, -branchLength);
+            ctx.stroke();
+
+            for (let j = 0; j < 3; j++) {
+                ctx.save();
+                ctx.translate(0, -branchLength / 3 * (j + 1));
+                ctx.scale(1, 0.6);
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size / 4, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${hexToRgb(this.color)}, ${this.opacity})`;
+                ctx.fill();
+                ctx.restore();
+            }
+            ctx.restore();
+        }
+        ctx.restore();
+    }
+
+    update(mouseX, mouseY) {
+        let dx = this.x - mouseX;
+        let dy = this.y - mouseY;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 50) {
+            this.targetOpacity = 1;
+            this.color = this.hoverColor; // Используем цвет при наведении
+        } else {
+            this.targetOpacity = 0;
+            this.color = '#FFFFFF'; // Возвращаем белый цвет
+        }
+
+        if (this.opacity !== this.targetOpacity) {
+            this.opacity += (this.targetOpacity - this.opacity) * 0.05;
+            if (this.opacity < 0.01) this.opacity = 0;
+        }
+    }
+}
+
+const canvas = document.getElementById('triangleCanvas');
+const ctx = canvas.getContext('2d');
+
+let branches = [];
+let carrots = [];
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function init() {
+    branches = [];
+    carrots = [];
+    for (let i = 0; i < 300; i++) {
+        let size = Math.random() * 10 + 10;
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height;
+
+        branches.push(new ParsleyBranch(x, y, size));
+    }
+
+    for (let i = 0; i < 50; i++) {
+        let size = Math.random() * 20 + 20;
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height;
+
+        carrots.push(new Carrot(x, y, size));
+    }
+}
+
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0; i < leaves.length; i++) {
-        leaves[i].update(mouse.x, mouse.y);
+    const container = document.getElementById('admin-dashboard-container');
+    const containerRect = container.getBoundingClientRect();
+
+    for (let i = 0; i < branches.length; i++) {
+        branches[i].update(mouse.x, mouse.y);
+        branches[i].draw(ctx, containerRect);
+    }
+
+    for (let i = 0; i < carrots.length; i++) {
+        carrots[i].update(mouse.x, mouse.y);
+        carrots[i].draw(ctx, containerRect);
     }
 
     requestAnimationFrame(animate);
@@ -93,33 +202,21 @@ let mouse = {
     y: undefined
 };
 
-// Обработчик события перемещения мыши
 canvas.addEventListener('mousemove', function(event) {
     mouse.x = event.clientX;
     mouse.y = event.clientY;
 });
 
-// Обработчик события выхода мыши из области
 canvas.addEventListener('mouseout', function() {
     mouse.x = undefined;
     mouse.y = undefined;
 });
 
-init();
-animate();
-
-// Вспомогательная функция для преобразования HEX в RGB
-function hexToRgb(hex) {
-    let bigint = parseInt(hex.slice(1), 16);
-    let r = (bigint >> 16) & 255;
-    let g = (bigint >> 8) & 255;
-    let b = bigint & 255;
-    return `${r},${g},${b}`;
-}
-
-// Обработчик события изменения размера окна
 window.addEventListener('resize', function() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     init();
 });
+
+init();
+animate();

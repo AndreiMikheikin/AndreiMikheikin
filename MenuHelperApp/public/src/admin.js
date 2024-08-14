@@ -146,7 +146,7 @@ window.showAddDishForm = function showAddDishForm() {
             
             <div class="ingredient-group">
                 <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
-                <input type="number" name="ingredient-weight" placeholder="Вес (г)" class="weight-input" required>
+                <input type="number" name="ingredient-weight" placeholder="Вес(г)" class="weight-input" required>
             </div>
         </div>
         
@@ -176,7 +176,7 @@ function addIngredientField() {
     ingredientDiv.innerHTML = `
         <div class="ingredient-group">
             <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
-            <input type="number" name="ingredient-weight" placeholder="Вес (г)" class="weight-input" required>
+            <input type="number" name="ingredient-weight" placeholder="Вес(г)" class="weight-input" required>
         </div>
     `;
     ingredientsContainer.appendChild(ingredientDiv);
