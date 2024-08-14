@@ -1,10 +1,12 @@
+/* Сброс стилей для всех элементов */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    transition: all 0.3s ease;
 }
 
-/* Keyframes for animations */
+/* Анимации */
 @keyframes fade-in {
     from {
         opacity: 0;
@@ -21,7 +23,7 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Global styles */
+/* Глобальные стили */
 body {
     font-family: 'Georgia', serif;
     background-color: #f7f7f7;
@@ -34,11 +36,12 @@ body {
     padding: 20px;
 }
 
-/* Containers */
+/* Основные контейнеры */
 .container,
 #auth-container,
 #admin-dashboard-container,
 #forgot-password-container {
+    position: relative;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
@@ -54,7 +57,7 @@ body {
     display: none;
 }
 
-/* Canvas background */
+/* Фон для canvas */
 canvas {
     display: block;
     width: 100%;
@@ -65,21 +68,23 @@ canvas {
     z-index: -10;
 }
 
-/* Logout button */
+/* Кнопка выхода из системы */
 .logout {
-    background-color: #d4af37;
-    border: none;
-    color: #ffffff;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 18px;
     cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 16px;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    z-index: 1;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    padding: 0 5px;
+    color: #333333; /* Цвет текста */
+    font-weight: bold;
 }
 
 .logout:hover {
-    background-color: #b59631;
+    box-shadow: 0 0 5px rgba(44, 42, 73, 0.2);
 }
 
 .logout:focus {
@@ -87,7 +92,11 @@ canvas {
     box-shadow: 0 0 5px rgba(44, 42, 73, 0.2);
 }
 
-/* Headings */
+.logout::before {
+    content: "\2716"; /* Символ "крест" */
+}
+
+/* Заголовки */
 .container h1, 
 .container h2, 
 .container h3, 
@@ -124,7 +133,7 @@ canvas {
     font-size: 18px;
 }
 
-/* Text */
+/* Текст */
 .container p,
 .dish-card p,
 .order-item p {
@@ -134,7 +143,7 @@ canvas {
     z-index: 1;
 }
 
-/* Icons */
+/* Иконки */
 #admin-dashboard-content {
     display: flex;
     justify-content: space-between;
@@ -189,13 +198,12 @@ canvas {
     cursor: not-allowed;
 }
 
-/* Buttons */
+/* Кнопки */
 .container form button,
 .edit-button,
 .save-button,
 .cancel-button,
-.delete-button,
-.back-button {
+.delete-button {
     background-color: #d4af37;
     border: none;
     color: #ffffff;
@@ -211,12 +219,42 @@ canvas {
 .edit-button:hover,
 .save-button:hover,
 .cancel-button:hover,
-.delete-button:hover,
-.back-button:hover {
+.delete-button:hover {
     background-color: #b59631;
 }
 
-/* Role selection buttons */
+.container form .back-button,
+.container .back-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 28px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    padding: 0 5px;
+    color: #333333; /* Цвет текста */
+    font-weight: bold;
+}
+
+.container form .back-button:hover,
+.container .back-button:hover {
+    background: none;
+    box-shadow: 0 0 5px rgba(44, 42, 73, 0.2);
+}
+
+.container form .back-button:focus,
+.container .back-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(44, 42, 73, 0.2);
+}
+
+.back-button::before {
+    content: "\01F830"; /* Символ "стрелка влево" */
+}
+
+/* Кнопки выбора роли */
 .role-selection button {
     padding: 10px;
     border: 1px solid #2c2a49;
@@ -236,6 +274,7 @@ canvas {
     color: #ffffff;
 }
 
+/* Ссылки переключения и восстановления пароля */
 .toggle-link,
 .forgot-password-link {
     text-align: center;
@@ -250,7 +289,7 @@ canvas {
     color: #b59631;
 }
 
-/* Form fields */
+/* Поля формы */
 .container form input,
 .container form textarea,
 .container form select {
@@ -282,6 +321,7 @@ canvas {
 
 .container form input[type="number"] {
     width: auto;
+    max-width: 80px;
     text-align: right;
 }
 
@@ -296,7 +336,7 @@ canvas {
     box-sizing: border-box;
 }
 
-/* Modal */
+/* Модальные окна */
 .modal {
     display: none;
     position: fixed;
@@ -305,19 +345,20 @@ canvas {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
     padding-top: 60px;
 }
 
 .modal-content {
     background-color: #fefefe;
+    border-radius: 5px;
     margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    max-width: 600px;
 }
 
+.close-button,
 .modal-close-button {
     color: #aaa;
     float: right;
@@ -325,6 +366,8 @@ canvas {
     font-weight: bold;
 }
 
+.close-button:hover,
+.close-button:focus,
 .modal-close-button:hover,
 .modal-close-button:focus {
     color: black;
@@ -332,7 +375,7 @@ canvas {
     cursor: pointer;
 }
 
-/* Loading indicator */
+/* Индикатор загрузки */
 #loading-indicator {
     position: fixed;
     top: 50%;
@@ -360,7 +403,7 @@ canvas {
     animation: spin 1s linear infinite;
 }
 
-/* Order and service items */
+/* Элементы заказа и услуги */
 .order-item,
 .service {
     display: flex;
@@ -372,36 +415,28 @@ canvas {
     border-radius: 4px;
 }
 
-.order-item p {
-    width: 80px;
-    margin: 0 10px;
-    flex: 2;
-}
-
-.order-item input[type="number"],
-.order-item span,
-.service input[name="service-quantity"],
-.service input[name="service-price"],
-.service input[name="service-total"] {
+.order-item img,
+.service img {
     width: 50px;
-    padding: 2px;
-    margin: 0 5px;
+    height: 50px;
+    margin-right: 10px;
 }
 
-.order-item .remove-button,
-.service .remove-service {
-    background-color: #d9534f;
-    border: none;
-    color: white;
-    cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
+.order-item p,
+.service p {
+    margin: 0;
+    font-size: 16px;
+    color: #2c2a49;
 }
 
-.order-item .remove-button:hover,
-.service .remove-service:hover {
-    background-color: #c9302c;
+.service select {
+    margin-left: 10px;
+    max-width: 200px;
+}
+
+.summary p {
+    font-weight: bold;
+    color: #2c2a49;
 }
 
 /* Media queries for responsive design */
@@ -482,8 +517,8 @@ canvas {
     }
 
     #icon4 {
-        top: 10px;
-        left: 265px;
+        top: 95px;
+        left: 10px;
     }
 }
 
@@ -540,12 +575,12 @@ canvas {
 
     #icon3 {
         top: 10px;
-        left: 230px;
+        left: 240px;
     }
 
     #icon4 {
         top: 10px;
-        left: 335px;
+        left: 355px;
     }
 }
 

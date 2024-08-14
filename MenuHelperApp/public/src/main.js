@@ -97,6 +97,7 @@ function handleTouchEnd(event) {
 }
 
 let startY = 0; // Начальная позиция по оси Y
+let startX = 0; // Начальная позиция по оси X
 
 // Показ приветственного модального окна с логином пользователя
 export function showWelcomeModal(username) {

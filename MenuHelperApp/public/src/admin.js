@@ -30,7 +30,7 @@ const INGREDIENTS_CONTAINER_ID = 'ingredients-container';
 // Загрузка панели администратора
 window.loadAdminDashboard = function loadAdminDashboard() {
     console.log('Loading admin dashboard...');
-    const adminContent = document.getElementById('admin-dashboard-content'); // Исправьте если нужно
+    const adminContent = document.getElementById('admin-dashboard-content');
     adminContent.innerHTML = `
         <div class="icon-container" id="${ICON1_ID}" draggable="true">
             <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
@@ -78,7 +78,7 @@ window.loadAdminDashboard = function loadAdminDashboard() {
 //экспорт загрузки панели администратора
 export function loadAdminDashboard() {
     console.log('Loading admin dashboard...');
-    const adminContent = document.getElementById('admin-dashboard-content'); // Исправьте если нужно
+    const adminContent = document.getElementById('admin-dashboard-content'); 
     adminContent.innerHTML = `
         <div class="icon-container" id="${ICON1_ID}" draggable="true">
             <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
@@ -133,24 +133,36 @@ window.showAddDishForm = function showAddDishForm() {
     }
 
     adminContent.innerHTML = `
-    <h3>Добавить блюдо</h3>
+    <div class="container">
+    <h3 class="page-title">Добавление блюда</h3>
+    
     <form id="add-dish-form" onsubmit="handleAddDish(event)">
         <input type="text" id="category-name" name="category-name" placeholder="Название категории" required>
+        
         <input type="text" id="dish-name" name="dish-name" placeholder="Название блюда" required>
+        
         <div id="ingredients-container">
-            <h4>Ингредиенты</h4>
-            <div class="ingredient">
+            <h4 class="ingredients-label">Ингредиенты</h4>
+            
+            <div class="ingredient-group">
                 <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
-                <input type="number" name="ingredient-weight" placeholder="Вес (г)" required>
+                <input type="number" name="ingredient-weight" placeholder="Вес (г)" class="weight-input" required>
             </div>
         </div>
-        <button type="button" id="add-ingredient">Добавить ингредиент</button>
+        
+        <button type="button" id="add-ingredient" class="add-ingredient-button">Добавить ингредиент</button>
+        
         <textarea id="dish-description" name="dish-description" placeholder="Описание этапов, процесса и времени приготовления" required></textarea>
+        
         <input type="number" id="dish-total-weight" name="dish-total-weight" placeholder="Общий вес блюда на 1 порцию (г)" required>
+        
         <input type="number" id="dish-price" name="dish-price" placeholder="Стоимость 1 порции (руб.)" required>
-        <button type="submit">Добавить</button>
+        
+        <button type="submit" class="submit-button">Добавить</button>
     </form>
-    <button class="back-button" onclick="loadAdminDashboard()">Назад</button>
+    
+    <button class="back-button" onclick="loadAdminDashboard()"></button>
+</div>
     `;
 
     document.getElementById('add-ingredient').addEventListener('click', addIngredientField);
@@ -162,8 +174,10 @@ function addIngredientField() {
     const ingredientDiv = document.createElement('div');
     ingredientDiv.classList.add('ingredient');
     ingredientDiv.innerHTML = `
-        <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
-        <input type="number" name="ingredient-weight" placeholder="Вес (г)" required>
+        <div class="ingredient-group">
+            <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
+            <input type="number" name="ingredient-weight" placeholder="Вес (г)" class="weight-input" required>
+        </div>
     `;
     ingredientsContainer.appendChild(ingredientDiv);
 }
@@ -220,13 +234,17 @@ window.handleAddDish = async function handleAddDish(event) {
 window.showMenu = async function showMenu() {
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
-        <h3>Меню</h3>
-        <div id="loading-indicator" style="display: none;">
-            <p>Загрузка, пожалуйста подождите...</p>
-            <div class="spinner"></div>
+        <div class="container">
+
+            <h3 class="page-title">Меню</h3>
+            <div id="loading-indicator" style="display: none;">
+                <p>Загрузка, пожалуйста подождите...</p>
+                <div class="spinner"></div>
+            </div>
+            <div id="menu-list"></div>
+            
+            <button class="back-button" onclick="loadAdminDashboard()"></button>
         </div>
-        <div id="menu-list"></div>
-        <button class="back-button" onclick="loadAdminDashboard()">Назад</button>
     `;
 
     const loadingIndicator = document.getElementById('loading-indicator');
@@ -290,11 +308,12 @@ window.showMenu = async function showMenu() {
                         <p>Ингредиенты: ${ingredients}</p>
                         <p>Вес: ${dish.totalWeight ? dish.totalWeight : 'Не указано'} гр</p>
                         <div class="price-container">
-                            <input type="number" value="${dish.price}" class="price-input" data-id="${dish.id}" data-original-value="${dish.price}" disabled> руб.
-                            <button class="edit-button">Редактировать</button>
-                            <button class="save-button" data-id="${dish.id}" style="display:none">Сохранить</button>
-                            <button class="cancel-button" style="display:none">Отменить</button>
+                                <input type="number" value="${dish.price}" class="price-input" data-id="${dish.id}" data-original-value="${dish.price}" disabled> руб.
+                                <button class="edit-button">Редактировать</button>
+                                <button class="save-button" data-id="${dish.id}" style="display:none">Сохранить</button>
+                                <button class="cancel-button" style="display:none">Отменить</button>
                         </div>
+                        
                         <button class="delete-button" data-id="${dish.id}">✖</button>
                     `;
                     dishContainer.appendChild(dishCard);
@@ -430,7 +449,8 @@ function handleDeleteClick(event) {
 window.showPurchaseCalculationForm = function showPurchaseCalculationForm() {
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
-        <h3>Подсчет необходимых закупок</h3>
+    <div class="container">
+        <h3 class="page-title">Подсчет закупок</h3>
         <div id="loading-indicator" style="display: none;">
             <p>Загрузка, пожалуйста подождите...</p>
             <div class="spinner"></div>
@@ -441,12 +461,12 @@ window.showPurchaseCalculationForm = function showPurchaseCalculationForm() {
             <button type="button" id="add-date-button">Добавить дату</button>
             <div id="date-list"></div>
             <button type="button" id="calculate-purchases-button">Рассчитать</button>
+            <button type="button" class="back-button" onclick="loadAdminDashboard()"></button>
         </form>
         <div id="ingredients-list">
             <!-- Здесь будет отображен список ингредиентов и их вес -->
         </div>
-
-        <button type="button" class="back-button" onclick="loadAdminDashboard()">Назад</button>
+    </div>
     `;
 
     // Обработчики событий для кнопок
@@ -622,7 +642,8 @@ function capitalizeFirstLetter(string) {
 window.showOrderForm = function showOrderForm() {
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
-        <h3>Загрузка заказа по дате</h3>
+    <div class="container">
+        <h3 class="page-title">Загрузка заказа по дате</h3>
         <form id="load-order-form">
             <label for="load-order-date">Выберите дату:</label>
             <input type="date" id="load-order-date" name="load-order-date" required>
@@ -631,11 +652,15 @@ window.showOrderForm = function showOrderForm() {
 
         <h3>Оформление заказа</h3>
         <form id="order-form">
-            <label for="order-date">Дата заказа:</label>
-            <input type="date" id="order-date" name="order-date" required>
+            <div class="container">
+                <label for="order-date">Дата заказа:</label>
+                <input type="date" id="order-date" name="order-date" required>
+            </div>
 
-            <label for="end-date">Дата окончания:</label>
-            <input type="date" id="end-date" name="end-date" required>
+            <div class="container">
+                <label for="end-date">Дата окончания:</label>
+                <input type="date" id="end-date" name="end-date" required>
+            </div>
 
             <label for="menu-items">Выберите блюдо:</label>
             <select id="menu-items" name="menu-items">
@@ -653,18 +678,24 @@ window.showOrderForm = function showOrderForm() {
                 <button type="button" id="add-service">Добавить услугу</button>
             </div>
 
-            <label for="total-sum">Итоговая сумма заказа:</label>
-            <input type="number" id="total-sum" name="total-sum" readonly>
+            <div class="container">
+                <label for="total-sum">Итоговая сумма заказа:</label>
+                <input type="number" id="total-sum" name="total-sum" readonly><span>&nbsp;руб.</span>
+            </div>
 
-            <label for="prepayment">Внесенная предоплата:</label>
-            <input type="number" id="prepayment" name="prepayment">
+            <div class="container">
+                <label for="prepayment">Внесенная предоплата:</label>
+                <input type="number" id="prepayment" name="prepayment"><span>&nbsp;руб.</span>
+            </div>
 
-            <label for="final-sum">Итоговая сумма с учетом услуг и предоплаты:</label>
-            <input type="number" id="final-sum" name="final-sum" readonly>
+            <div class="container">
+                <label for="final-sum">Сумма доплаты:</label>
+                <input type="number" id="final-sum" name="final-sum" readonly><span>&nbsp;руб.</span>
+            </div>
 
             <button type="button" id="print-order">Распечатать</button>
             <button type="button" id="save-order">Сохранить заказ</button>
-            <button type="button" class="back-button" onclick="loadAdminDashboard()">Назад</button>
+            <button type="button" class="back-button" onclick="loadAdminDashboard()"></button>
         </form>
 
         <div id="print-modal" class="modal">
@@ -674,6 +705,7 @@ window.showOrderForm = function showOrderForm() {
                 <button type="button" id="confirm-print">Печать</button>
             </div>
         </div>
+    </div>
     `;
 
     loadMenuItems();
@@ -1060,16 +1092,6 @@ window.logout = function logout() {
 }
 
 // Загрузка панели администратора при загрузке скрипта
-window.onload = function () {
+/* window.onload = function () {
     loadAdminDashboard();
-}
-
-// Адаптивность интерфейса
-window.onresize = function () {
-    const adminContent = document.getElementById('admin-dashboard-content');
-    if (window.innerWidth < 768) {
-        adminContent.classList.add('mobile-view');
-    } else {
-        adminContent.classList.remove('mobile-view');
-    }
-}
+} */
