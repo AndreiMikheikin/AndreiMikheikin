@@ -187,22 +187,23 @@ window.handleAddDish = async function handleAddDish(event) {
     event.preventDefault();
 
     // Проверка обязательных полей
-    const category = document.getElementById('category-name').value;
-    const name = document.getElementById('dish-name').value;
-    const description = document.getElementById('dish-description').value;
-    const totalWeight = document.getElementById('dish-total-weight').value;
-    const price = document.getElementById('dish-price').value;
+    const category = document.getElementById('category-name').value.trim();
+    const name = document.getElementById('dish-name').value.trim();
+    const description = document.getElementById('dish-description').value.trim();
+    const totalWeight = document.getElementById('dish-total-weight').value.trim();
+    const price = document.getElementById('dish-price').value.trim();
 
     if (!category || !name || !description || !totalWeight || !price) {
         alert('Пожалуйста, заполните все обязательные поля');
         return;
     }
 
+    // Сбор данных об ингредиентах
     const ingredients = [];
-    const ingredientDivs = document.querySelectorAll(`#${INGREDIENTS_CONTAINER_ID} .ingredient`);
+    const ingredientDivs = document.querySelectorAll('#ingredients-container .ingredient-group');
     ingredientDivs.forEach(div => {
-        const ingredientName = div.querySelector('input[name="ingredient-name"]').value;
-        const ingredientWeight = div.querySelector('input[name="ingredient-weight"]').value;
+        const ingredientName = div.querySelector('input[name="ingredient-name"]').value.trim();
+        const ingredientWeight = div.querySelector('input[name="ingredient-weight"]').value.trim();
         if (ingredientName && ingredientWeight) {
             ingredients.push({ name: ingredientName, weight: ingredientWeight });
         }
