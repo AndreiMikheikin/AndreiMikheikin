@@ -356,7 +356,7 @@ body {
             color: #d4af37; }
           #admin-dashboard-container .container .dish-card .price-container button.cancel-button {
             color: rgba(0, 0, 0, 0.4);
-            margin-right: 30px; }
+            margin-right: 40px; }
       #admin-dashboard-container .container .dish-card .delete-button {
         position: absolute;
         top: 10px;
