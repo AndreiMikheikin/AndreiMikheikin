@@ -78,7 +78,7 @@ window.loadAdminDashboard = function loadAdminDashboard() {
 //экспорт загрузки панели администратора
 export function loadAdminDashboard() {
     console.log('Loading admin dashboard...');
-    const adminContent = document.getElementById('admin-dashboard-content'); 
+    const adminContent = document.getElementById('admin-dashboard-content');
     adminContent.innerHTML = `
         <div class="icon-container" id="${ICON1_ID}" draggable="true">
             <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
@@ -302,23 +302,29 @@ window.showMenu = async function showMenu() {
                     const ingredients = Array.isArray(dish.ingredients) && dish.ingredients.length > 0
                         ? dish.ingredients.map(ingredient => ingredient.name).join(', ')
                         : 'Нет ингредиентов';
+
                     const dishCard = document.createElement('div');
                     dishCard.classList.add('dish-card');
                     dishCard.innerHTML = `
-                        <h5>${dish.name}</h5>
-                        <p>Ингредиенты: ${ingredients}</p>
-                        <p>Вес: ${dish.totalWeight ? dish.totalWeight : 'Не указано'} гр</p>
-                        <div class="price-container">
-                                <input type="number" value="${dish.price}" class="price-input" data-id="${dish.id}" data-original-value="${dish.price}" disabled> руб.
-                                <button class="edit-button">Редактировать</button>
-                                <button class="save-button" data-id="${dish.id}" style="display:none">Сохранить</button>
-                                <button class="cancel-button" style="display:none">Отменить</button>
-                        </div>
-                        
-                        <button class="delete-button" data-id="${dish.id}">✖</button>
-                    `;
+                    <h5>${dish.name}</h5>
+                    <p class="ingredients"> ${ingredients}</p>
+                    <p>Вес: ${dish.totalWeight ? dish.totalWeight : 'Не указано'} гр</p>
+                    <div class="price-container">
+                        <input type="number" value="${dish.price}" class="price-input" data-id="${dish.id}" data-original-value="${dish.price}" disabled> руб.
+                        <button class="edit-button" aria-label="Редактировать"><i class="fa fa-edit"></i></button>
+                        <button class="save-button" data-id="${dish.id}" style="display:none" aria-label="Сохранить"><i class="fa fa-save"></i></button>
+                        <button class="cancel-button" style="display:none" aria-label="Отменить"><i class="fa fa-times"></i></button>
+                    </div>
+                    <button class="delete-button" data-id="${dish.id}" aria-label="Удалить"><i class="fa fa-trash"></i></button>
+                `;
+
+                    // Найдем элемент с классом ingredients и добавим атрибут title
+                    const ingredientElement = dishCard.querySelector('.ingredients');
+                    ingredientElement.setAttribute('title', ingredientElement.textContent.trim());
+
                     dishContainer.appendChild(dishCard);
                 });
+
             }
 
             // Добавление обработчиков событий для кнопок редактирования, сохранения, отмены и удаления
@@ -350,27 +356,33 @@ window.showMenu = async function showMenu() {
     }
 };
 
-
 function handleEditClick(event) {
-    const button = event.target;
-    const priceInput = button.previousElementSibling;
-    const saveButton = button.nextElementSibling;
-    const cancelButton = saveButton.nextElementSibling;
+    const button = event.currentTarget;
+    const priceInput = button.closest('.price-container').querySelector('.price-input');
+    const saveButton = button.closest('.price-container').querySelector('.save-button');
+    const cancelButton = button.closest('.price-container').querySelector('.cancel-button');
+
+    if (!priceInput || !saveButton || !cancelButton) return;
 
     // Сохраняем текущее значение цены в атрибут data-original-value
     priceInput.setAttribute('data-original-value', priceInput.value);
 
+    // Разрешаем редактирование поля ввода
     priceInput.disabled = false;
+
+    // Скрываем кнопку "Редактировать" и показываем кнопки "Сохранить" и "Отменить"
     button.style.display = 'none';
     saveButton.style.display = 'inline';
     cancelButton.style.display = 'inline';
 }
 
 function handleSaveClick(event) {
-    const button = event.target;
-    const priceInput = button.previousElementSibling.previousElementSibling;
-    const editButton = priceInput.nextElementSibling;
-    const cancelButton = button.nextElementSibling;
+    const button = event.currentTarget;
+    const priceInput = button.closest('.price-container').querySelector('.price-input');
+    const editButton = button.closest('.price-container').querySelector('.edit-button');
+    const cancelButton = button.closest('.price-container').querySelector('.cancel-button');
+
+    if (!priceInput || !editButton || !cancelButton) return;
 
     const newPrice = priceInput.value;
     const dishId = button.getAttribute('data-id');
@@ -400,12 +412,13 @@ function handleSaveClick(event) {
         });
 }
 
-
 function handleCancelClick(event) {
-    const button = event.target;
-    const priceInput = button.previousElementSibling.previousElementSibling.previousElementSibling;
-    const editButton = priceInput.nextElementSibling;
-    const saveButton = button.previousElementSibling;
+    const button = event.currentTarget;
+    const priceInput = button.closest('.price-container').querySelector('.price-input');
+    const editButton = button.closest('.price-container').querySelector('.edit-button');
+    const saveButton = button.closest('.price-container').querySelector('.save-button');
+
+    if (!priceInput || !editButton || !saveButton) return;
 
     // Восстановление значения цены из атрибута data-original-value
     const originalValue = priceInput.getAttribute('data-original-value');
@@ -418,7 +431,7 @@ function handleCancelClick(event) {
 }
 
 function handleDeleteClick(event) {
-    const button = event.target;
+    const button = event.currentTarget;
     const dishId = button.getAttribute('data-id');
 
     const confirmation = confirm('Вы уверены, что хотите удалить это блюдо?');

@@ -1,0 +1,14 @@
+body {
+  position: rel;
+  font-family: "Georgia", serif;
+  background: none;
+  color: #2c2a49;
+  display: flex;
+  width: 100%;
+  max-width: 1320px;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0 auto; }
+
+/*# sourceMappingURL=commonstyles.css.map */

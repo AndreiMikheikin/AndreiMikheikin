@@ -1,0 +1,29 @@
+// Основные цвета
+$main-color: #d4af37; // Золотой
+$main-color-hover: darken($main-color, 10%); // Оттенок для наведения
+$text-color: #2c2a49; // Фиолетовый
+$background-color: #ffffff; // Белый
+$border-color: rgba(44, 42, 73, 0.1); // Фиолетовый с прозрачностью
+
+// Оттенки
+$light-gray: #f4f4f4; // Светло-серый
+$dark-gray: #333333; // Темно-серый
+$modal-background: rgba(0, 0, 0, 0.4); // Полупрозрачный черный для модального окна
+
+// Шрифты
+$font-family: 'Georgia', serif;
+
+// Общие стили
+body {
+    position: relative;
+    font-family: $font-family;
+    background: none;
+    color: $text-color;
+    display: flex;
+    width: 100%;
+    max-width: 1320px;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0 auto;
+}

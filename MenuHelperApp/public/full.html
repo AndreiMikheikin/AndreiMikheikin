@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="images/icons/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MenuHelper</title>
+</head>
+
+<body>
+    <canvas id="triangleCanvas"></canvas>
+    <!-- Контейнер аутентификации -->
+    <div class="container" id="auth-container">
+        <h2 id="form-title">Вход</h2>
+        <div class="role-selection">
+            <button class="admin" onclick="selectRole('admin')">Администратор</button>
+            <button class="user" onclick="selectRole('user')">Пользователь</button>
+        </div>
+        <form id="auth-form" onsubmit="handleSubmit(event)">
+            <input type="hidden" id="role" name="role">
+            <input type="email" id="email" name="email" placeholder="Email" required oninput="validateForm()">
+            <input type="password" id="password" name="password" placeholder="Пароль" required oninput="validateForm()">
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Подтвердите пароль"
+                style="display: none;" oninput="validateForm()">
+            <div id="password-requirements" class="password-requirements" style="display: none;">
+                <div class="requirement" id="length-check">
+                    <span class="check">✓</span> Не менее 8 символов
+                </div>
+                <div class="requirement" id="lowercase-check">
+                    <span class="check">✓</span> Минимум одна строчная буква
+                </div>
+                <div class="requirement" id="uppercase-check">
+                    <span class="check">✓</span> Минимум одна заглавная буква
+                </div>
+                <div class="requirement" id="number-check">
+                    <span class="check">✓</span> Минимум одна цифра
+                </div>
+                <div class="requirement" id="match-check">
+                    <span class="check">✓</span> Пароли совпадают
+                </div>
+            </div>
+            <button type="submit" id="submit-btn" disabled>Войти</button>
+        </form>
+        <div class="toggle-link" id="toggle-link" onclick="toggleForm()">Нет аккаунта? Регистрация</div>
+        <div class="forgot-password-link" onclick="toggleForgotPasswordForm()">Забыли пароль?</div>
+    </div>
+
+    <!-- Приветственное модальное окно -->
+    <div class="modal" id="welcome-modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-button"">&times;</span>
+            <h2 id=" welcome-message"></h2>
+        </div>
+    </div>
+
+    <!-- Контейнер панели администратора -->
+    <div class="container desktop" id="admin-dashboard-container" style="display: none;">
+        <h2>Рабочий стол</h2>
+        <button class="logout" onclick="logout()"></button>
+        <div id="admin-dashboard-content" class="desktop">
+
+            <div class="icon-container" id="${ICON1_ID}" draggable="true">
+                <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
+                <p>Добавить блюдо</p>
+            </div>
+            <div class="icon-container" id="${ICON2_ID}" draggable="true">
+                <img src="images/icons/view_menu_icon.svg" alt="Просмотр меню">
+                <p>Просмотр меню</p>
+            </div>
+            <div class="icon-container" id="${ICON3_ID}" draggable="true">
+                <img src="images/icons/calculate_purchases_icon.svg" alt="Подсчет закупок">
+                <p>Подсчет закупок</p>
+            </div>
+            <div class="icon-container" id="${ICON4_ID}" draggable="true">
+                <img src="images/icons/order_icon.svg" alt="Оформление заказа">
+                <p>Оформление заказа</p>
+            </div>
+
+            <div class="container">
+                <h3 class="page-title">Добавление блюда</h3>
+
+                <form id="add-dish-form" onsubmit="handleAddDish(event)">
+                    <input type="text" id="category-name" name="category-name" placeholder="Название категории"
+                        required>
+
+                    <input type="text" id="dish-name" name="dish-name" placeholder="Название блюда" required>
+
+                    <div id="ingredients-container">
+                        <h4 class="ingredients-label">Ингредиенты</h4>
+
+                        <div class="ingredient-group">
+                            <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
+                            <input type="number" name="ingredient-weight" placeholder="Вес(г)" class="weight-input"
+                                required>
+                        </div>
+                        <div class="ingredient-group">
+                            <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
+                            <input type="number" name="ingredient-weight" placeholder="Вес(г)" class="weight-input"
+                                required>
+                        </div>
+                        <div class="ingredient-group">
+                            <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
+                            <input type="number" name="ingredient-weight" placeholder="Вес(г)" class="weight-input"
+                                required>
+                        </div>
+                    </div>
+
+                    <button type="button" id="add-ingredient" class="add-ingredient-button">Добавить ингредиент</button>
+
+                    <textarea id="dish-description" name="dish-description"
+                        placeholder="Описание этапов, процесса и времени приготовления" required></textarea>
+
+                    <input type="number" id="dish-total-weight" name="dish-total-weight"
+                        placeholder="Общий вес блюда на 1 порцию (г)" required>
+
+                    <input type="number" id="dish-price" name="dish-price" placeholder="Стоимость 1 порции (руб.)"
+                        required>
+
+                    <button type="submit" class="submit-button">Добавить</button>
+                </form>
+
+                <button class="back-button" onclick="loadAdminDashboard()"></button>
+            </div>
+
+            <div class="container">
+
+                <h3 class="page-title">Меню</h3>
+                <div id="loading-indicator" style="display: none;">
+                    <p>Загрузка, пожалуйста подождите...</p>
+                    <div class="spinner"></div>
+                </div>
+                <div id="menu-list">
+                    <div class="dish-card">
+                        <h5>${dish.name}</h5>
+                        <p>Ингредиенты: ${ingredients}</p>
+                        <p>Вес: ${dish.totalWeight ? dish.totalWeight : 'Не указано'} гр</p>
+                        <div class="price-container">
+                            <input type="number" value="${dish.price}" class="price-input" data-id="${dish.id}"
+                                data-original-value="${dish.price}" disabled> руб.
+                            <button class="edit-button">Редактировать</button>
+                            <button class="save-button" data-id="${dish.id}" style="display:none">Сохранить</button>
+                            <button class="cancel-button" style="display:none">Отменить</button>
+                        </div>
+
+                        <button class="delete-button" data-id="${dish.id}">✖</button>
+                    </div>
+                    <div class="dish-card">
+                        <h5>${dish.name}</h5>
+                        <p>Ингредиенты: ${ingredients}</p>
+                        <p>Вес: ${dish.totalWeight ? dish.totalWeight : 'Не указано'} гр</p>
+                        <div class="price-container">
+                            <input type="number" value="${dish.price}" class="price-input" data-id="${dish.id}"
+                                data-original-value="${dish.price}" disabled> руб.
+                            <button class="edit-button">Редактировать</button>
+                            <button class="save-button" data-id="${dish.id}" style="display:none">Сохранить</button>
+                            <button class="cancel-button" style="display:none">Отменить</button>
+                        </div>
+
+                        <button class="delete-button" data-id="${dish.id}">✖</button>
+                    </div>
+                </div>
+
+                <button class="back-button" onclick="loadAdminDashboard()"></button>
+            </div>
+
+            <div class="container">
+                <h3 class="page-title">Подсчет закупок</h3>
+                <div id="loading-indicator" style="display: none;">
+                    <p>Загрузка, пожалуйста подождите...</p>
+                    <div class="spinner"></div>
+                </div>
+                <form id="purchase-calculation-form">
+                    <label for="calculation-order-date">Выберите дату заказа:</label>
+                    <input type="date" id="calculation-order-date" name="calculation-order-date">
+                    <button type="button" id="add-date-button">Добавить дату</button>
+                    <div id="date-list">
+                        <div class="calculation-order-date"></div>
+                        <button>Удалить</button>
+                    </div>
+                    <button type="button" id="calculate-purchases-button">Рассчитать</button>
+                    <button type="button" class="back-button" onclick="loadAdminDashboard()"></button>
+                </form>
+                <div id="ingredients-list">
+                    <h4>Необходимые ингредиенты и их вес:</h4>
+                    <ul>
+                        <li></li>
+                    </ul>
+                    <!-- Здесь будет отображен список ингредиентов и их вес -->
+                </div>
+            </div>
+
+            <div class="container">
+                <h3 class="page-title">Загрузка заказа по дате</h3>
+                <form id="load-order-form">
+                    <label for="load-order-date">Выберите дату:</label>
+                    <input type="date" id="load-order-date" name="load-order-date" required>
+                    <button type="button" id="load-order-button">Загрузить заказ</button>
+                </form>
+
+                <h3>Оформление заказа</h3>
+                <form id="order-form">
+                    <div class="container">
+                        <label for="order-date">Дата заказа:</label>
+                        <input type="date" id="order-date" name="order-date" required>
+                    </div>
+
+                    <div class="container">
+                        <label for="end-date">Дата окончания:</label>
+                        <input type="date" id="end-date" name="end-date" required>
+                    </div>
+
+                    <label for="menu-items">Выберите блюдо:</label>
+                    <select id="menu-items" name="menu-items">
+                        <option value="">Выберите блюдо</option>
+                    </select>
+                    <button type="button" id="add-dish-to-order">Добавить блюдо</button>
+
+                    <h4>Бланк заказа</h4>
+                    <div id="order-blank">
+                        <!-- Здесь будут добавляться выбранные блюда -->
+                        <div class="order-item">
+                            <p>${item.name}</p>
+                            <input type="number" value="${item.quantity}" min="1" class="dish-quantity"
+                                data-price="${item.price}">
+                            <span>${item.price} руб.</span>
+                            <span class="dish-total-price">${item.total}</span>
+                            <button type="button" class="remove-button">Удалить</button>
+                        </div>
+                    </div>
+
+                    <h4>Дополнительные услуги</h4>
+                    <div id="additional-services">
+                        <button type="button" id="add-service">Добавить услугу</button>
+                    </div>
+
+                    <div class="service">
+                        <input type="text" name="service-name" value="${service.name}" required>
+                        <input type="number" name="service-quantity" value="${service.quantity}" min="1">
+                        <input type="number" name="service-price" value="${service.price}" required>
+                        <input type="number" name="service-total" value="${service.total}" readonly>
+                        <button type="button" class="remove-service">Удалить</button>
+                    </div>
+
+                    <div class="container">
+                        <label for="total-sum">Итоговая сумма заказа:</label>
+                        <input type="number" id="total-sum" name="total-sum" readonly><span>&nbsp;руб.</span>
+                    </div>
+
+                    <div class="container">
+                        <label for="prepayment">Внесенная предоплата:</label>
+                        <input type="number" id="prepayment" name="prepayment"><span>&nbsp;руб.</span>
+                    </div>
+
+                    <div class="container">
+                        <label for="final-sum">Сумма доплаты:</label>
+                        <input type="number" id="final-sum" name="final-sum" readonly><span>&nbsp;руб.</span>
+                    </div>
+
+                    <button type="button" id="print-order">Распечатать</button>
+                    <button type="button" id="save-order">Сохранить заказ</button>
+                    <button type="button" class="back-button" onclick="loadAdminDashboard()"></button>
+                </form>
+
+                <div id="print-modal" class="modal">
+                    <div class="modal-content">
+                        <span class="modal-close-button">&times;</span>
+                        <div id="print-content">
+                            <h3>Заказ на дату: ${orderDate}</h3>
+                            <h4>Бланк заказа:</h4>
+                            <ul>
+                                <li>${dishName} &nbsp;&nbsp;&nbsp;&nbsp; ${quantity} шт. &nbsp;&nbsp;&nbsp;&nbsp;
+                                    ${totalPrice}</li>
+                            </ul>
+                            </br>
+                            <p>Итоговая сумма заказа: ${totalSum} руб.</p>
+                            </br>
+                            <h4>Дополнительные услуги:</h4>
+                            <ul>
+                                <li>${serviceName} &nbsp;&nbsp;&nbsp;&nbsp; кол-во: ${quantity} &nbsp;&nbsp;&nbsp;&nbsp;
+                                    ${total} руб.</li>
+                            </ul>
+                            </br></br>
+                            <p>Внесенная предоплата: ${prepayment} руб.</p>
+                            <p>Итоговая сумма с учетом услуг и предоплаты: ${finalSum} руб.</p>
+                        </div>
+                        <button type="button" id="confirm-print">Печать</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Контейнер панели пользователя -->
+    <div class="container" id="user-dashboard-container" style="display: none;">
+        <h2>Добро пожаловать, Пользователь!</h2>
+        <div id="user-dashboard-content">
+            <!-- Содержимое панели пользователя -->
+        </div>
+        <button onclick="logout()"></button>
+    </div>
+
+    <!-- Контейнер восстановления пароля -->
+    <div class="container" id="forgot-password-container" style="display: none;">
+        <h2>Восстановление пароля</h2>
+        <form id="forgot-password-form" onsubmit="handleForgotPassword(event)">
+            <input type="email" id="forgot-email" name="forgot-email" placeholder="Email" required
+                oninput="validateForgotPasswordForm()">
+            <button type="submit" id="forgot-submit-btn" disabled>Отправить ссылку для сброса</button>
+        </form>
+        <div class="toggle-link" onclick="toggleForgotPasswordForm()">Вернуться</div>
+    </div>
+
+    <!-- Загрузка основного скрипта -->
+    <script type="module" src="src/main.js"></script>
+    <script type="module" src="src/auth.js"></script>
+    <script type="module" src="src/admin.js"></script>
+    <script src="src/canvas.js"></script>
+</body>
+
+</html>
