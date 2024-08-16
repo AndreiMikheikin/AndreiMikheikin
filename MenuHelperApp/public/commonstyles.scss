@@ -1,3 +1,23 @@
+/* Сброс стилей для всех элементов */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 // Основные цвета
 $main-color: #d4af37; // Золотой
 $main-color-hover: darken($main-color, 10%); // Оттенок для наведения

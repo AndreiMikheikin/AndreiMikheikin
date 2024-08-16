@@ -1,5 +1,21 @@
+@charset "UTF-8";
+/* Сброс стилей для всех элементов */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.3s ease; }
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
 body {
-  position: rel;
+  position: relative;
   font-family: "Georgia", serif;
   background: none;
   color: #2c2a49;
