@@ -65,7 +65,7 @@ function handleDrop(event) {
 
 // Функция для обработки двойного клика и касаний на иконках
 export function addIconEventListeners() {
-    document.getElementById(ICON1_ID).addEventListener('dblclick', showAddDishForm);
+    document.getElementById(ICON1_ID).addEventListener('dblclick', showDishForm);
     document.getElementById(ICON2_ID).addEventListener('dblclick', showMenu);
     document.getElementById(ICON3_ID).addEventListener('dblclick', showPurchaseCalculationForm);
     document.getElementById(ICON4_ID).addEventListener('dblclick', showOrderForm);
@@ -81,7 +81,7 @@ function handleTouchEnd(event) {
     setTimeout(() => {
         switch(id) {
             case ICON1_ID:
-                showAddDishForm();
+                showDishForm();
                 break;
             case ICON2_ID:
                 showMenu();

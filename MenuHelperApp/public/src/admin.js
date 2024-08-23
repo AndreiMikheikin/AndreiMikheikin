@@ -1,6 +1,6 @@
 // Импорт необходимых функций из Firestore
 import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { initializeDragAndDrop, saveIconPositions, addIconEventListeners } from './main.js';
 
@@ -75,7 +75,7 @@ window.loadAdminDashboard = function loadAdminDashboard() {
     }
 }
 
-//экспорт загрузки панели администратора
+// Экспорт загрузки панели администратора
 export function loadAdminDashboard() {
     console.log('Loading admin dashboard...');
     const adminContent = document.getElementById('admin-dashboard-content');
@@ -123,113 +123,411 @@ export function loadAdminDashboard() {
     }
 }
 
-// Показ формы добавления блюда
-window.showAddDishForm = function showAddDishForm() {
-    const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
-
-    if (!adminContent) {
-        console.error('Element with ID "admin-dashboard-content" not found.');
-        return;
-    }
-
-    adminContent.innerHTML = `
-    <div class="container">
-    <h3 class="page-title">Добавление блюда</h3>
-    
-    <form id="add-dish-form" onsubmit="handleAddDish(event)">
-        <input type="text" id="category-name" name="category-name" placeholder="Название категории" required>
-        
-        <input type="text" id="dish-name" name="dish-name" placeholder="Название блюда" required>
-        
-        <div id="ingredients-container">
-            <h4 class="ingredients-label">Ингредиенты</h4>
-            
-            <div class="ingredient-group">
-                <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
-                <input type="number" name="ingredient-weight" placeholder="Вес(г)" class="weight-input" required>
-            </div>
-        </div>
-        
-        <button type="button" id="add-ingredient" class="add-ingredient-button">Добавить ингредиент</button>
-        
-        <textarea id="dish-description" name="dish-description" placeholder="Описание этапов, процесса и времени приготовления" required></textarea>
-        
-        <input type="number" id="dish-total-weight" name="dish-total-weight" placeholder="Общий вес блюда на 1 порцию (г)" required>
-        
-        <input type="number" id="dish-price" name="dish-price" placeholder="Стоимость 1 порции (руб.)" required>
-        
-        <button type="submit" class="submit-button">Добавить</button>
-    </form>
-    
-    <button class="back-button" onclick="loadAdminDashboard()"></button>
-</div>
-    `;
-
-    document.getElementById('add-ingredient').addEventListener('click', addIngredientField);
+// Функция для удаления ингредиента
+function removeIngredient(button) {
+    // Находим родительский элемент для кнопки удаления и удаляем его
+    const ingredientGroup = button.parentElement;
+    ingredientGroup.remove();
 }
 
-// Добавление поля ингредиента
+// Функция для добавления нового поля ингредиента
 function addIngredientField() {
+    // Находим контейнер для ингредиентов
     const ingredientsContainer = document.getElementById('ingredients-container');
+    // Определяем индекс нового ингредиента по количеству существующих
+    const index = ingredientsContainer.querySelectorAll('.ingredient-group').length;
+    // Создаем новый div для группы ингредиентов
     const ingredientDiv = document.createElement('div');
-    ingredientDiv.classList.add('ingredient');
+    ingredientDiv.classList.add('ingredient-group');
+    ingredientDiv.setAttribute('data-index', index);
+    // Внутреннее содержимое группы ингредиентов
     ingredientDiv.innerHTML = `
-        <div class="ingredient-group">
-            <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
-            <input type="number" name="ingredient-weight" placeholder="Вес(г)" class="weight-input" required>
-        </div>
+        <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
+        <input type="number" name="ingredient-weight" placeholder="Вес" class="weight-input" required>
+        <select name="ingredient-unit">
+            <option value="г">г</option>
+            <option value="мл">мл</option>
+            <option value="шт">шт</option>
+        </select>
+        <button type="button" class="remove-ingredient-button">Удалить</button>
     `;
+    // Добавляем новую группу ингредиентов в контейнер
     ingredientsContainer.appendChild(ingredientDiv);
 }
 
-// Обработка добавления блюда
-window.handleAddDish = async function handleAddDish(event) {
-    event.preventDefault();
+// Функция для добавления обработчиков событий после загрузки DOM
+function addEventListeners() {
+    const addIngredientButton = document.getElementById('add-ingredient');
+    const loadDishButton = document.getElementById('load-dish-button');
+    const deleteDishButton = document.getElementById('delete-dish-button');
+    const saveDishButton = document.getElementById('save-dish-button');
+    const sharedCheckbox = document.getElementById('shared');
 
-    // Проверка обязательных полей
-    const category = document.getElementById('category-name').value.trim();
-    const name = document.getElementById('dish-name').value.trim();
-    const description = document.getElementById('dish-description').value.trim();
-    const totalWeight = document.getElementById('dish-total-weight').value.trim();
-    const price = document.getElementById('dish-price').value.trim();
+    if (addIngredientButton) {
+        // Добавляем обработчик события для кнопки добавления ингредиента
+        addIngredientButton.addEventListener('click', addIngredientField);
+    }
 
-    if (!category || !name || !description || !totalWeight || !price) {
-        alert('Пожалуйста, заполните все обязательные поля');
+    if (loadDishButton) {
+        // Добавляем обработчик события для загрузки блюда
+        loadDishButton.addEventListener('click', loadDishForEditing);
+    }
+
+    if (deleteDishButton) {
+        // Добавляем обработчик события для удаления блюда
+        deleteDishButton.addEventListener('click', deleteDish);
+    }
+
+    if (saveDishButton) {
+        // Обновляем обработчик события для кнопки сохранения блюда, чтобы использовать handleSubmit
+        saveDishButton.addEventListener('click', handleSubmit);
+    }
+
+    if (sharedCheckbox) {
+        // Обработчик изменения состояния чекбокса "Предоставить доступ"
+        sharedCheckbox.addEventListener('change', function () {
+            const sharedByContainer = document.getElementById('shared-by-container');
+            // Отображаем или скрываем поле "Кто предоставил доступ" в зависимости от состояния чекбокса
+            sharedByContainer.style.display = this.checked ? 'block' : 'none';
+        });
+    }
+
+    // Делегирование события для удаления ингредиента
+    document.addEventListener('click', function(event) {
+        if (event.target && event.target.classList.contains('remove-ingredient-button')) {
+            // Вызываем функцию удаления ингредиента при нажатии на кнопку удаления
+            removeIngredient(event.target);
+        }
+    });
+}
+
+
+// Функция для отображения формы добавления/редактирования блюда
+window.showDishForm = async function showDishForm() {
+    const adminContent = document.getElementById('admin-dashboard-content');
+    if (!adminContent) {
+        console.error('Элемент с ID "admin-dashboard-content" не найден.');
         return;
     }
 
-    // Сбор данных об ингредиентах
+    // HTML-код формы добавления/редактирования блюда
+    adminContent.innerHTML = `
+    <div class="container">
+        <h3 class="page-title">Добавить / Редактировать блюдо</h3>
+        <form id="dish-form">
+            <input type="text" id="category-name" name="category-name" placeholder="Название категории" required>
+            <input type="text" id="dish-name" name="dish-name" placeholder="Название блюда" required>
+            <div id="ingredients-container">
+                <h4 class="ingredients-label">Ингредиенты</h4>
+                <div class="ingredient-group">
+                    <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
+                    <input type="number" name="ingredient-weight" placeholder="Вес" class="weight-input" required>
+                    <select name="ingredient-unit">
+                        <option value="г">г</option>
+                        <option value="мл">мл</option>
+                        <option value="шт">шт</option>
+                    </select>
+                    <button type="button" class="remove-ingredient-button">Удалить</button>
+                </div>
+            </div>
+            <button type="button" id="add-ingredient" class="add-ingredient-button">Добавить ингредиент</button>
+            <textarea id="dish-description" name="dish-description" placeholder="Описание приготовления, процесс и время" required></textarea>
+            <input type="number" id="dish-total-weight" name="dish-total-weight" placeholder="Общий вес на порцию (г)" required>
+            <input type="number" id="dish-price" name="dish-price" step="0.01" placeholder="Цена за порцию (₽)" required>
+            <input type="text" id="supplier" name="supplier" placeholder="Поставщик (не обязательно)">
+            <div>
+                <input type="checkbox" id="shared" name="shared">
+                <label for="shared">Предоставить доступ</label>
+            </div>
+            <div id="shared-by-container" style="display: none;">
+                <input type="text" id="shared-by" name="shared-by" placeholder="Кто предоставил доступ">
+            </div>
+            <button type="submit" id="save-dish-button" class="submit-button">Добавить блюдо</button>
+        </form>
+        <button class="back-button" onclick="loadAdminDashboard()"></button>
+        <h4>Редактировать существующее блюдо</h4>
+        <form id="load-dish-form">
+            <label for="load-dish">Выберите блюдо для редактирования:</label>
+            <select id="load-dish" name="load-dish">
+                <option value="">Выберите блюдо</option>
+                <!-- Опции будут загружены динамически -->
+            </select>
+            <button type="button" id="load-dish-button">Загрузить блюдо</button>
+            <button type="button" id="delete-dish-button">Удалить блюдо</button>
+        </form>
+    </div>
+    `;
+
+    // Загрузка списка блюд в выпадающий список
+    await loadDishOptions();
+
+    // Добавление обработчиков событий
+    addEventListeners(); 
+
+    // Обработчик отправки формы
+    const form = document.getElementById('dish-form');
+    form.addEventListener('submit', handleSubmit);
+}
+
+// Функция для загрузки опций блюд в выпадающий список
+async function loadDishOptions() {
+    const loadDishSelect = document.getElementById('load-dish');
+    if (!loadDishSelect) {
+        console.error('Элемент с ID "load-dish" не найден.');
+        return;
+    }
+
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, войдите в систему.');
+            return;
+        }
+
+        // Ссылка на меню пользователя
+        const userMenuRef = collection(db, `users/${user.uid}/menu`);
+        const menuSnapshot = await getDocs(userMenuRef);
+
+        // Очищаем select перед добавлением новых опций
+        loadDishSelect.innerHTML = '';
+
+        // Добавляем плейсхолдер "Выберите блюдо"
+        const placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.textContent = 'Выберите блюдо';
+        placeholderOption.disabled = true; // Отключаем возможность выбора этого пункта
+        placeholderOption.selected = true; // Выбираем его по умолчанию
+        loadDishSelect.appendChild(placeholderOption);
+
+        // Группировка блюд по категориям
+        const categories = {};
+
+        menuSnapshot.forEach(doc => {
+            const dish = doc.data();
+            const category = dish.category || 'Без категории'; // Если категория не указана, используем "Без категории"
+
+            if (!categories[category]) {
+                categories[category] = [];
+            }
+            categories[category].push({ id: doc.id, name: dish.name });
+        });
+
+        // Создаем опции для категорий и добавляем их в select
+        for (const [category, dishes] of Object.entries(categories)) {
+            if (dishes.length > 0) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = category;
+
+                dishes.forEach(dish => {
+                    const option = document.createElement('option');
+                    option.value = dish.id;
+                    option.textContent = dish.name;
+                    optgroup.appendChild(option);
+                });
+
+                loadDishSelect.appendChild(optgroup);
+            }
+        }
+    } catch (error) {
+        console.error('Ошибка при получении блюд:', error);
+    }
+}
+
+// Функция для загрузки блюда для редактирования
+async function loadDishForEditing() {
+    const dishId = document.getElementById('load-dish').value;
+
+    if (!dishId) {
+        alert('Пожалуйста, выберите блюдо для редактирования.');
+        return;
+    }
+
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, войдите в систему.');
+            return;
+        }
+
+        // Ссылка на конкретное блюдо пользователя
+        const dishDocRef = doc(db, `users/${user.uid}/menu`, dishId);
+        const dishDoc = await getDoc(dishDocRef);
+
+        if (dishDoc.exists()) {
+            const dishData = dishDoc.data();
+
+            // Заполняем поля формы данными из Firestore
+            document.getElementById('category-name').value = dishData.category || '';
+            document.getElementById('dish-name').value = dishData.name || '';
+            document.getElementById('dish-description').value = dishData.description || '';
+            document.getElementById('dish-total-weight').value = dishData.totalWeight || '';
+            document.getElementById('dish-price').value = dishData.price || '';
+            document.getElementById('supplier').value = dishData.supplier || '';
+            document.getElementById('shared').checked = dishData.shared || false;
+            document.getElementById('shared-by-container').style.display = dishData.shared ? 'block' : 'none';
+            document.getElementById('shared-by').value = dishData.sharedBy || '';
+
+            // Очищаем контейнер ингредиентов перед добавлением новых
+            const ingredientsContainer = document.getElementById('ingredients-container');
+            ingredientsContainer.innerHTML = '';
+
+            // Добавляем ингредиенты в форму
+            dishData.ingredients.forEach((ingredient, index) => {
+                const ingredientDiv = document.createElement('div');
+                ingredientDiv.classList.add('ingredient-group');
+                ingredientDiv.setAttribute('data-index', index);
+                ingredientDiv.innerHTML = `
+                    <input type="text" name="ingredient-name" value="${ingredient.name}" placeholder="Название ингредиента" required>
+                    <input type="number" name="ingredient-weight" value="${ingredient.weight}" placeholder="Вес" class="weight-input" required>
+                    <select name="ingredient-unit">
+                        <option value="г" ${ingredient.unit === 'г' ? 'selected' : ''}>г</option>
+                        <option value="мл" ${ingredient.unit === 'мл' ? 'selected' : ''}>мл</option>
+                        <option value="шт" ${ingredient.unit === 'шт' ? 'selected' : ''}>шт</option>
+                    </select>
+                    <button type="button" class="remove-ingredient-button">Удалить</button>
+                `;
+                ingredientsContainer.appendChild(ingredientDiv);
+            });
+
+            // Обновляем индексы ингредиентов
+            updateIngredientIndices();
+
+            // Меняем текст кнопки "Добавить блюдо" на "Сохранить изменения"
+            document.getElementById('save-dish-button').textContent = 'Сохранить изменения';
+        } else {
+            alert('Блюдо не найдено.');
+        }
+    } catch (error) {
+        console.error('Ошибка при загрузке блюда для редактирования:', error);
+    }
+}
+
+// Функция для обновления индексов ингредиентов
+function updateIngredientIndices() {
+    const ingredientGroups = document.querySelectorAll('.ingredient-group');
+    ingredientGroups.forEach((group, index) => {
+        group.setAttribute('data-index', index);
+    });
+}
+
+// Функция для обработки отправки формы
+async function handleSubmit(event) {
+    event.preventDefault(); // Предотвращаем отправку формы
+
+    const dishId = document.getElementById('load-dish').value;
+    const categoryName = document.getElementById('category-name').value;
+    const dishName = document.getElementById('dish-name').value;
+    const dishDescription = document.getElementById('dish-description').value;
+    const dishTotalWeight = document.getElementById('dish-total-weight').value;
+    const dishPrice = document.getElementById('dish-price').value;
+    const supplier = document.getElementById('supplier').value;
+    const shared = document.getElementById('shared').checked;
+    const sharedBy = shared ? document.getElementById('shared-by').value : '';
+
+    // Сбор данных ингредиентов
     const ingredients = [];
-    const ingredientDivs = document.querySelectorAll('#ingredients-container .ingredient-group');
-    ingredientDivs.forEach(div => {
-        const ingredientName = div.querySelector('input[name="ingredient-name"]').value.trim();
-        const ingredientWeight = div.querySelector('input[name="ingredient-weight"]').value.trim();
-        if (ingredientName && ingredientWeight) {
-            ingredients.push({ name: ingredientName, weight: ingredientWeight });
+    const ingredientGroups = document.querySelectorAll('.ingredient-group');
+
+    ingredientGroups.forEach(group => {
+        const name = group.querySelector('input[name="ingredient-name"]').value;
+        const weight = group.querySelector('input[name="ingredient-weight"]').value;
+        const unit = group.querySelector('select[name="ingredient-unit"]').value;
+
+        if (name && weight && unit) {
+            ingredients.push({ name, weight, unit });
         }
     });
 
     try {
-        // Получаем текущего пользователя
         const user = auth.currentUser;
-
-        if (user) {
-            // Создаем документ блюда в подколлекции menu для этого пользователя
-            const dishData = { category, name, ingredients, description, totalWeight, price };
-            const docRef = await addDoc(collection(db, `users/${user.uid}/menu`), dishData);
-
-            console.log('Блюдо успешно добавлено:', docRef.id, dishData);
-
-            alert('Блюдо добавлено');
-            await loadAdminDashboard();
-        } else {
-            throw new Error('Пользователь не аутентифицирован');
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, войдите в систему.');
+            return;
         }
+
+        const dishData = {
+            category: categoryName,
+            name: dishName,
+            description: dishDescription,
+            totalWeight: dishTotalWeight,
+            price: dishPrice,
+            supplier: supplier,
+            shared: shared,
+            sharedBy: sharedBy,
+            ingredients: ingredients,
+        };
+
+        const userMenuRef = collection(db, `users/${user.uid}/menu`);
+
+        if (dishId) {
+            // Обновление существующего блюда
+            const dishDocRef = doc(userMenuRef, dishId);
+            await setDoc(dishDocRef, dishData, { merge: true });
+            alert('Блюдо успешно обновлено.');
+        } else {
+            // Добавление нового блюда
+            await addDoc(userMenuRef, dishData);
+            alert('Блюдо успешно добавлено.');
+        }
+
+        // Перезагружаем список блюд после добавления/обновления
+        await loadDishOptions();
+
+        // Очистка формы
+        document.getElementById('dish-form').reset();
+        document.getElementById('ingredients-container').innerHTML = '';
+
+        // Устанавливаем текст кнопки обратно на "Добавить блюдо"
+        document.getElementById('save-dish-button').textContent = 'Добавить блюдо';
     } catch (error) {
-        console.error('Ошибка при добавлении блюда:', error);
-        alert(`Ошибка при добавлении блюда: ${error.message}`);
+        console.error('Ошибка при сохранении блюда:', error);
+        alert('Ошибка при сохранении блюда. Пожалуйста, попробуйте снова.');
     }
 }
+
+// Функция для удаления блюда
+async function deleteDish() {
+    const dishId = document.getElementById('load-dish').value;
+
+    if (!dishId) {
+        alert('Пожалуйста, выберите блюдо для удаления.');
+        return;
+    }
+
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, войдите в систему.');
+            return;
+        }
+
+        const userMenuRef = collection(db, `users/${user.uid}/menu`);
+        const dishDocRef = doc(userMenuRef, dishId);
+
+        // Подтверждение перед удалением
+        if (confirm('Вы уверены, что хотите удалить это блюдо?')) {
+            await deleteDoc(dishDocRef);
+            alert('Блюдо успешно удалено.');
+
+            // Обновляем список блюд после удаления
+            await loadDishOptions();
+
+            // Сбрасываем форму
+            document.getElementById('dish-form').reset();
+            document.getElementById('ingredients-container').innerHTML = '';
+
+            // Устанавливаем текст кнопки обратно на "Добавить блюдо"
+            document.getElementById('save-dish-button').textContent = 'Добавить блюдо';
+        }
+    } catch (error) {
+        console.error('Ошибка при удалении блюда:', error);
+        alert('Ошибка при удалении блюда. Пожалуйста, попробуйте снова.');
+    }
+}
+
+// Вызов функции для отображения формы добавления/редактирования блюда
+showDishForm();
+
 
 // Показ меню
 window.showMenu = async function showMenu() {
@@ -1093,7 +1391,6 @@ async function saveOrder() {
         alert(`Ошибка при сохранении заказа: ${error.message}`);
     }
 }
-
 
 // Функция выхода
 window.logout = function logout() {
