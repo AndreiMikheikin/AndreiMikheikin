@@ -125,9 +125,11 @@ export function loadAdminDashboard() {
 
 // Функция для удаления ингредиента
 function removeIngredient(button) {
-    // Находим родительский элемент для кнопки удаления и удаляем его
-    const ingredientGroup = button.parentElement;
-    ingredientGroup.remove();
+    // Находим ближайший родительский элемент с классом .ingredient-group и удаляем его
+    const ingredientGroup = button.closest('.ingredient-group');
+    if (ingredientGroup) {
+        ingredientGroup.remove();
+    }
 }
 
 // Функция для добавления нового поля ингредиента
@@ -140,7 +142,8 @@ function addIngredientField() {
     const ingredientDiv = document.createElement('div');
     ingredientDiv.classList.add('ingredient-group');
     ingredientDiv.setAttribute('data-index', index);
-    // Внутреннее содержимое группы ингредиентов
+
+    // Весь контент ингредиента в одну строку
     ingredientDiv.innerHTML = `
         <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
         <input type="number" name="ingredient-weight" placeholder="Вес" class="weight-input" required>
@@ -149,7 +152,8 @@ function addIngredientField() {
             <option value="мл">мл</option>
             <option value="шт">шт</option>
         </select>
-        <button type="button" class="remove-ingredient-button">Удалить</button>
+        <input type="text" name="ingredient-supplier" placeholder="Поставщик">
+        <button type="button" class="remove-ingredient-button"><i class="fa fa-trash"></i></button>
     `;
     // Добавляем новую группу ингредиентов в контейнер
     ingredientsContainer.appendChild(ingredientDiv);
@@ -193,14 +197,15 @@ function addEventListeners() {
     }
 
     // Делегирование события для удаления ингредиента
-    document.addEventListener('click', function(event) {
-        if (event.target && event.target.classList.contains('remove-ingredient-button')) {
+    document.addEventListener('click', function (event) {
+        // Ищем ближайший элемент с классом .remove-ingredient-button
+        const button = event.target.closest('.remove-ingredient-button');
+        if (button) {
             // Вызываем функцию удаления ингредиента при нажатии на кнопку удаления
-            removeIngredient(event.target);
+            removeIngredient(button);
         }
     });
 }
-
 
 // Функция для отображения формы добавления/редактирования блюда
 window.showDishForm = async function showDishForm() {
@@ -227,14 +232,14 @@ window.showDishForm = async function showDishForm() {
                         <option value="мл">мл</option>
                         <option value="шт">шт</option>
                     </select>
-                    <button type="button" class="remove-ingredient-button">Удалить</button>
+                    <input type="text" name="ingredient-supplier" placeholder="Поставщик">
+                    <button type="button" class="remove-ingredient-button"><i class="fa fa-trash"></i></button>
                 </div>
             </div>
             <button type="button" id="add-ingredient" class="add-ingredient-button">Добавить ингредиент</button>
             <textarea id="dish-description" name="dish-description" placeholder="Описание приготовления, процесс и время" required></textarea>
             <input type="number" id="dish-total-weight" name="dish-total-weight" placeholder="Общий вес на порцию (г)" required>
             <input type="number" id="dish-price" name="dish-price" step="0.01" placeholder="Цена за порцию (₽)" required>
-            <input type="text" id="supplier" name="supplier" placeholder="Поставщик (не обязательно)">
             <div>
                 <input type="checkbox" id="shared" name="shared">
                 <label for="shared">Предоставить доступ</label>
@@ -250,7 +255,6 @@ window.showDishForm = async function showDishForm() {
             <label for="load-dish">Выберите блюдо для редактирования:</label>
             <select id="load-dish" name="load-dish">
                 <option value="">Выберите блюдо</option>
-                <!-- Опции будут загружены динамически -->
             </select>
             <button type="button" id="load-dish-button">Загрузить блюдо</button>
             <button type="button" id="delete-dish-button">Удалить блюдо</button>
@@ -262,7 +266,7 @@ window.showDishForm = async function showDishForm() {
     await loadDishOptions();
 
     // Добавление обработчиков событий
-    addEventListeners(); 
+    addEventListeners();
 
     // Обработчик отправки формы
     const form = document.getElementById('dish-form');
@@ -345,7 +349,6 @@ async function loadDishForEditing() {
     try {
         const user = auth.currentUser;
         if (!user) {
-            alert('Пользователь не аутентифицирован. Пожалуйста, войдите в систему.');
             return;
         }
 
@@ -362,7 +365,6 @@ async function loadDishForEditing() {
             document.getElementById('dish-description').value = dishData.description || '';
             document.getElementById('dish-total-weight').value = dishData.totalWeight || '';
             document.getElementById('dish-price').value = dishData.price || '';
-            document.getElementById('supplier').value = dishData.supplier || '';
             document.getElementById('shared').checked = dishData.shared || false;
             document.getElementById('shared-by-container').style.display = dishData.shared ? 'block' : 'none';
             document.getElementById('shared-by').value = dishData.sharedBy || '';
@@ -384,7 +386,8 @@ async function loadDishForEditing() {
                         <option value="мл" ${ingredient.unit === 'мл' ? 'selected' : ''}>мл</option>
                         <option value="шт" ${ingredient.unit === 'шт' ? 'selected' : ''}>шт</option>
                     </select>
-                    <button type="button" class="remove-ingredient-button">Удалить</button>
+                    <input type="text" name="ingredient-supplier" value="${ingredient.supplier || ''}" placeholder="Поставщик">
+                    <button type="button" class="remove-ingredient-button"><i class="fa fa-trash"></i></button>
                 `;
                 ingredientsContainer.appendChild(ingredientDiv);
             });
@@ -398,7 +401,7 @@ async function loadDishForEditing() {
             alert('Блюдо не найдено.');
         }
     } catch (error) {
-        console.error('Ошибка при загрузке блюда для редактирования:', error);
+        console.error('Ошибка загрузки блюда для редактирования:', error);
     }
 }
 
@@ -412,122 +415,182 @@ function updateIngredientIndices() {
 
 // Функция для обработки отправки формы
 async function handleSubmit(event) {
-    event.preventDefault(); // Предотвращаем отправку формы
+    event.preventDefault();
 
-    const dishId = document.getElementById('load-dish').value;
-    const categoryName = document.getElementById('category-name').value;
-    const dishName = document.getElementById('dish-name').value;
-    const dishDescription = document.getElementById('dish-description').value;
-    const dishTotalWeight = document.getElementById('dish-total-weight').value;
-    const dishPrice = document.getElementById('dish-price').value;
-    const supplier = document.getElementById('supplier').value;
-    const shared = document.getElementById('shared').checked;
-    const sharedBy = shared ? document.getElementById('shared-by').value : '';
+    const form = event.target.closest('form');
+
+    const categoryNameInput = form.querySelector('#category-name');
+    const dishNameInput = form.querySelector('#dish-name');
+    const dishDescriptionInput = form.querySelector('#dish-description');
+    const dishTotalWeightInput = form.querySelector('#dish-total-weight');
+    const dishPriceInput = form.querySelector('#dish-price');
+    const sharedCheckbox = form.querySelector('#shared');
+    const sharedByInput = form.querySelector('#shared-by');
+
+    if (!categoryNameInput || !dishNameInput || !dishDescriptionInput || !dishTotalWeightInput || !dishPriceInput || !sharedCheckbox || !sharedByInput) {
+        console.error('Ошибка: одно из полей формы не найдено.');
+        return;
+    }
+
+    const categoryName = categoryNameInput.value;
+    const dishName = dishNameInput.value;
+    const dishDescription = dishDescriptionInput.value;
+    const dishTotalWeight = parseFloat(dishTotalWeightInput.value);
+    const dishPrice = parseFloat(dishPriceInput.value);
+    const shared = sharedCheckbox.checked;
+    const sharedBy = shared ? sharedByInput.value : '';
 
     // Сбор данных ингредиентов
     const ingredients = [];
-    const ingredientGroups = document.querySelectorAll('.ingredient-group');
+    const ingredientGroups = form.querySelectorAll('.ingredient-group');
 
     ingredientGroups.forEach(group => {
-        const name = group.querySelector('input[name="ingredient-name"]').value;
-        const weight = group.querySelector('input[name="ingredient-weight"]').value;
-        const unit = group.querySelector('select[name="ingredient-unit"]').value;
+        const ingredientNameInput = group.querySelector('input[name="ingredient-name"]');
+        const ingredientWeightInput = group.querySelector('input[name="ingredient-weight"]');
+        const ingredientUnitSelect = group.querySelector('select[name="ingredient-unit"]');
+        const ingredientSupplierInput = group.querySelector('input[name="ingredient-supplier"]');
 
-        if (name && weight && unit) {
-            ingredients.push({ name, weight, unit });
+        if (ingredientNameInput && ingredientWeightInput && ingredientUnitSelect && ingredientSupplierInput) {
+            const name = ingredientNameInput.value;
+            const weight = parseFloat(ingredientWeightInput.value);
+            const unit = ingredientUnitSelect.value;
+            const supplier = ingredientSupplierInput.value;
+
+            ingredients.push({
+                name,
+                weight,
+                unit,
+                supplier,
+            });
+        } else {
+            console.error('Ошибка: одно из полей ингредиентов не найдено.');
         }
     });
 
+    const user = auth.currentUser;
+    if (!user) {
+        return;
+    }
+
+    const dishData = {
+        category: categoryName,
+        name: dishName,
+        description: dishDescription,
+        totalWeight: dishTotalWeight,
+        price: dishPrice,
+        shared: shared,
+        sharedBy: sharedBy,
+        ingredients: ingredients,
+    };
+
     try {
-        const user = auth.currentUser;
-        if (!user) {
-            alert('Пользователь не аутентифицирован. Пожалуйста, войдите в систему.');
-            return;
-        }
+        const dishesRef = collection(db, `users/${user.uid}/menu`);
+        const querySnapshot = await getDocs(
+            query(dishesRef, where('name', '==', dishData.name), where('category', '==', dishData.category))
+        );
 
-        const dishData = {
-            category: categoryName,
-            name: dishName,
-            description: dishDescription,
-            totalWeight: dishTotalWeight,
-            price: dishPrice,
-            supplier: supplier,
-            shared: shared,
-            sharedBy: sharedBy,
-            ingredients: ingredients,
-        };
+        let existingDishId = null;
+        querySnapshot.forEach((doc) => {
+            existingDishId = doc.id;
+        });
 
-        const userMenuRef = collection(db, `users/${user.uid}/menu`);
+        if (existingDishId) {
+            const existingDishDocRef = doc(db, `users/${user.uid}/menu`, existingDishId);
+            await setDoc(existingDishDocRef, dishData);
 
-        if (dishId) {
-            // Обновление существующего блюда
-            const dishDocRef = doc(userMenuRef, dishId);
-            await setDoc(dishDocRef, dishData, { merge: true });
-            alert('Блюдо успешно обновлено.');
+            if (dishData.shared) {
+                const publicDishData = {
+                    category: categoryName,
+                    name: dishName,
+                    description: dishDescription,
+                    totalWeight: dishTotalWeight,
+                    sharedBy: sharedBy,
+                    ingredients: ingredients.map(({ name, weight, unit }) => ({
+                        name,
+                        weight,
+                        unit,
+                    })),
+                };
+                const publicDishDocRef = doc(db, 'public_menu', existingDishId);
+                await setDoc(publicDishDocRef, publicDishData);
+            } else {
+                const publicDishDocRef = doc(db, 'public_menu', existingDishId);
+                await deleteDoc(publicDishDocRef);
+            }
+
+            alert('Блюдо с таким именем и категорией уже существует. Обновлено существующее блюдо.');
         } else {
-            // Добавление нового блюда
-            await addDoc(userMenuRef, dishData);
-            alert('Блюдо успешно добавлено.');
+            const dishDocRef = doc(collection(db, `users/${user.uid}/menu`));
+            await setDoc(dishDocRef, dishData);
+
+            if (dishData.shared) {
+                const publicDishData = {
+                    category: categoryName,
+                    name: dishName,
+                    description: dishDescription,
+                    totalWeight: dishTotalWeight,
+                    sharedBy: sharedBy,
+                    ingredients: ingredients.map(({ name, weight, unit }) => ({
+                        name,
+                        weight,
+                        unit,
+                    })),
+                };
+                const publicDishDocRef = doc(db, 'public_menu', dishDocRef.id);
+                await setDoc(publicDishDocRef, publicDishData);
+            }
+
+            alert('Блюдо добавлено успешно!');
         }
 
-        // Перезагружаем список блюд после добавления/обновления
-        await loadDishOptions();
-
-        // Очистка формы
-        document.getElementById('dish-form').reset();
-        document.getElementById('ingredients-container').innerHTML = '';
-
-        // Устанавливаем текст кнопки обратно на "Добавить блюдо"
-        document.getElementById('save-dish-button').textContent = 'Добавить блюдо';
+        form.reset();
+        loadAdminDashboard();
     } catch (error) {
         console.error('Ошибка при сохранении блюда:', error);
-        alert('Ошибка при сохранении блюда. Пожалуйста, попробуйте снова.');
+        alert('Произошла ошибка при сохранении блюда. Пожалуйста, попробуйте снова.');
     }
 }
+
 
 // Функция для удаления блюда
 async function deleteDish() {
     const dishId = document.getElementById('load-dish').value;
+    const user = auth.currentUser;
 
     if (!dishId) {
         alert('Пожалуйста, выберите блюдо для удаления.');
         return;
     }
 
+    if (!user) {
+        return;
+    }
+
+    const confirmation = confirm('Вы уверены, что хотите удалить это блюдо?');
+
+    if (!confirmation) {
+        return;
+    }
+
     try {
-        const user = auth.currentUser;
-        if (!user) {
-            alert('Пользователь не аутентифицирован. Пожалуйста, войдите в систему.');
-            return;
-        }
+        const dishDocRef = doc(db, `users/${user.uid}/menu`, dishId);
+        const publicDishDocRef = doc(db, 'public_menu', dishId);
 
-        const userMenuRef = collection(db, `users/${user.uid}/menu`);
-        const dishDocRef = doc(userMenuRef, dishId);
+        await deleteDoc(dishDocRef);
+        await deleteDoc(publicDishDocRef);
 
-        // Подтверждение перед удалением
-        if (confirm('Вы уверены, что хотите удалить это блюдо?')) {
-            await deleteDoc(dishDocRef);
-            alert('Блюдо успешно удалено.');
-
-            // Обновляем список блюд после удаления
-            await loadDishOptions();
-
-            // Сбрасываем форму
-            document.getElementById('dish-form').reset();
-            document.getElementById('ingredients-container').innerHTML = '';
-
-            // Устанавливаем текст кнопки обратно на "Добавить блюдо"
-            document.getElementById('save-dish-button').textContent = 'Добавить блюдо';
-        }
+        alert('Блюдо успешно удалено.');
+        loadAdminDashboard();
     } catch (error) {
         console.error('Ошибка при удалении блюда:', error);
-        alert('Ошибка при удалении блюда. Пожалуйста, попробуйте снова.');
+        alert('Произошла ошибка при удалении блюда. Пожалуйста, попробуйте снова.');
     }
 }
 
-// Вызов функции для отображения формы добавления/редактирования блюда
-showDishForm();
-
+// Вызов функций инициализации
+document.addEventListener('DOMContentLoaded', () => {
+    addEventListeners();
+});
 
 // Показ меню
 window.showMenu = async function showMenu() {
