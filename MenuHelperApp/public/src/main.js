@@ -1,9 +1,10 @@
-import { loadAdminDashboard } from './admin.js';
+import { loadAdminDashboard, showSuppliers } from './admin.js';
 
 const ICON1_ID = 'icon1';
 const ICON2_ID = 'icon2';
 const ICON3_ID = 'icon3';
 const ICON4_ID = 'icon4';
+const ICON5_ID = 'icon5';
 
 // Сохранение позиций иконок в локальное хранилище
 export function saveIconPositions() {
@@ -69,11 +70,13 @@ export function addIconEventListeners() {
     document.getElementById(ICON2_ID).addEventListener('dblclick', showMenu);
     document.getElementById(ICON3_ID).addEventListener('dblclick', showPurchaseCalculationForm);
     document.getElementById(ICON4_ID).addEventListener('dblclick', showOrderForm);
+    document.getElementById(ICON5_ID).addEventListener('dblclick', showSuppliers);
 
     document.getElementById(ICON1_ID).addEventListener('touchend', handleTouchEnd);
     document.getElementById(ICON2_ID).addEventListener('touchend', handleTouchEnd);
     document.getElementById(ICON3_ID).addEventListener('touchend', handleTouchEnd);
     document.getElementById(ICON4_ID).addEventListener('touchend', handleTouchEnd);
+    document.getElementById(ICON5_ID).addEventListener('touchend', handleTouchEnd);
 }
 
 function handleTouchEnd(event) {
@@ -91,6 +94,9 @@ function handleTouchEnd(event) {
                 break;
             case ICON4_ID:
                 showOrderForm();
+                break;
+            case ICON5_ID:
+                showSuppliers();
                 break;
         }
     }, 200);

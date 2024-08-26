@@ -25,7 +25,7 @@ const ICON1_ID = 'icon1';
 const ICON2_ID = 'icon2';
 const ICON3_ID = 'icon3';
 const ICON4_ID = 'icon4';
-const INGREDIENTS_CONTAINER_ID = 'ingredients-container';
+const ICON5_ID = 'icon5';
 
 // Загрузка панели администратора
 window.loadAdminDashboard = function loadAdminDashboard() {
@@ -47,6 +47,10 @@ window.loadAdminDashboard = function loadAdminDashboard() {
         <div class="icon-container" id="${ICON4_ID}" draggable="true">
             <img src="images/icons/order_icon.svg" alt="Оформление заказа">
             <p>Оформление заказа</p>
+        </div>
+        <div class="icon-container" id="${ICON5_ID}" draggable="true">
+            <img src="images/icons/contact_icon.svg" alt="Справочник поставщиков">
+            <p>Справочник поставщиков</p>
         </div>
     `;
 
@@ -96,6 +100,10 @@ export function loadAdminDashboard() {
             <img src="images/icons/order_icon.svg" alt="Оформление заказа">
             <p>Оформление заказа</p>
         </div>
+        <div class="icon-container" id="${ICON5_ID}" draggable="true">
+            <img src="images/icons/contact_icon.svg" alt="Справочник поставщиков">
+            <p>Справочник поставщиков</p>
+        </div>
     `;
 
     addIconEventListeners(); // Добавляем события на иконки
@@ -123,6 +131,8 @@ export function loadAdminDashboard() {
     }
 }
 
+/* -------------------------------------------------------------------- */
+
 // Функция для удаления ингредиента
 function removeIngredient(button) {
     // Находим ближайший родительский элемент с классом .ingredient-group и удаляем его
@@ -133,17 +143,20 @@ function removeIngredient(button) {
 }
 
 // Функция для добавления нового поля ингредиента
-function addIngredientField() {
+async function addIngredientField() {
+    // Загружаем опции поставщиков из Firebase
+    const supplierOptions = await loadSupplierOptions();
+
     // Находим контейнер для ингредиентов
     const ingredientsContainer = document.getElementById('ingredients-container');
-    // Определяем индекс нового ингредиента по количеству существующих
     const index = ingredientsContainer.querySelectorAll('.ingredient-group').length;
+
     // Создаем новый div для группы ингредиентов
     const ingredientDiv = document.createElement('div');
     ingredientDiv.classList.add('ingredient-group');
     ingredientDiv.setAttribute('data-index', index);
 
-    // Весь контент ингредиента в одну строку
+    // Добавляем HTML-контент
     ingredientDiv.innerHTML = `
         <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
         <input type="number" name="ingredient-weight" placeholder="Вес" class="weight-input" required>
@@ -152,9 +165,13 @@ function addIngredientField() {
             <option value="мл">мл</option>
             <option value="шт">шт</option>
         </select>
-        <input type="text" name="ingredient-supplier" placeholder="Поставщик">
+        <select name="ingredient-supplier">
+            <option value="">Выберите поставщика</option>
+            ${supplierOptions}
+        </select>
         <button type="button" class="remove-ingredient-button"><i class="fa fa-trash"></i></button>
     `;
+
     // Добавляем новую группу ингредиентов в контейнер
     ingredientsContainer.appendChild(ingredientDiv);
 }
@@ -207,6 +224,41 @@ function addEventListeners() {
     });
 }
 
+// Функция для загрузки списка поставщиков
+async function loadSupplierOptions() {
+    console.log('Функция loadSupplierOptions() вызвана');
+
+    const user = auth.currentUser;
+    if (user) {
+        const userUid = user.uid;
+        const suppliersRef = collection(db, `users/${userUid}/suppliers`);
+        
+        // Выполняем запрос к Firestore и логируем его
+        const querySnapshot = await getDocs(suppliersRef);
+        console.log('Запрос к базе данных выполнен. Полученные данные:', querySnapshot);
+
+        if (querySnapshot.empty) {
+            console.log('Список поставщиков пуст.');
+            return `<option value="">У вас нет поставщиков. <a href="#" onclick="showAddSupplierForm()">Добавьте первого поставщика!</a></option>`;
+        }
+
+        // Генерация списка <option> с именем поставщика и логирование каждого поставщика
+        let options = '';
+        querySnapshot.forEach((doc) => {
+            const supplier = doc.data();
+            console.log('Найден поставщик:', supplier);
+            options += `<option value="${doc.id}">${supplier.suppliersName}</option>`;
+        });
+
+        console.log('Сформированные опции для селекта:', options);
+        return options;
+    } else {
+        console.error('Пользователь не аутентифицирован');
+        alert('Пожалуйста, войдите в систему, чтобы загрузить список поставщиков.');
+        return `<option value="">Ошибка загрузки поставщиков</option>`;
+    }
+}
+
 // Функция для отображения формы добавления/редактирования блюда
 window.showDishForm = async function showDishForm() {
     const adminContent = document.getElementById('admin-dashboard-content');
@@ -214,6 +266,9 @@ window.showDishForm = async function showDishForm() {
         console.error('Элемент с ID "admin-dashboard-content" не найден.');
         return;
     }
+
+    // Загружаем список поставщиков
+    const supplierOptions = await loadSupplierOptions();
 
     // HTML-код формы добавления/редактирования блюда
     adminContent.innerHTML = `
@@ -232,14 +287,17 @@ window.showDishForm = async function showDishForm() {
                         <option value="мл">мл</option>
                         <option value="шт">шт</option>
                     </select>
-                    <input type="text" name="ingredient-supplier" placeholder="Поставщик">
+                    <select name="ingredient-supplier" required>
+                        <option value="">Выберите поставщика</option>
+                        ${supplierOptions}
+                    </select>
                     <button type="button" class="remove-ingredient-button"><i class="fa fa-trash"></i></button>
                 </div>
             </div>
             <button type="button" id="add-ingredient" class="add-ingredient-button">Добавить ингредиент</button>
             <textarea id="dish-description" name="dish-description" placeholder="Описание приготовления, процесс и время" required></textarea>
             <input type="number" id="dish-total-weight" name="dish-total-weight" placeholder="Общий вес на порцию (г)" required>
-            <input type="number" id="dish-price" name="dish-price" step="0.01" placeholder="Цена за порцию (₽)" required>
+            <input type="number" id="dish-price" name="dish-price" step="0.01" placeholder="Цена за порцию" required>
             <div>
                 <input type="checkbox" id="shared" name="shared">
                 <label for="shared">Предоставить доступ</label>
@@ -352,14 +410,12 @@ async function loadDishForEditing() {
             return;
         }
 
-        // Ссылка на конкретное блюдо пользователя
         const dishDocRef = doc(db, `users/${user.uid}/menu`, dishId);
         const dishDoc = await getDoc(dishDocRef);
 
         if (dishDoc.exists()) {
             const dishData = dishDoc.data();
 
-            // Заполняем поля формы данными из Firestore
             document.getElementById('category-name').value = dishData.category || '';
             document.getElementById('dish-name').value = dishData.name || '';
             document.getElementById('dish-description').value = dishData.description || '';
@@ -369,15 +425,17 @@ async function loadDishForEditing() {
             document.getElementById('shared-by-container').style.display = dishData.shared ? 'block' : 'none';
             document.getElementById('shared-by').value = dishData.sharedBy || '';
 
-            // Очищаем контейнер ингредиентов перед добавлением новых
             const ingredientsContainer = document.getElementById('ingredients-container');
             ingredientsContainer.innerHTML = '';
 
-            // Добавляем ингредиенты в форму
+            // Загружаем опции поставщиков из Firebase
+            const supplierOptions = await loadSupplierOptions();
+
             dishData.ingredients.forEach((ingredient, index) => {
                 const ingredientDiv = document.createElement('div');
                 ingredientDiv.classList.add('ingredient-group');
                 ingredientDiv.setAttribute('data-index', index);
+
                 ingredientDiv.innerHTML = `
                     <input type="text" name="ingredient-name" value="${ingredient.name}" placeholder="Название ингредиента" required>
                     <input type="number" name="ingredient-weight" value="${ingredient.weight}" placeholder="Вес" class="weight-input" required>
@@ -386,16 +444,16 @@ async function loadDishForEditing() {
                         <option value="мл" ${ingredient.unit === 'мл' ? 'selected' : ''}>мл</option>
                         <option value="шт" ${ingredient.unit === 'шт' ? 'selected' : ''}>шт</option>
                     </select>
-                    <input type="text" name="ingredient-supplier" value="${ingredient.supplier || ''}" placeholder="Поставщик">
+                    <select name="ingredient-supplier">
+                        <option value="">Выберите поставщика</option>
+                        ${supplierOptions}
+                    </select>
                     <button type="button" class="remove-ingredient-button"><i class="fa fa-trash"></i></button>
                 `;
                 ingredientsContainer.appendChild(ingredientDiv);
             });
 
-            // Обновляем индексы ингредиентов
             updateIngredientIndices();
-
-            // Меняем текст кнопки "Добавить блюдо" на "Сохранить изменения"
             document.getElementById('save-dish-button').textContent = 'Сохранить изменения';
         } else {
             alert('Блюдо не найдено.');
@@ -407,9 +465,9 @@ async function loadDishForEditing() {
 
 // Функция для обновления индексов ингредиентов
 function updateIngredientIndices() {
-    const ingredientGroups = document.querySelectorAll('.ingredient-group');
-    ingredientGroups.forEach((group, index) => {
-        group.setAttribute('data-index', index);
+    const ingredientsContainer = document.getElementById('ingredients-container');
+    ingredientsContainer.querySelectorAll('.ingredient-group').forEach((ingredientDiv, index) => {
+        ingredientDiv.setAttribute('data-index', index);
     });
 }
 
@@ -448,13 +506,13 @@ async function handleSubmit(event) {
         const ingredientNameInput = group.querySelector('input[name="ingredient-name"]');
         const ingredientWeightInput = group.querySelector('input[name="ingredient-weight"]');
         const ingredientUnitSelect = group.querySelector('select[name="ingredient-unit"]');
-        const ingredientSupplierInput = group.querySelector('input[name="ingredient-supplier"]');
+        const ingredientSupplierSelect = group.querySelector('select[name="ingredient-supplier"]');
 
-        if (ingredientNameInput && ingredientWeightInput && ingredientUnitSelect && ingredientSupplierInput) {
+        if (ingredientNameInput && ingredientWeightInput && ingredientUnitSelect && ingredientSupplierSelect) {
             const name = ingredientNameInput.value;
             const weight = parseFloat(ingredientWeightInput.value);
             const unit = ingredientUnitSelect.value;
-            const supplier = ingredientSupplierInput.value;
+            const supplier = ingredientSupplierSelect.options[ingredientSupplierSelect.selectedIndex].text;
 
             ingredients.push({
                 name,
@@ -551,7 +609,6 @@ async function handleSubmit(event) {
     }
 }
 
-
 // Функция для удаления блюда
 async function deleteDish() {
     const dishId = document.getElementById('load-dish').value;
@@ -591,6 +648,8 @@ async function deleteDish() {
 document.addEventListener('DOMContentLoaded', () => {
     addEventListeners();
 });
+
+/* -------------------------------------------------------------------- */
 
 // Показ меню
 window.showMenu = async function showMenu() {
@@ -717,6 +776,7 @@ window.showMenu = async function showMenu() {
     }
 };
 
+// Функция редактирования цены
 function handleEditClick(event) {
     const button = event.currentTarget;
     const priceInput = button.closest('.price-container').querySelector('.price-input');
@@ -737,6 +797,7 @@ function handleEditClick(event) {
     cancelButton.style.display = 'inline';
 }
 
+// Сохранение редактирования
 function handleSaveClick(event) {
     const button = event.currentTarget;
     const priceInput = button.closest('.price-container').querySelector('.price-input');
@@ -773,6 +834,7 @@ function handleSaveClick(event) {
         });
 }
 
+// Отмена редактирования
 function handleCancelClick(event) {
     const button = event.currentTarget;
     const priceInput = button.closest('.price-container').querySelector('.price-input');
@@ -791,6 +853,7 @@ function handleCancelClick(event) {
     editButton.style.display = 'inline';
 }
 
+// Функция удаления блюда
 function handleDeleteClick(event) {
     const button = event.currentTarget;
     const dishId = button.getAttribute('data-id');
@@ -819,6 +882,8 @@ function handleDeleteClick(event) {
             });
     }
 }
+
+/* -------------------------------------------------------------------- */
 
 // Показ формы подсчета закупок
 window.showPurchaseCalculationForm = function showPurchaseCalculationForm() {
@@ -886,6 +951,7 @@ function addDateToList() {
     dateInput.value = '';
 }
 
+// Функция подсчета закупок
 async function calculatePurchases() {
     const ingredientsList = document.getElementById('ingredients-list');
     ingredientsList.innerHTML = '<h4>Необходимые ингредиенты и их вес:</h4>';
@@ -949,7 +1015,6 @@ async function calculatePurchases() {
     }
 }
 
-
 // Функция для получения ингредиентов конкретного блюда
 async function getIngredientsForDish(userId, dishName, quantity, ingredientsMap) {
     console.log(`Загрузка ингредиентов для блюда: ${dishName}`);
@@ -979,6 +1044,7 @@ async function getIngredientsForDish(userId, dishName, quantity, ingredientsMap)
     });
 }
 
+// Функция отображения ингредиентов
 function displayIngredients(ingredients) {
     const ingredientsList = document.getElementById('ingredients-list');
 
@@ -1008,10 +1074,12 @@ function displayIngredients(ingredients) {
     ingredientsList.appendChild(ul);
 }
 
+// Капитализация первой буквы
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+/* -------------------------------------------------------------------- */
 
 // Показ формы оформления заказа
 window.showOrderForm = function showOrderForm() {
@@ -1455,6 +1523,264 @@ async function saveOrder() {
     }
 }
 
+/* -------------------------------------------------------------------- */
+
+// Экспортируем функцию showSuppliers для использования в других модулях
+export async function showSuppliers() {
+    const adminContent = document.getElementById('admin-dashboard-content');
+    adminContent.innerHTML = `
+        <div class="container">
+            <h3 class="page-title">Список поставщиков</h3>
+            <div id="loading-indicator" style="display: none;">
+                <p>Загрузка, пожалуйста подождите...</p>
+                <div class="spinner"></div>
+            </div>
+            <div id="supplier-list"></div>
+            <button id="add-supplier-btn" onclick="showAddSupplierForm()">Добавить поставщика</button>
+            <button class="back-button" onclick="loadAdminDashboard()"></button>
+        </div>
+    `;
+
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const supplierList = document.getElementById('supplier-list');
+
+    // Показываем индикатор загрузки
+    loadingIndicator.style.display = 'flex';
+
+    try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (user) {
+            const userUid = user.uid;
+
+            // Получаем коллекцию suppliers для текущего пользователя
+            const suppliersRef = collection(db, `users/${userUid}/suppliers`);
+            const querySnapshot = await getDocs(suppliersRef);
+            supplierList.innerHTML = '';
+
+            if (querySnapshot.empty) {
+                supplierList.innerHTML = `
+                    <p>У вас пока нет поставщиков. <a href="#" onclick="showAddSupplierForm()">Добавьте первого поставщика!</a></p>
+                `;
+                return;
+            }
+
+            querySnapshot.forEach((doc) => {
+                const supplier = doc.data();
+                console.log('Получен поставщик с сервера:', { id: doc.id, ...supplier });
+
+                const supplierElement = document.createElement('div');
+                supplierElement.classList.add('supplier-item');
+                supplierElement.innerHTML = `
+                    <p>Название: ${supplier.suppliersName}</p>
+                    <p>Телефон: ${supplier.suppliersPhone}</p>
+                    <p>Адрес: ${supplier.suppliersAdress}</p>
+                    <button class="edit-button" data-id="${doc.id}">Редактировать</button>
+                    <button class="delete-button" data-id="${doc.id}">Удалить</button>
+                `;
+                supplierList.appendChild(supplierElement);
+            });
+
+            // Добавление обработчиков событий для кнопок редактирования и удаления
+            document.querySelectorAll('.edit-button').forEach(button => {
+                button.addEventListener('click', handleEditSupplierClick);
+            });
+
+            document.querySelectorAll('.delete-button').forEach(button => {
+                button.addEventListener('click', handleDeleteSupplierClick);
+            });
+        } else {
+            console.error('Пользователь не аутентифицирован');
+            alert('Пожалуйста, войдите в систему, чтобы просмотреть список поставщиков.');
+        }
+    } catch (error) {
+        console.error('Ошибка при загрузке списка поставщиков:', error);
+        alert(`Ошибка при загрузке списка поставщиков: ${error.message}`);
+    } finally {
+        // Скрываем индикатор загрузки
+        loadingIndicator.style.display = 'none';
+    }
+}
+
+// Делаем функцию доступной в глобальной области видимости
+window.showSuppliers = showSuppliers;
+
+// Функция для показа формы добавления нового поставщика
+window.showAddSupplierForm = function showAddSupplierForm() {
+    const adminContent = document.getElementById('admin-dashboard-content');
+    adminContent.innerHTML = `
+        <h2>Добавить поставщика</h2>
+        <form id="add-supplier-form">
+            <label for="suppliersName">Название:</label>
+            <input type="text" id="suppliersName" name="suppliersName" required>
+            
+            <label for="suppliersPhone">Телефон:</label>
+            <input type="text" id="suppliersPhone" name="suppliersPhone" required>
+            
+            <label for="suppliersAdress">Адрес:</label>
+            <input type="text" id="suppliersAdress" name="suppliersAdress" required>
+            
+            <button type="submit" id="save-supplier">Сохранить</button>
+        </form>
+        <button class="back-button" onclick="showSuppliers()">Назад</button>
+    `;
+
+    document.getElementById('add-supplier-form').addEventListener('submit', handleAddSupplierSubmit);
+};
+
+// Функция для обработки добавления нового поставщика
+async function handleAddSupplierSubmit(event) {
+    event.preventDefault();
+
+    const suppliersName = event.target.suppliersName.value;
+    const suppliersPhone = event.target.suppliersPhone.value;
+    const suppliersAdress = event.target.suppliersAdress.value;
+
+    try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return;
+        }
+
+        const userUid = user.uid;
+        const suppliersRef = collection(db, `users/${userUid}/suppliers`);
+        await addDoc(suppliersRef, {
+            suppliersName,
+            suppliersPhone,
+            suppliersAdress,
+            createdAt: new Date(),
+        });
+
+        alert('Поставщик успешно добавлен!');
+        showSuppliers();  // Перезагрузка списка поставщиков
+    } catch (error) {
+        console.error('Ошибка при добавлении поставщика:', error);
+        alert(`Ошибка при добавлении поставщика: ${error.message}`);
+    }
+}
+
+// Функция для обработки редактирования поставщика
+async function handleEditSupplierClick(event) {
+    const button = event.currentTarget;
+    const supplierId = button.getAttribute('data-id');
+
+    try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return;
+        }
+
+        const userUid = user.uid;
+        const supplierDocRef = doc(db, `users/${userUid}/suppliers`, supplierId);
+        const supplierDoc = await getDoc(supplierDocRef);
+
+        if (supplierDoc.exists()) {
+            const supplier = supplierDoc.data();
+            showEditSupplierForm(supplierId, supplier);
+        } else {
+            alert('Поставщик не найден.');
+        }
+    } catch (error) {
+        console.error('Ошибка при загрузке данных поставщика:', error);
+        alert(`Ошибка при загрузке данных поставщика: ${error.message}`);
+    }
+}
+
+// Функция для показа формы редактирования поставщика
+function showEditSupplierForm(supplierId, supplier) {
+    const adminContent = document.getElementById('admin-dashboard-content');
+    adminContent.innerHTML = `
+        <h2>Редактировать поставщика</h2>
+        <form id="edit-supplier-form">
+            <label for="suppliersName">Название:</label>
+            <input type="text" id="suppliersName" name="suppliersName" value="${supplier.suppliersName}" required>
+            
+            <label for="suppliersPhone">Телефон:</label>
+            <input type="text" id="suppliersPhone" name="suppliersPhone" value="${supplier.suppliersPhone}" required>
+            
+            <label for="suppliersAdress">Адрес:</label>
+            <input type="text" id="suppliersAdress" name="suppliersAdress" value="${supplier.suppliersAdress}" required>
+            
+            <button type="submit">Сохранить изменения</button>
+        </form>
+        <button class="back-button" onclick="showSuppliers()">Назад</button>
+    `;
+
+    document.getElementById('edit-supplier-form').addEventListener('submit', (event) => handleEditSupplierSubmit(event, supplierId));
+}
+
+// Функция для обработки сохранения изменений поставщика
+async function handleEditSupplierSubmit(event, supplierId) {
+    event.preventDefault();
+
+    const suppliersName = event.target.suppliersName.value;
+    const suppliersPhone = event.target.suppliersPhone.value;
+    const suppliersAdress = event.target.suppliersAdress.value;
+
+    try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return;
+        }
+
+        const userUid = user.uid;
+        const supplierDocRef = doc(db, `users/${userUid}/suppliers`, supplierId);
+
+        await updateDoc(supplierDocRef, {
+            suppliersName,
+            suppliersPhone,
+            suppliersAdress,
+            updatedAt: new Date(),
+        });
+
+        alert('Поставщик успешно обновлен!');
+        showSuppliers();  // Перезагрузка списка поставщиков
+    } catch (error) {
+        console.error('Ошибка при обновлении поставщика:', error);
+        alert(`Ошибка при обновлении поставщика: ${error.message}`);
+    }
+}
+
+// Функция для обработки удаления поставщика
+async function handleDeleteSupplierClick(event) {
+    const button = event.currentTarget;
+    const supplierId = button.getAttribute('data-id');
+
+    const confirmation = confirm('Вы уверены, что хотите удалить этого поставщика?');
+    if (confirmation) {
+        try {
+            const auth = getAuth();
+            const user = auth.currentUser;
+
+            if (!user) {
+                alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+                return;
+            }
+
+            const userUid = user.uid;
+            await deleteDoc(doc(db, `users/${userUid}/suppliers`, supplierId));
+
+            alert('Поставщик успешно удален');
+            showSuppliers();  // Перезагрузка списка поставщиков
+        } catch (error) {
+            console.error('Ошибка при удалении поставщика:', error);
+            alert(`Ошибка при удалении поставщика: ${error.message}`);
+        }
+    }
+}
+
+/* -------------------------------------------------------------------- */
+
 // Функция выхода
 window.logout = function logout() {
     signOut(auth).then(() => {
@@ -1464,8 +1790,3 @@ window.logout = function logout() {
         alert(`Ошибка при выходе: ${error.message}`);
     });
 }
-
-// Загрузка панели администратора при загрузке скрипта
-/* window.onload = function () {
-    loadAdminDashboard();
-} */

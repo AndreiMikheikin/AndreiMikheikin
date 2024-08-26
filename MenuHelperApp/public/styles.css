@@ -78,6 +78,9 @@ body {
   max-width: 400px;
   width: 100%; }
 
+#forgot-password-container {
+  z-index: 1; }
+
 #auth-container {
   text-align: center;
   position: relative;
@@ -333,6 +336,7 @@ body {
     #admin-dashboard-container .container input[type="number"],
     #admin-dashboard-container .container textarea,
     #admin-dashboard-container .container select {
+      min-width: 80px;
       width: 100%;
       padding: 10px;
       margin-bottom: 10px;
