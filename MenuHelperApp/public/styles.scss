@@ -325,6 +325,44 @@
             }
         }
 
+        .order-item, .service {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; // Равномерно распределить элементы
+            height: 45px;
+        
+            p {
+                margin: 0; // Убираем отступы
+            }
+        
+            input.dish-quantity {
+                width: 50px; // Ширина для поля ввода количества
+                margin: 0 10px; // Отступы между элементами
+            }
+        
+            span {
+                margin: 0 10px; // Отступы между элементами
+            }
+        
+            .remove-button, .remove-service {
+                background-color: transparent;
+                color: $main-color;
+                border: none;
+                padding: 0;
+                margin-left: 10px;
+                font-size: 18px;
+                cursor: pointer;
+
+                i {
+                    color: $main-color;
+                }
+
+                &:hover i {
+                    color: $main-color-hover;
+                }
+            }
+        }
+
         input[type="text"],
         input[type="number"],
         textarea,

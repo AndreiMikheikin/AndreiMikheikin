@@ -232,7 +232,7 @@ async function loadSupplierOptions() {
     if (user) {
         const userUid = user.uid;
         const suppliersRef = collection(db, `users/${userUid}/suppliers`);
-        
+
         // Выполняем запрос к Firestore и логируем его
         const querySnapshot = await getDocs(suppliersRef);
         console.log('Запрос к базе данных выполнен. Полученные данные:', querySnapshot);
@@ -1034,44 +1034,78 @@ async function getIngredientsForDish(userId, dishName, quantity, ingredientsMap)
     ingredients.forEach(ingredient => {
         const ingredientName = ingredient.name.replace(/\s+/g, ' ').trim().toLowerCase();
         const weightPerPortion = parseFloat(ingredient.weight);
+        const totalWeight = weightPerPortion * quantity;
+        const unit = ingredient.unit || 'г'; // по умолчанию граммы
+        const supplier = ingredient.supplier || 'Без поставщика';
 
-        if (ingredientsMap.has(ingredientName)) {
-            const existingWeight = ingredientsMap.get(ingredientName);
-            ingredientsMap.set(ingredientName, existingWeight + weightPerPortion * quantity);
+        const key = `${supplier}|${ingredientName}|${unit}`;
+
+        if (ingredientsMap.has(key)) {
+            const existingWeight = ingredientsMap.get(key);
+            ingredientsMap.set(key, existingWeight + totalWeight);
         } else {
-            ingredientsMap.set(ingredientName, weightPerPortion * quantity);
+            ingredientsMap.set(key, totalWeight);
         }
     });
 }
 
-// Функция отображения ингредиентов
-function displayIngredients(ingredients) {
-    const ingredientsList = document.getElementById('ingredients-list');
 
-    if (ingredients.size === 0) {
+// Функция отображения ингредиентов
+function displayIngredients(ingredientsMap) {
+    const ingredientsList = document.getElementById('ingredients-list');
+    ingredientsList.innerHTML = ''; // Очищаем перед отображением
+
+    if (ingredientsMap.size === 0) {
         ingredientsList.innerHTML += '<p>Ингредиенты не найдены.</p>';
         return;
     }
 
-    const ul = document.createElement('ul');
+    const suppliersMap = new Map();
 
-    ingredients.forEach((totalWeight, ingredientName) => {
-        let displayWeight = totalWeight;
-        let unit = 'г';
+    // Группируем ингредиенты по поставщикам
+    ingredientsMap.forEach((totalWeight, key) => {
+        const [supplier, ingredientName, unit] = key.split('|');
 
-        if (totalWeight > 200) {
-            displayWeight = displayWeight / 1000;
-            unit = 'кг';
+        if (!suppliersMap.has(supplier)) {
+            suppliersMap.set(supplier, []);
         }
 
-        displayWeight = displayWeight % 1 === 0 ? displayWeight : displayWeight.toFixed(2);
-
-        const li = document.createElement('li');
-        li.textContent = `${capitalizeFirstLetter(ingredientName)}: ${displayWeight} ${unit}`;
-        ul.appendChild(li);
+        suppliersMap.get(supplier).push({
+            ingredientName,
+            totalWeight,
+            unit,
+        });
     });
 
-    ingredientsList.appendChild(ul);
+    // Создаем список ингредиентов для каждого поставщика
+    suppliersMap.forEach((ingredients, supplier) => {
+        const supplierDiv = document.createElement('div');
+        supplierDiv.classList.add('supplier-group');
+        const supplierTitle = document.createElement('h4');
+        supplierTitle.textContent = `Поставщик: ${supplier}`;
+        supplierDiv.appendChild(supplierTitle);
+
+        const ul = document.createElement('ul');
+        ingredients.forEach(({ ingredientName, totalWeight, unit }) => {
+            let displayWeight = totalWeight;
+            if (unit === 'г' && totalWeight > 1000) {
+                displayWeight = displayWeight / 1000;
+                unit = 'кг';
+            } else if (unit === 'мл' && totalWeight > 1000) {
+                displayWeight = displayWeight / 1000;
+                unit = 'л';
+            }
+
+            displayWeight = displayWeight % 1 === 0 ? displayWeight : displayWeight.toFixed(2);
+
+            const li = document.createElement('li');
+            li.textContent = `${capitalizeFirstLetter(ingredientName)}: ${displayWeight} ${unit}`;
+            ul.appendChild(li);
+        });
+
+        supplierDiv.appendChild(ul);
+        ingredientsList.appendChild(supplierDiv);
+    });
 }
 
 // Капитализация первой буквы
@@ -1086,14 +1120,7 @@ window.showOrderForm = function showOrderForm() {
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
     <div class="container">
-        <h3 class="page-title">Загрузка заказа по дате</h3>
-        <form id="load-order-form">
-            <label for="load-order-date">Выберите дату:</label>
-            <input type="date" id="load-order-date" name="load-order-date" required>
-            <button type="button" id="load-order-button">Загрузить заказ</button>
-        </form>
-
-        <h3>Оформление заказа</h3>
+        <h3 class="page-title">Оформление заказа</h3>
         <form id="order-form">
             <div class="container">
                 <label for="order-date">Дата заказа:</label>
@@ -1105,26 +1132,27 @@ window.showOrderForm = function showOrderForm() {
                 <input type="date" id="end-date" name="end-date" required>
             </div>
 
-            <label for="menu-items">Выберите блюдо:</label>
-            <select id="menu-items" name="menu-items">
-                <option value="">Выберите блюдо</option>
-            </select>
-            <button type="button" id="add-dish-to-order">Добавить блюдо</button>
-
             <h4>Бланк заказа</h4>
             <div id="order-blank">
                 <!-- Здесь будут добавляться выбранные блюда -->
-            </div>
-
-            <h4>Дополнительные услуги</h4>
-            <div id="additional-services">
-                <button type="button" id="add-service">Добавить услугу</button>
             </div>
 
             <div class="container">
                 <label for="total-sum">Итоговая сумма заказа:</label>
                 <input type="number" id="total-sum" name="total-sum" readonly><span>&nbsp;руб.</span>
             </div>
+
+            <label for="menu-items">Выберите блюдо:</label>
+            <select id="menu-items" name="menu-items">
+                <option value="">Выберите блюдо</option>
+            </select>
+            <button type="button" id="add-dish-to-order">Добавить блюдо</button>
+
+            <h4>Дополнительные услуги</h4></br>
+            <div id="additional-services">
+                <!-- Здесь будут добавляться дополнительные услуги -->
+            </div>
+            <button type="button" id="add-service">Добавить услугу</button>
 
             <div class="container">
                 <label for="prepayment">Внесенная предоплата:</label>
@@ -1139,6 +1167,13 @@ window.showOrderForm = function showOrderForm() {
             <button type="button" id="print-order">Распечатать</button>
             <button type="button" id="save-order">Сохранить заказ</button>
             <button type="button" class="back-button" onclick="loadAdminDashboard()"></button>
+        </form>
+
+        </br><h3>Загрузка заказа по дате</h3>
+        <form id="load-order-form">
+            <label for="load-order-date">Выберите дату:</label>
+            <input type="date" id="load-order-date" name="load-order-date" required>
+            <button type="button" id="load-order-button">Загрузить заказ</button>
         </form>
 
         <div id="print-modal" class="modal">
@@ -1195,26 +1230,57 @@ async function loadOrderByDate() {
         const orderBlank = document.getElementById('order-blank');
         orderBlank.innerHTML = '';
 
+        // Группировка блюд по категориям при загрузке
+        const categories = {};
+
         orderData.menuItems.forEach(item => {
-            const orderItem = document.createElement('div');
-            orderItem.classList.add('order-item');
-            orderItem.innerHTML = `
-                <p>${item.name}</p>
-                <input type="number" value="${item.quantity}" min="1" class="dish-quantity" data-price="${item.price}">
-                <span>${item.price} руб.</span>
-                <span class="dish-total-price">${item.total}</span>
-                <button type="button" class="remove-button">Удалить</button>
-            `;
-            orderItem.querySelector('.remove-button').addEventListener('click', () => {
-                orderBlank.removeChild(orderItem);
-                updateTotalSum();
-            });
-            orderItem.querySelector('.dish-quantity').addEventListener('input', () => {
-                updateDishTotalPrice(orderItem);
-                updateTotalSum();
-            });
-            orderBlank.appendChild(orderItem);
+            const category = item.category || 'Без категории'; // Если категория не указана, используем "Без категории"
+
+            if (!categories[category]) {
+                categories[category] = [];
+            }
+
+            categories[category].push(item);
         });
+
+        for (const [category, dishes] of Object.entries(categories)) {
+            // Создаем контейнер для категории
+            let categoryContainer = document.createElement('div');
+            categoryContainer.classList.add('category-container');
+            categoryContainer.setAttribute('data-category', category);
+
+            // Создаем заголовок категории
+            const categoryHeader = document.createElement('h3');
+            categoryHeader.textContent = category;
+            categoryContainer.appendChild(categoryHeader);
+
+            // Добавляем блюда в соответствующий контейнер категории
+            dishes.forEach(item => {
+                const orderItem = document.createElement('div');
+                orderItem.classList.add('order-item');
+                orderItem.innerHTML = `
+                    <p>${item.name}</p>
+                    <input type="number" value="${item.quantity}" min="1" class="dish-quantity" data-price="${item.price}">
+                    <span>${item.price} руб.</span>
+                    <span class="dish-total-price">${item.total} руб.</span>
+                    <button type="button" class="remove-button"><i class="fa fa-trash"></i></button>
+                `;
+                orderItem.querySelector('.remove-button').addEventListener('click', () => {
+                    categoryContainer.removeChild(orderItem);
+                    if (categoryContainer.children.length === 1) { // Если остался только заголовок
+                        orderBlank.removeChild(categoryContainer);
+                    }
+                    updateTotalSum();
+                });
+                orderItem.querySelector('.dish-quantity').addEventListener('input', () => {
+                    updateDishTotalPrice(orderItem);
+                    updateTotalSum();
+                });
+                categoryContainer.appendChild(orderItem);
+            });
+
+            orderBlank.appendChild(categoryContainer);
+        }
 
         const servicesContainer = document.getElementById('additional-services');
         servicesContainer.innerHTML = '<button type="button" id="add-service">Добавить услугу</button>';
@@ -1250,9 +1316,14 @@ async function loadOrderByDate() {
     }
 }
 
-// Загрузка списка блюд
+// Загрузка списка блюд с группировкой по категориям
 window.loadMenuItems = async function loadMenuItems() {
     const menuItemsSelect = document.getElementById('menu-items');
+
+    if (!menuItemsSelect) {
+        console.error('Элемент с ID "menu-items" не найден.');
+        return;
+    }
 
     try {
         // Получаем текущего пользователя
@@ -1262,24 +1333,58 @@ window.loadMenuItems = async function loadMenuItems() {
             return;
         }
 
-        // Запрос к базе данных Firestore для получения блюд конкретного пользователя
+        // Ссылка на меню пользователя
         const userMenuRef = collection(db, `users/${user.uid}/menu`);
         const menuSnapshot = await getDocs(userMenuRef);
 
+        // Очищаем select перед добавлением новых опций
+        menuItemsSelect.innerHTML = '';
+
+        // Добавляем плейсхолдер "Выберите блюдо"
+        const placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.textContent = 'Выберите блюдо';
+        placeholderOption.disabled = true; // Отключаем возможность выбора этого пункта
+        placeholderOption.selected = true; // Выбираем его по умолчанию
+        menuItemsSelect.appendChild(placeholderOption);
+
+        // Группировка блюд по категориям
+        const categories = {};
+
         menuSnapshot.forEach(doc => {
             const dish = doc.data();
-            const option = document.createElement('option');
-            option.value = JSON.stringify({ id: doc.id, name: dish.name, price: dish.price });
-            option.textContent = dish.name;
-            menuItemsSelect.appendChild(option);
+            const category = dish.category || 'Без категории'; // Если категория не указана, используем "Без категории"
+
+            if (!categories[category]) {
+                categories[category] = [];
+            }
+            categories[category].push({ id: doc.id, name: dish.name, price: dish.price });
         });
+
+        // Создаем опции для категорий и добавляем их в select
+        for (const [category, dishes] of Object.entries(categories)) {
+            if (dishes.length > 0) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = category;
+
+                dishes.forEach(dish => {
+                    const option = document.createElement('option');
+                    // Включаем категорию в JSON-строку
+                    option.value = JSON.stringify({ id: dish.id, name: dish.name, price: dish.price, category });
+                    option.textContent = dish.name;
+                    optgroup.appendChild(option);
+                });
+
+                menuItemsSelect.appendChild(optgroup);
+            }
+        }
     } catch (error) {
         console.error('Ошибка при получении блюд:', error);
         alert(`Ошибка при получении блюд: ${error.message}`);
     }
 }
 
-// Добавление блюда в заказ
+// Функция для добавления блюда в заказ
 function addDishToOrder() {
     const menuItemsSelect = document.getElementById('menu-items');
     const orderBlank = document.getElementById('order-blank');
@@ -1292,6 +1397,29 @@ function addDishToOrder() {
 
     const selectedItem = JSON.parse(selectedItemValue);
 
+    // Проверяем наличие категории в выбранном пункте
+    const category = selectedItem.category ? selectedItem.category : 'Без категории';
+
+
+    // Проверяем, существует ли контейнер для этой категории
+    let categoryContainer = document.querySelector(`.category-container[data-category="${category}"]`);
+
+    if (!categoryContainer) {
+        // Создаем контейнер для категории, если он еще не создан
+        categoryContainer = document.createElement('div');
+        categoryContainer.classList.add('category-container');
+        categoryContainer.setAttribute('data-category', category);
+
+        // Создаем заголовок категории
+        const categoryHeader = document.createElement('h3');
+        categoryHeader.textContent = category;
+        categoryContainer.appendChild(categoryHeader);
+
+        // Добавляем контейнер для блюд этой категории в бланк заказа
+        orderBlank.appendChild(categoryContainer);
+    }
+
+    // Создаем элемент заказа
     const orderItem = document.createElement('div');
     orderItem.classList.add('order-item');
     orderItem.innerHTML = `
@@ -1299,20 +1427,29 @@ function addDishToOrder() {
         <input type="number" value="1" min="1" class="dish-quantity" data-price="${selectedItem.price}">
         <span>${selectedItem.price} руб.</span>
         <span class="dish-total-price">${selectedItem.price} руб.</span>
-        <button type="button" class="remove-button">Удалить</button>
-    `;
+        <button type="button" class="remove-button"><i class="fa fa-trash"></i></button>
+    `
+    updateTotalSum();
+    ;
 
+    // Добавляем обработчик для удаления блюда из заказа
     orderItem.querySelector('.remove-button').addEventListener('click', () => {
-        orderBlank.removeChild(orderItem);
+        categoryContainer.removeChild(orderItem);
+        // Если категория пустая, удаляем контейнер
+        if (categoryContainer.children.length === 1) { // только заголовок остался
+            orderBlank.removeChild(categoryContainer);
+        }
         updateTotalSum();
     });
 
+    // Добавляем обработчик для изменения количества блюда
     orderItem.querySelector('.dish-quantity').addEventListener('input', () => {
         updateDishTotalPrice(orderItem);
         updateTotalSum();
     });
 
-    orderBlank.appendChild(orderItem);
+    // Добавляем блюдо в соответствующий контейнер категории
+    categoryContainer.appendChild(orderItem);
     updateTotalSum();
 }
 
@@ -1324,9 +1461,9 @@ function updateTotalSum() {
     orderItems.forEach(item => {
         const quantity = item.querySelector('.dish-quantity').value;
         const price = item.querySelector('.dish-quantity').getAttribute('data-price');
-        const totalPrice = quantity * price;
+        const totalPrice = (quantity * price).toFixed(2);
         item.querySelector('.dish-total-price').textContent = `${totalPrice} руб.`;
-        totalSum += totalPrice;
+        totalSum += parseFloat(totalPrice);
     });
 
     document.getElementById('total-sum').value = totalSum;
@@ -1337,8 +1474,10 @@ function updateTotalSum() {
 function updateDishTotalPrice(orderItem) {
     const quantity = orderItem.querySelector('.dish-quantity').value;
     const price = orderItem.querySelector('.dish-quantity').getAttribute('data-price');
-    const totalPrice = quantity * price;
+    const totalPrice = (quantity * price).toFixed(2);
     orderItem.querySelector('.dish-total-price').textContent = `${totalPrice} руб.`;
+
+    updateTotalSum();
 }
 
 // Добавление дополнительной услуги
@@ -1352,7 +1491,7 @@ function addServiceField() {
         <input type="number" name="service-quantity" placeholder="Количество" value="1" min="1">
         <input type="number" name="service-price" placeholder="Цена" required>
         <input type="number" name="service-total" placeholder="Итоговая сумма" readonly>
-        <button type="button" class="remove-service">Удалить</button>
+        <button type="button" class="remove-service"><i class="fa fa-trash"></i></button>
     `;
 
     serviceDiv.querySelector('.remove-service').addEventListener('click', () => {
@@ -1371,7 +1510,7 @@ function updateServiceTotal(event) {
     const serviceDiv = event.target.closest('.service');
     const quantity = serviceDiv.querySelector('input[name="service-quantity"]').value;
     const price = serviceDiv.querySelector('input[name="service-price"]').value;
-    const total = quantity * price;
+    const total = (quantity * price).toFixed(2);
     serviceDiv.querySelector('input[name="service-total"]').value = total;
 
     updateFinalSum();
@@ -1388,7 +1527,7 @@ function updateFinalSum() {
         additionalServicesTotal += parseFloat(service.querySelector('input[name="service-total"]').value) || 0;
     });
 
-    const finalSum = totalSum + additionalServicesTotal - prepayment;
+    const finalSum = (totalSum + additionalServicesTotal - prepayment).toFixed(2);
     document.getElementById('final-sum').value = finalSum;
 }
 
@@ -1416,26 +1555,35 @@ function showPrintModal() {
 // Генерация контента для печати
 function generatePrintContent() {
     const orderDate = document.getElementById('order-date').value;
-    const totalSum = document.getElementById('total-sum').value;
-    const prepayment = document.getElementById('prepayment').value;
-    const finalSum = document.getElementById('final-sum').value;
+    const totalSum = parseFloat(document.getElementById('total-sum').value).toFixed(2);
+    const prepayment = parseFloat(document.getElementById('prepayment').value).toFixed(2);
+    const finalSum = parseFloat(document.getElementById('final-sum').value).toFixed(2);
 
     let printContent = `
         <h3>Заказ на дату: ${orderDate}</h3>
         <h4>Бланк заказа:</h4>
-        <ul>
     `;
 
-    const orderItems = document.querySelectorAll('.order-item');
-    orderItems.forEach(item => {
-        const dishName = item.querySelector('p').textContent;
-        const quantity = item.querySelector('.dish-quantity').value;
-        const totalPrice = item.querySelector('.dish-total-price').textContent;
-        printContent += `<li>${dishName} &nbsp;&nbsp;&nbsp;&nbsp; ${quantity} шт. &nbsp;&nbsp;&nbsp;&nbsp; ${totalPrice}</li>`;
+    // Находим все контейнеры категорий
+    const categoryContainers = document.querySelectorAll('.category-container');
+
+    // Перебираем каждый контейнер категории для извлечения пунктов заказа
+    categoryContainers.forEach(container => {
+        const categoryName = container.getAttribute('data-category');
+        printContent += `<h5>${categoryName}</h5><ul>`;  // Добавляем название категории как подзаголовок
+
+        const orderItems = container.querySelectorAll('.order-item');
+        orderItems.forEach(item => {
+            const dishName = item.querySelector('p').textContent;
+            const quantity = item.querySelector('.dish-quantity').value;
+            const totalPrice = item.querySelector('.dish-total-price').textContent;
+            printContent += `<li>${dishName} &nbsp;&nbsp;&nbsp;&nbsp; ${quantity} шт. &nbsp;&nbsp;&nbsp;&nbsp; ${totalPrice}</li>`;
+        });
+
+        printContent += '</ul>';  // Закрываем список блюд в категории
     });
 
     printContent += `
-        </ul>
         </br>
         <p>Итоговая сумма заказа: ${totalSum} руб.</p>
         </br>
@@ -1447,8 +1595,8 @@ function generatePrintContent() {
     services.forEach(service => {
         const serviceName = service.querySelector('input[name="service-name"]').value;
         const quantity = service.querySelector('input[name="service-quantity"]').value;
-        const total = service.querySelector('input[name="service-total"]').value;
-        printContent += `<li>${serviceName} &nbsp;&nbsp;&nbsp;&nbsp; кол-во: ${quantity} &nbsp;&nbsp;&nbsp;&nbsp; ${total} руб.</li>`;
+        const total = parseFloat(service.querySelector('input[name="service-total"]').value).toFixed(2) + " руб.";
+        printContent += `<li>${serviceName} &nbsp;&nbsp;&nbsp;&nbsp; кол-во: ${quantity} &nbsp;&nbsp;&nbsp;&nbsp; ${total}</li>`;
     });
 
     printContent += `
@@ -1471,11 +1619,14 @@ async function saveOrder() {
 
     let menuItems = [];
     document.querySelectorAll('.order-item').forEach(item => {
+        const categoryContainer = item.closest('.category-container');
+        const category = categoryContainer ? categoryContainer.getAttribute('data-category') : 'Без категории';
         menuItems.push({
             name: item.querySelector('p').textContent,
             quantity: parseInt(item.querySelector('.dish-quantity').value),
             price: parseFloat(item.querySelector('.dish-quantity').getAttribute('data-price')),
-            total: parseFloat(item.querySelector('.dish-total-price').textContent)
+            total: parseFloat(item.querySelector('.dish-total-price').textContent),
+            category: category
         });
     });
 

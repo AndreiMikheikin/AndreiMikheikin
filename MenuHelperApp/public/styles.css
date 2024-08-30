@@ -332,6 +332,36 @@ body {
       margin-bottom: 2px; }
       #admin-dashboard-container .container #dish-form button:hover {
         background-color: #b29126; }
+    #admin-dashboard-container .container .order-item, #admin-dashboard-container .container .service {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+      -webkit-box-pack: justify;
+          -ms-flex-pack: justify;
+              justify-content: space-between;
+      height: 45px; }
+      #admin-dashboard-container .container .order-item p, #admin-dashboard-container .container .service p {
+        margin: 0; }
+      #admin-dashboard-container .container .order-item input.dish-quantity, #admin-dashboard-container .container .service input.dish-quantity {
+        width: 50px;
+        margin: 0 10px; }
+      #admin-dashboard-container .container .order-item span, #admin-dashboard-container .container .service span {
+        margin: 0 10px; }
+      #admin-dashboard-container .container .order-item .remove-button, #admin-dashboard-container .container .order-item .remove-service, #admin-dashboard-container .container .service .remove-button, #admin-dashboard-container .container .service .remove-service {
+        background-color: transparent;
+        color: #d4af37;
+        border: none;
+        padding: 0;
+        margin-left: 10px;
+        font-size: 18px;
+        cursor: pointer; }
+        #admin-dashboard-container .container .order-item .remove-button i, #admin-dashboard-container .container .order-item .remove-service i, #admin-dashboard-container .container .service .remove-button i, #admin-dashboard-container .container .service .remove-service i {
+          color: #d4af37; }
+        #admin-dashboard-container .container .order-item .remove-button:hover i, #admin-dashboard-container .container .order-item .remove-service:hover i, #admin-dashboard-container .container .service .remove-button:hover i, #admin-dashboard-container .container .service .remove-service:hover i {
+          color: #b29126; }
     #admin-dashboard-container .container input[type="text"],
     #admin-dashboard-container .container input[type="number"],
     #admin-dashboard-container .container textarea,
