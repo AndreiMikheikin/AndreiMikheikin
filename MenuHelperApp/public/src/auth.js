@@ -1,5 +1,3 @@
-// src/auth.js
-
 // Импорт необходимых модулей из Firebase
 import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, fetchSignInMethodsForEmail } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
@@ -78,7 +76,7 @@ function selectRole(role) {
 }
 
 // Обработка отправки формы аутентификации
-function handleSubmit(event) {
+async function handleSubmit(event) {
     event.preventDefault();
     const email = event.target.email.value;
     const password = event.target.password.value;
@@ -86,46 +84,32 @@ function handleSubmit(event) {
 
     const isRegistration = document.getElementById('form-title').textContent === 'Регистрация';
 
-    if (isRegistration) {
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                console.log('User registered:', userCredential.user);
+    try {
+        if (isRegistration) {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            console.log('User registered:', userCredential.user);
 
-                // Добавляем пользователя в Firestore
-                const user = userCredential.user;
-                const userRef = doc(db, 'users', user.uid);
-                setDoc(userRef, {
-                    email: user.email,
-                    role: role,
-                    createdAt: new Date()
-                }).then(() => {
-                    console.log('User added to Firestore');
-                }).catch((error) => {
-                    console.error('Error adding user to Firestore:', error);
-                });
-
-                // Передаем email пользователя в showWelcomeModal
-                showWelcomeModal(user.email);
-                showPanel(role);
-            })
-            .catch((error) => {
-                console.error('Error registering:', error);
-                alert('Ошибка при регистрации. Повторите попытку.');
+            // Add user to Firestore
+            const user = userCredential.user;
+            await setDoc(doc(db, 'users', user.uid), {
+                email: user.email,
+                role: role,
+                createdAt: new Date()
             });
-    } else {
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                console.log('User signed in:', userCredential.user);
+            console.log('User added to Firestore');
 
+            showWelcomeModal(user.email);
+            showPanel(role);
+        } else {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            console.log('User signed in:', userCredential.user);
 
-                // Передаем email пользователя в showWelcomeModal
-                showWelcomeModal(userCredential.user.email);
-                showPanel(role);
-            })
-            .catch((error) => {
-                console.error('Error signing in:', error);
-                alert('Ошибка при входе. Повторите попытку.');
-            });
+            showWelcomeModal(userCredential.user.email);
+            showPanel(role);
+        }
+    } catch (error) {
+        console.error('Authentication error:', error);
+        alert('Ошибка при выполнении действия. Повторите попытку.');
     }
 }
 
@@ -152,18 +136,23 @@ function toggleForm() {
     const isLogin = title.textContent === 'Вход';
     const toggleLink = document.getElementById('toggle-link');
 
+    // Очистка полей формы
     document.getElementById('email').value = '';
     document.getElementById('password').value = '';
     document.getElementById('confirm-password').value = '';
 
+    // Сброс отображения чеков
     const checkMarks = document.querySelectorAll('.check');
     checkMarks.forEach(check => check.style.display = 'none');
 
+    // Обновление текста и видимости элементов
     title.textContent = isLogin ? 'Регистрация' : 'Вход';
     toggleLink.textContent = isLogin ? 'Есть аккаунт? Авторизация' : 'Нет аккаунта? Регистрация';
     confirmPassword.style.display = isLogin ? 'block' : 'none';
     requirements.style.display = isLogin ? 'block' : 'none';
     submitBtn.textContent = isLogin ? 'Зарегистрироваться' : 'Войти';
+
+    // Валидация формы после переключения
     validateForm();
 }
 
@@ -182,16 +171,18 @@ function logout() {
         });
 }
 
-// Переключение формы восстановления пароля
 function toggleForgotPasswordForm() {
     const authContainer = document.getElementById('auth-container');
     const forgotPasswordContainer = document.getElementById('forgot-password-container');
 
-    authContainer.style.display = authContainer.style.display === 'none' ? 'block' : 'none';
-    forgotPasswordContainer.style.display = forgotPasswordContainer.style.display === 'none' ? 'block' : 'none';
-
-    document.getElementById('forgot-email').value = '';
-    validateForgotPasswordForm();
+    // Переключаем видимость контейнеров
+    if (forgotPasswordContainer.style.display === 'none') {
+        authContainer.style.display = 'none';
+        forgotPasswordContainer.style.display = 'block';
+    } else {
+        forgotPasswordContainer.style.display = 'none';
+        authContainer.style.display = 'block';
+    }
 }
 
 // Валидация формы восстановления пароля

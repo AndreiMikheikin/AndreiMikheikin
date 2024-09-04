@@ -1,0 +1,23 @@
+// components/buttons.scss
+
+@import '../variables';  // Ensure access to variables
+
+button {
+    @include button-style($primary-color, $background-color);  // Primary button style
+
+    &.admin {
+        @include button-style($accent-color, $primary-color);  // Admin button style
+    }
+
+    &.user {
+        @include button-style($accent-color, $primary-color);  // User button style
+    }
+
+    &--secondary {
+        @include button-style($secondary-color, $background-color);  // Secondary button style
+    }
+
+    &__icon {
+        margin-right: 10px;
+    }
+}

@@ -28,94 +28,58 @@ const ICON4_ID = 'icon4';
 const ICON5_ID = 'icon5';
 
 // Загрузка панели администратора
-window.loadAdminDashboard = function loadAdminDashboard() {
-    console.log('Loading admin dashboard...');
-    const adminContent = document.getElementById('admin-dashboard-content');
-    adminContent.innerHTML = `
-        <div class="icon-container" id="${ICON1_ID}" draggable="true">
-            <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
-            <p>Добавить блюдо</p>
-        </div>
-        <div class="icon-container" id="${ICON2_ID}" draggable="true">
-            <img src="images/icons/view_menu_icon.svg" alt="Просмотр меню">
-            <p>Просмотр меню</p>
-        </div>
-        <div class="icon-container" id="${ICON3_ID}" draggable="true">
-            <img src="images/icons/calculate_purchases_icon.svg" alt="Подсчет закупок">
-            <p>Подсчет закупок</p>
-        </div>
-        <div class="icon-container" id="${ICON4_ID}" draggable="true">
-            <img src="images/icons/order_icon.svg" alt="Оформление заказа">
-            <p>Оформление заказа</p>
-        </div>
-        <div class="icon-container" id="${ICON5_ID}" draggable="true">
-            <img src="images/icons/contact_icon.svg" alt="Справочник поставщиков">
-            <p>Справочник поставщиков</p>
-        </div>
-    `;
-
-    addIconEventListeners(); // Добавляем события на иконки
-    initializeDragAndDrop(); // Инициализируем drag-and-drop
-    loadIconPositions(); // Загружаем сохраненные позиции иконок
-    window.addEventListener('beforeunload', saveIconPositions);
-
-    // Загрузка позиций иконок из локального хранилища
-    function loadIconPositions() {
-        const positions = JSON.parse(localStorage.getItem('iconPositions'));
-        if (positions) {
-            const dropzone = document.getElementById('admin-dashboard-content');
-            positions.forEach(pos => {
-                const icon = document.getElementById(pos.id);
-                if (icon) {
-                    // Пропорциональная адаптация
-                    const left = parseFloat(pos.left) * (dropzone.offsetWidth / window.innerWidth);
-                    const top = parseFloat(pos.top) * (dropzone.offsetHeight / window.innerHeight);
-
-                    icon.style.left = `${left}px`;
-                    icon.style.top = `${top}px`;
-                }
-            });
-        }
-    }
-}
-
-// Экспорт загрузки панели администратора
 export function loadAdminDashboard() {
     console.log('Loading admin dashboard...');
+    const adminContainer = document.getElementById('admin-dashboard-container');
     const adminContent = document.getElementById('admin-dashboard-content');
-    adminContent.innerHTML = `
-        <div class="icon-container" id="${ICON1_ID}" draggable="true">
-            <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
-            <p>Добавить блюдо</p>
-        </div>
-        <div class="icon-container" id="${ICON2_ID}" draggable="true">
-            <img src="images/icons/view_menu_icon.svg" alt="Просмотр меню">
-            <p>Просмотр меню</p>
-        </div>
-        <div class="icon-container" id="${ICON3_ID}" draggable="true">
-            <img src="images/icons/calculate_purchases_icon.svg" alt="Подсчет закупок">
-            <p>Подсчет закупок</p>
-        </div>
-        <div class="icon-container" id="${ICON4_ID}" draggable="true">
-            <img src="images/icons/order_icon.svg" alt="Оформление заказа">
-            <p>Оформление заказа</p>
-        </div>
-        <div class="icon-container" id="${ICON5_ID}" draggable="true">
-            <img src="images/icons/contact_icon.svg" alt="Справочник поставщиков">
-            <p>Справочник поставщиков</p>
-        </div>
-    `;
 
-    addIconEventListeners(); // Добавляем события на иконки
-    initializeDragAndDrop(); // Инициализируем drag-and-drop
-    loadIconPositions(); // Загружаем сохраненные позиции иконок
-    window.addEventListener('beforeunload', saveIconPositions);
+    if (adminContainer && adminContent) {
+        // Скрываем adminContent и показываем adminContainer
+        adminContent.style.display = 'none';
+        adminContainer.style.display = 'block';
+
+        // Заполняем adminContainer содержимым
+        adminContainer.innerHTML = `
+            <h2>Рабочий стол</h2>
+            <button class="logout" onclick="logout()"><i class="fas fa-times"></i></button>
+            <div class="icon-container" id="${ICON1_ID}" draggable="true">
+                <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
+                <p>Добавить блюдо</p>
+            </div>
+            <div class="icon-container" id="${ICON2_ID}" draggable="true">
+                <img src="images/icons/view_menu_icon.svg" alt="Просмотр меню">
+                <p>Просмотр меню</p>
+            </div>
+            <div class="icon-container" id="${ICON3_ID}" draggable="true">
+                <img src="images/icons/calculate_purchases_icon.svg" alt="Подсчет закупок">
+                <p>Подсчет закупок</p>
+            </div>
+            <div class="icon-container" id="${ICON4_ID}" draggable="true">
+                <img src="images/icons/order_icon.svg" alt="Оформление заказа">
+                <p>Оформление заказа</p>
+            </div>
+            <div class="icon-container" id="${ICON5_ID}" draggable="true">
+                <img src="images/icons/contact_icon.svg" alt="Справочник поставщиков">
+                <p>Справочник поставщиков</p>
+            </div>
+        `;
+
+        // Инициализируем события и загрузку
+        addIconEventListeners();
+        initializeDragAndDrop();
+        loadIconPositions();
+
+        // Сохраняем позиции иконок перед закрытием страницы
+        window.addEventListener('beforeunload', saveIconPositions);
+    } else {
+        console.error('Ошибка: не удалось найти admin-dashboard-container или admin-dashboard-content.');
+    }
 
     // Загрузка позиций иконок из локального хранилища
     function loadIconPositions() {
         const positions = JSON.parse(localStorage.getItem('iconPositions'));
         if (positions) {
-            const dropzone = document.getElementById('admin-dashboard-content');
+            const dropzone = document.getElementById('admin-dashboard-container');
             positions.forEach(pos => {
                 const icon = document.getElementById(pos.id);
                 if (icon) {
@@ -130,6 +94,21 @@ export function loadAdminDashboard() {
         }
     }
 }
+
+// Функция для показа админского контента и скрытия панели
+function showAdminContent() {
+    const adminContainer = document.getElementById('admin-dashboard-container');
+    const adminContent = document.getElementById('admin-dashboard-content');
+
+    if (adminContainer && adminContent) {
+        adminContainer.style.display = 'none'; // Скрываем контейнер панели
+        adminContent.style.display = 'block';  // Показываем контент
+    } else {
+        console.error('Ошибка: не удалось найти admin-dashboard-container или admin-dashboard-content.');
+    }
+}
+
+window.loadAdminDashboard = loadAdminDashboard;
 
 /* -------------------------------------------------------------------- */
 
@@ -261,6 +240,7 @@ async function loadSupplierOptions() {
 
 // Функция для отображения формы добавления/редактирования блюда
 window.showDishForm = async function showDishForm() {
+    showAdminContent();
     const adminContent = document.getElementById('admin-dashboard-content');
     if (!adminContent) {
         console.error('Элемент с ID "admin-dashboard-content" не найден.');
@@ -272,8 +252,8 @@ window.showDishForm = async function showDishForm() {
 
     // HTML-код формы добавления/редактирования блюда
     adminContent.innerHTML = `
-    <div class="container">
-        <h3 class="page-title">Добавить / Редактировать блюдо</h3>
+    <div class="add-dish-container">
+        <h3 class="page-title">Добавить блюдо</h3>
         <form id="dish-form">
             <input type="text" id="category-name" name="category-name" placeholder="Название категории" required>
             <input type="text" id="dish-name" name="dish-name" placeholder="Название блюда" required>
@@ -308,15 +288,17 @@ window.showDishForm = async function showDishForm() {
             <button type="submit" id="save-dish-button" class="submit-button">Добавить блюдо</button>
         </form>
         <button class="back-button" onclick="loadAdminDashboard()"></button>
-        <h4>Редактировать существующее блюдо</h4>
-        <form id="load-dish-form">
-            <label for="load-dish">Выберите блюдо для редактирования:</label>
-            <select id="load-dish" name="load-dish">
-                <option value="">Выберите блюдо</option>
-            </select>
-            <button type="button" id="load-dish-button">Загрузить блюдо</button>
-            <button type="button" id="delete-dish-button">Удалить блюдо</button>
-        </form>
+        <div class="edit-dish-container">
+            <h4>Редактировать существующее блюдо</h4>
+            <form id="load-dish-form">
+                <label for="load-dish">Выберите блюдо для редактирования:</label>
+                <select id="load-dish" name="load-dish">
+                    <option value="">Выберите блюдо</option>
+                </select>
+                <button type="button" id="load-dish-button">Загрузить блюдо</button>
+                <button type="button" id="delete-dish-button">Удалить блюдо</button>
+            </form>
+        </div>
     </div>
     `;
 
@@ -653,6 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Показ меню
 window.showMenu = async function showMenu() {
+    showAdminContent();
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
         <div class="container">
@@ -887,6 +870,7 @@ function handleDeleteClick(event) {
 
 // Показ формы подсчета закупок
 window.showPurchaseCalculationForm = function showPurchaseCalculationForm() {
+    showAdminContent();
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
     <div class="container">
@@ -1117,6 +1101,7 @@ function capitalizeFirstLetter(string) {
 
 // Показ формы оформления заказа
 window.showOrderForm = function showOrderForm() {
+    showAdminContent();
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
     <div class="container">
@@ -1678,6 +1663,7 @@ async function saveOrder() {
 
 // Экспортируем функцию showSuppliers для использования в других модулях
 export async function showSuppliers() {
+    showAdminContent();
     const adminContent = document.getElementById('admin-dashboard-content');
     adminContent.innerHTML = `
         <div class="container">
@@ -1761,6 +1747,7 @@ window.showSuppliers = showSuppliers;
 window.showAddSupplierForm = function showAddSupplierForm() {
     const adminContent = document.getElementById('admin-dashboard-content');
     adminContent.innerHTML = `
+    <div class="container">
         <h2>Добавить поставщика</h2>
         <form id="add-supplier-form">
             <label for="suppliersName">Название:</label>
@@ -1774,7 +1761,8 @@ window.showAddSupplierForm = function showAddSupplierForm() {
             
             <button type="submit" id="save-supplier">Сохранить</button>
         </form>
-        <button class="back-button" onclick="showSuppliers()">Назад</button>
+        <button class="back-button" onclick="showSuppliers()"></button>
+    </div>
     `;
 
     document.getElementById('add-supplier-form').addEventListener('submit', handleAddSupplierSubmit);
@@ -1848,6 +1836,7 @@ async function handleEditSupplierClick(event) {
 function showEditSupplierForm(supplierId, supplier) {
     const adminContent = document.getElementById('admin-dashboard-content');
     adminContent.innerHTML = `
+    <div class="container">
         <h2>Редактировать поставщика</h2>
         <form id="edit-supplier-form">
             <label for="suppliersName">Название:</label>
@@ -1861,7 +1850,8 @@ function showEditSupplierForm(supplierId, supplier) {
             
             <button type="submit">Сохранить изменения</button>
         </form>
-        <button class="back-button" onclick="showSuppliers()">Назад</button>
+        <button class="back-button" onclick="showSuppliers()"></button>
+    </div>
     `;
 
     document.getElementById('edit-supplier-form').addEventListener('submit', (event) => handleEditSupplierSubmit(event, supplierId));

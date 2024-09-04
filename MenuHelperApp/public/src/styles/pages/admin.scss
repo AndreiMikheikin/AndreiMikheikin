@@ -1,0 +1,620 @@
+// admin.scss
+
+.add-dish-container {
+    background-color: $background-color;
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+
+    .page-title {
+        font-family: $title;
+        color: $accent-color;
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid $border-color;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: $secondary-color;
+            color: $text-color;
+
+            &:focus {
+                border-color: $primary-color;
+                outline: none;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .weight-input {
+            width: auto; // Ширина поля для веса ингредиента
+        }
+
+        #ingredients-container {
+            margin-bottom: 20px;
+
+            .ingredients-label {
+                color: $primary-color;
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+
+            .ingredient-group {
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+
+                input[type="text"],
+                input[type="number"],
+                select {
+                    margin-right: 10px;
+                }
+
+                .remove-ingredient-button {
+                    background: none;
+                    border: none;
+                    margin-top: -15px;
+                    color: $error-color;
+                    cursor: pointer;
+
+                    &:hover {
+                        color: darken($error-color, 10%);
+                    }
+
+                    i {
+                        font-size: 1.2rem;
+                    }
+                }
+            }
+        }
+
+        #add-ingredient {
+            background-color: $primary-color;
+            border: none;
+            padding: 10px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-bottom: 20px;
+
+            &:hover {
+                background-color: darken($primary-color, 10%);
+            }
+        }
+
+        #save-dish-button {
+            background-color: $primary-color;
+            border: none;
+            padding: 10px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+                background-color: darken($primary-color, 10%);
+            }
+        }
+
+        #shared-by-container {
+            margin-bottom: 20px;
+
+            input[type="text"] {
+                width: 100%;
+            }
+        }
+    }
+
+    .back-button {
+        position: absolute;
+        top: 5px;
+        right: 2%;
+        border: none;
+        padding: 10px;
+        color: $secondary-color;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.2s ease;
+
+        &::before {
+            content: "\f053"; // Иконка стрелки назад из FontAwesome
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+    }
+
+    .back-button:hover {
+        background-color: $primary-color;
+    }
+
+    .edit-dish-container {
+        margin-top: 20px;
+        background-color: $secondary-color;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+        h4 {
+            color: $primary-color;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+
+            label {
+                font-size: 1rem;
+                color: $text-color;
+                margin-bottom: 10px;
+            }
+
+            select {
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid $border-color;
+                border-radius: 5px;
+                font-size: 1rem;
+                background-color: $secondary-color;
+                color: $text-color;
+
+                &:focus {
+                    border-color: $primary-color;
+                    outline: none;
+                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+                }
+            }
+
+            #load-dish-button,
+            #delete-dish-button {
+                background-color: $primary-color;
+                border: none;
+                padding: 10px;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                margin-top: 10px;
+
+                &:hover {
+                    background-color: darken($primary-color, 10%);
+                }
+            }
+
+            #delete-dish-button {
+                background-color: $error-color;
+
+                &:hover {
+                    background-color: darken($error-color, 10%);
+                }
+            }
+        }
+    }
+}
+
+.show-menu-container {
+    position: relative;
+    padding: 20px;
+
+    .page-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .back-button {
+        position: absolute;
+        top: 5px;
+        right: 2%;
+        border: none;
+        padding: 10px;
+        color: $secondary-color;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.2s ease;
+
+        &::before {
+            content: "\f053"; // Иконка стрелки назад из FontAwesome
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+    }
+
+    .back-button:hover {
+        background-color: $primary-color;
+    }
+
+    // Индикатор загрузки
+    #loading-indicator {
+        display: none; // Скрыт по умолчанию
+        text-align: center;
+
+        p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .spinner {
+            border: 4px solid $secondary-color; // Светло-серый
+            border-top: 4px solid $accent-color; // Красный
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    // Стили списка меню
+    #menu-list {
+        .category {
+            margin-bottom: 20px;
+
+            h4 {
+                font-size: 20px;
+                font-weight: bold;
+                margin-bottom: 10px;
+                color: $text-color;
+            }
+
+            .dish-container {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+
+                .dish-card {
+                    display: flex;
+                    align-items: center;
+                    background-color: $background-color;
+                    border: 1px solid $secondary-color;
+                    border-radius: 8px;
+                    padding: 15px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                    width: 100%;
+                    height: 50px; // Максимальная высота
+
+                    h5 {
+                        margin: 5px 20px 5px 0;
+                        font-weight: bold;
+                        color: $text-color;
+                        flex-shrink: 0;
+                        width: 150px; // Фиксированная ширина
+                        line-height: 1.2;
+                    }
+
+                    .ingredients {
+                        font-size: 14px;
+                        color: $secondary-color;
+                        margin-right: 20px;
+                        flex-shrink: 0;
+                        width: 20%;
+                        max-width: 200px; // Фиксированная ширина
+                        white-space: nowrap; // Запрещает перенос слов
+                        overflow: hidden;
+                        text-overflow: ellipsis; // Добавляет "..." для длинного текста
+                    }
+
+                    p {
+                        margin-right: 20px;
+                        font-size: 14px;
+                        color: $text-color;
+                        flex-shrink: 0;
+
+                        &.weight {
+                            font-weight: bold;
+                        }
+                    }
+
+                    .price-container {
+                        display: flex;
+                        align-items: center;
+                        margin-left: auto; // Выравнивает контейнер вправо
+
+                        .price-input {
+                            border: 1px solid $secondary-color;
+                            border-radius: 4px;
+                            padding: 5px;
+                            width: 60px;
+                            // Убран отступ справа
+                        }
+
+                        .edit-button {
+                            background-color: $accent-color;
+                            border: none;
+                            color: $background-color;
+                            padding: 6px 8px;
+                            margin: 0 10px; // Добавлен отступ справа
+                            border-radius: 4px;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 12px;
+                        }
+
+                        .save-button,
+                        .cancel-button,
+                        .delete-button {
+                            background-color: $accent-color;
+                            border: none;
+                            color: $background-color;
+                            padding: 6px 8px;
+                            margin: 0 5px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 12px;
+
+                            &.save-button {
+                                background-color: $main-bg-color;
+                                display: none;
+                            }
+
+                            &.cancel-button {
+                                background-color: $error-color;
+                                display: none;
+                            }
+
+                            &.delete-button {
+                                background-color: $primary-color;
+                                border: none;
+                                padding: 10px;
+                                color: white;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                transition: background-color 0.2s ease;
+                                margin-top: 10px;
+
+                                &:hover {
+                                    background-color: darken($primary-color, 10%);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.show-order-container {
+    background-color: $secondary-color;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+
+    .page-title {
+        color: $primary-color;
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+
+        .container {
+            margin-bottom: 15px;
+
+            label {
+                font-size: 1rem;
+                color: $text-color;
+                margin-bottom: 5px;
+                display: block;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="tel"],
+            input[type="date"],
+            select {
+                width: 100%;
+                padding: 10px;
+                margin-top: 5px;
+                border: 1px solid $border-color;
+                border-radius: 5px;
+                font-size: 1rem;
+                background-color: $secondary-color;
+                color: $text-color;
+
+                &:focus {
+                    border-color: $primary-color;
+                    outline: none;
+                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+                }
+            }
+
+            span {
+                margin-left: 5px;
+                font-size: 1rem;
+                color: $text-color;
+            }
+        }
+
+        h4 {
+            color: $primary-color;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        #order-blank,
+        #additional-services {
+            margin-bottom: 20px;
+            background-color: lighten($secondary-color, 20%);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid $border-color;
+            min-height: 50px; // Минимальная высота для контейнеров
+        }
+
+        #add-dish-to-order,
+        #add-service {
+            background-color: $primary-color;
+            border: none;
+            padding: 10px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-bottom: 20px;
+
+            &:hover {
+                background-color: darken($primary-color, 10%);
+            }
+        }
+
+        #print-order,
+        #save-order,
+        .back-button {
+            background-color: $primary-color;
+            border: none;
+            padding: 10px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-right: 10px;
+
+            &:hover {
+                background-color: darken($primary-color, 10%);
+            }
+        }
+
+        .back-button {
+            background-color: $secondary-color;
+
+            &:hover {
+                background-color: darken($secondary-color, 10%);
+            }
+        }
+    }
+
+    #load-order-form {
+        margin-top: 20px;
+
+        label {
+            font-size: 1rem;
+            color: $text-color;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid $border-color;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: $secondary-color;
+            color: $text-color;
+
+            &:focus {
+                border-color: $primary-color;
+                outline: none;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        #load-order-button {
+            background-color: $primary-color;
+            border: none;
+            padding: 10px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 10px;
+
+            &:hover {
+                background-color: darken($primary-color, 10%);
+            }
+        }
+    }
+
+    #print-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid $border-color;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .modal-close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: $text-color;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+
+            &:hover {
+                color: $error-color;
+            }
+        }
+
+        #confirm-print {
+            background-color: $primary-color;
+            border: none;
+            padding: 10px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: block;
+            margin: 20px auto 0;
+            width: 100px;
+
+            &:hover {
+                background-color: darken($primary-color, 10%);
+            }
+        }
+    }
+}

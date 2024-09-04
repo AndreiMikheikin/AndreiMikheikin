@@ -3,94 +3,100 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MenuHelper - Your assistant for managing menus and user roles">
+    <title>MenuHelper</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="shortcut icon" href="images/icons/favicon.svg" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="media.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MenuHelper</title>
+    <link rel="stylesheet" href="src/styles/main.css">
 </head>
 
 <body>
-    <canvas id="triangleCanvas"></canvas>
-    <!-- Контейнер аутентификации -->
-    <div class="container" id="auth-container">
-        <h2 id="form-title">Вход</h2>
-        <div class="role-selection">
-            <button class="admin" onclick="selectRole('admin')">Администратор</button>
-            <button class="user" onclick="selectRole('user')">Пользователь</button>
-        </div>
-        <form id="auth-form" onsubmit="handleSubmit(event)">
-            <input type="hidden" id="role" name="role">
-            <input type="email" id="email" name="email" placeholder="Email" required oninput="validateForm()">
-            <input type="password" id="password" name="password" placeholder="Пароль" required oninput="validateForm()">
-            <input type="password" id="confirm-password" name="confirm-password" placeholder="Подтвердите пароль"
-                style="display: none;" oninput="validateForm()">
-            <div id="password-requirements" class="password-requirements" style="display: none;">
-                <div class="requirement" id="length-check">
-                    <span class="check">✓</span> Не менее 8 символов
-                </div>
-                <div class="requirement" id="lowercase-check">
-                    <span class="check">✓</span> Минимум одна строчная буква
-                </div>
-                <div class="requirement" id="uppercase-check">
-                    <span class="check">✓</span> Минимум одна заглавная буква
-                </div>
-                <div class="requirement" id="number-check">
-                    <span class="check">✓</span> Минимум одна цифра
-                </div>
-                <div class="requirement" id="match-check">
-                    <span class="check">✓</span> Пароли совпадают
-                </div>
-            </div>
-            <button type="submit" id="submit-btn" disabled>Войти</button>
-        </form>
-        <div class="toggle-link" id="toggle-link" onclick="toggleForm()">Нет аккаунта? Регистрация</div>
-        <div class="forgot-password-link" onclick="toggleForgotPasswordForm()">Забыли пароль?</div>
-    </div>
+    <header>
+        <img src="./images/icons/logo.png" alt="Логотип MenuHelper" title="Логотип MenuHelper">
+    </header>
 
     <!-- Приветственное модальное окно -->
-    <div class="modal" id="welcome-modal">
+    <div class="modal hidden" id="welcome-modal" role="dialog" aria-labelledby="welcome-message">
         <div class="modal-content">
-            <span class="close-button" id="close-button"">&times;</span>
+            <button class="close-button" id="close-button" aria-label="Закрыть модальное окно">&times;</button>
             <h2 id="welcome-message"></h2>
         </div>
     </div>
 
-    <!-- Контейнер панели администратора -->
-    <div class="container desktop" id="admin-dashboard-container" style="display: none;">
-        <h2>Рабочий стол</h2>
-        <button class="logout" onclick="logout()"></button>
-        <div id="admin-dashboard-content" class="desktop">
+    <main>
+        <!-- Контейнер аутентификации -->
+        <div class="container" id="auth-container">
+            <h2 id="form-title">Вход</h2>
+            <div class="role-selection">
+                <button class="admin" onclick="selectRole('admin')" aria-label="Выбрать роль администратора">Администратор</button>
+                <button class="user" onclick="selectRole('user')" aria-label="Выбрать роль пользователя">Пользователь</button>
+            </div>
+            <form id="auth-form" onsubmit="handleSubmit(event)">
+                <input type="hidden" id="role" name="role">
+                <input type="email" id="email" name="email" placeholder="Email" required oninput="validateForm()">
+                <input type="password" id="password" name="password" placeholder="Пароль" required oninput="validateForm()">
+                <input type="password" id="confirm-password" name="confirm-password" placeholder="Подтвердите пароль" class="hidden" oninput="validateForm()">
+                <div id="password-requirements" class="password-requirements hidden">
+                    <div class="requirement" id="length-check">
+                        <span class="check">✓</span> Не менее 8 символов
+                    </div>
+                    <div class="requirement" id="lowercase-check">
+                        <span class="check">✓</span> Минимум одна строчная буква
+                    </div>
+                    <div class="requirement" id="uppercase-check">
+                        <span class="check">✓</span> Минимум одна заглавная буква
+                    </div>
+                    <div class="requirement" id="number-check">
+                        <span class="check">✓</span> Минимум одна цифра
+                    </div>
+                    <div class="requirement" id="match-check">
+                        <span class="check">✓</span> Пароли совпадают
+                    </div>
+                </div>
+                <button type="submit" id="submit-btn" disabled>Войти</button>
+            </form>
+            <div class="toggle-link" id="toggle-link" onclick="toggleForm()">Нет аккаунта? Регистрация</div>
+            <div class="forgot-password-link" onclick="toggleForgotPasswordForm()">Забыли пароль?</div>
+        </div>
+
+        <!-- Контейнер панели администратора -->
+        <div class="container desktop hidden" id="admin-dashboard-container">
             <!-- Иконки будут загружены из admin.js -->
         </div>
-    </div>
 
-    <!-- Контейнер панели пользователя -->
-    <div class="container" id="user-dashboard-container" style="display: none;">
-        <h2>Добро пожаловать, Пользователь!</h2>
-        <div id="user-dashboard-content">
-            <!-- Содержимое панели пользователя -->
+        <div id="admin-dashboard-content" class="desktop">
+            <!-- Контент будет загружен из admin.js -->
         </div>
-        <button onclick="logout()"></button>
-    </div>
 
-    <!-- Контейнер восстановления пароля -->
-    <div class="container" id="forgot-password-container" style="display: none;">
-        <h2>Восстановление пароля</h2>
-        <form id="forgot-password-form" onsubmit="handleForgotPassword(event)">
-            <input type="email" id="forgot-email" name="forgot-email" placeholder="Email" required
-                oninput="validateForgotPasswordForm()">
-            <button type="submit" id="forgot-submit-btn" disabled>Отправить ссылку для сброса</button>
-        </form>
-        <div class="toggle-link" onclick="toggleForgotPasswordForm()">Вернуться</div>
-    </div>
+        <!-- Контейнер панели пользователя -->
+        <div class="container desktop hidden" id="user-dashboard-container">
+            <h2>Добро пожаловать, Пользователь!</h2>
+            <div id="user-dashboard-content">
+                <!-- Содержимое панели пользователя -->
+            </div>
+            <button onclick="logout()">Выйти</button>
+        </div>
+
+        <!-- Контейнер восстановления пароля -->
+        <div class="container hidden" id="forgot-password-container">
+            <h2>Восстановление пароля</h2>
+            <form id="forgot-password-form" onsubmit="handleForgotPassword(event)">
+                <input type="email" id="forgot-email" name="forgot-email" placeholder="Email" required oninput="validateForgotPasswordForm()">
+                <button type="submit" id="forgot-submit-btn" disabled>Отправить ссылку для сброса</button>
+            </form>
+            <div class="toggle-link" onclick="toggleForgotPasswordForm()">Вернуться</div>
+        </div>
+    </main>
+
+    <footer>
+        <!-- Content for the footer if needed -->
+    </footer>
 
     <!-- Загрузка основного скрипта -->
-    <script type="module" src="src/main.min.js"></script>
-    <script type="module" src="src/auth.min.js"></script>
-    <script type="module" src="src/admin.min.js"></script>
-    <script src="src/canvas.js"></script>
+    <script type="module" src="src/main.min.js" defer></script>
+    <script type="module" src="src/auth.min.js" defer></script>
+    <script type="module" src="src/admin.min.js" defer></script>
 </body>
 
 </html>

@@ -1,0 +1,12 @@
+// components/header.scss
+
+header {
+  background-color: $primary-color;  // Черный фон
+  padding: 20px;
+  text-align: center;
+
+  img {
+    width: 200px;
+    height: auto;
+  }
+}

@@ -26,8 +26,9 @@ export function initializeDragAndDrop() {
         icon.addEventListener('dragend', handleDragEnd);
     });
 
-    document.getElementById('admin-dashboard-content').addEventListener('dragover', handleDragOver);
-    document.getElementById('admin-dashboard-content').addEventListener('drop', handleDrop);
+    const dashboardContainer = document.getElementById('admin-dashboard-container');
+    dashboardContainer.addEventListener('dragover', handleDragOver);
+    dashboardContainer.addEventListener('drop', handleDrop);
 }
 
 // Обработчики для перетаскивания с мышью
@@ -48,7 +49,7 @@ function handleDrop(event) {
     event.preventDefault();
     const id = event.dataTransfer.getData('text/plain');
     const draggableElement = document.getElementById(id);
-    const dropzone = document.getElementById('admin-dashboard-content');
+    const dropzone = document.getElementById('admin-dashboard-container');
     
     // Корректировка координат с учетом позиции внутри контейнера
     const offsetX = event.clientX - dropzone.getBoundingClientRect().left;
@@ -108,45 +109,53 @@ let startX = 0; // Начальная позиция по оси X
 // Показ приветственного модального окна с логином пользователя
 export function showWelcomeModal(username) {
     const modal = document.getElementById('welcome-modal');
-    
-    // Извлечение логина без доменной зоны
-    const displayName = username.split('@')[0];
-    
-    // Вставка имени в сообщение
     const welcomeMessage = document.getElementById('welcome-message');
-    welcomeMessage.textContent = `Добро пожаловать, ${displayName}!`;
-    
-    modal.style.display = 'block';
-
-    // Добавляем обработчики касания для swipe up
-    modal.addEventListener('touchstart', handleTouchStart);
-    modal.addEventListener('touchend', handleTouchEndGesture);
-
-    // Добавляем обработчик клика на кнопку закрытия
     const closeButton = document.getElementById('close-button');
-    closeButton.addEventListener('click', hideWelcomeModal);
+
+    if (modal && welcomeMessage && closeButton) {
+        // Extract username without domain
+        const displayName = username.split('@')[0];
+
+        // Insert name into the message
+        welcomeMessage.textContent = `Добро пожаловать, ${displayName}!`;
+
+        modal.classList.remove('hidden');  // Show modal
+
+        // Add touch event handlers for swipe up
+        modal.addEventListener('touchstart', handleTouchStart);
+        modal.addEventListener('touchend', handleTouchEndGesture);
+
+        // Add click handler to the close button
+        closeButton.addEventListener('click', hideWelcomeModal);
+    } else {
+        console.error('One or more elements not found in the DOM.');
+    }
 }
 
 // Скрытие приветственного модального окна
 function hideWelcomeModal() {
     const modal = document.getElementById('welcome-modal');
-    modal.style.display = 'none';
+    if (modal) {
+        modal.classList.add('hidden');  // Hide modal
 
-    // Убираем обработчики касания после закрытия модального окна
-    modal.removeEventListener('touchstart', handleTouchStart);
-    modal.removeEventListener('touchend', handleTouchEndGesture);
+        // Убираем обработчики касания после закрытия модального окна
+        modal.removeEventListener('touchstart', handleTouchStart);
+        modal.removeEventListener('touchend', handleTouchEndGesture);
 
-    // Убираем обработчик клика с кнопки закрытия
-    const closeButton = document.getElementById('close-button');
-    closeButton.removeEventListener('click', hideWelcomeModal);
+        // Убираем обработчик клика с кнопки закрытия
+        const closeButton = document.getElementById('close-button');
+        closeButton.removeEventListener('click', hideWelcomeModal);
 
-    showAdminDashboard(); // Показать панель администратора после скрытия модального окна
+        showAdminDashboard(); // Показать панель администратора после скрытия модального окна
+    } else {
+        console.error('Modal element not found in the DOM.');
+    }
 }
 
 // Показ панели администратора
 function showAdminDashboard() {
     const adminContainer = document.getElementById('admin-dashboard-container');
-    adminContainer.style.display = 'block';
+    adminContainer.classList.remove('hidden');
     loadAdminDashboard(); // Вызов функции напрямую
 }
 

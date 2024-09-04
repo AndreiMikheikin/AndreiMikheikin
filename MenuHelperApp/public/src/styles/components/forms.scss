@@ -1,0 +1,36 @@
+// components/forms.scss
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid $primary-color;  // Черная рамка
+  border-radius: 4px;
+  background-color: $background-color;  // Белый фон
+  color: $primary-color;  // Черный текст
+}
+
+input[type="submit"],
+button[type="submit"] {
+  @include button-style($primary-color, $accent-color);  // Черный фон, золотой текст
+  width: 100%;
+}
+
+.password-requirements {
+  font-size: 0.9em;
+  color: $text-color;
+
+  .requirement {
+    display: flex;
+    align-items: center;
+
+    .check {
+      margin-right: 5px;
+      color: $accent-color;  // Золотой цвет
+    }
+  }
+}
