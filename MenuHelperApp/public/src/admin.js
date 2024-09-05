@@ -1,6 +1,6 @@
 // Импорт необходимых функций из Firestore
 import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, doc, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { initializeDragAndDrop, saveIconPositions, addIconEventListeners } from './main.js';
 
@@ -110,7 +110,7 @@ function showAdminContent() {
 
 window.loadAdminDashboard = loadAdminDashboard;
 
-/* -------------------------------------------------------------------- */
+/* -------------------Форма добавления / редактирования блюд-------------------- */
 
 // Функция для удаления ингредиента
 function removeIngredient(button) {
@@ -631,14 +631,14 @@ document.addEventListener('DOMContentLoaded', () => {
     addEventListeners();
 });
 
-/* -------------------------------------------------------------------- */
+/* -----------------Форма отображения меню с возможностью редактирования цены и удаления--------------------- */
 
 // Показ меню
 window.showMenu = async function showMenu() {
     showAdminContent();
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
-        <div class="container">
+        <div class="show-menu-container">
 
             <h3 class="page-title">Меню</h3>
             <div id="loading-indicator" style="display: none;">
@@ -866,23 +866,26 @@ function handleDeleteClick(event) {
     }
 }
 
-/* -------------------------------------------------------------------- */
+/* ----------------Форма подсчета закупок с разбивкой по поставщикам (возможен подсчет на несколько дат)------------------------- */
 
 // Показ формы подсчета закупок
 window.showPurchaseCalculationForm = function showPurchaseCalculationForm() {
     showAdminContent();
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
-    <div class="container">
+    <div class="calculation-form-container">
         <h3 class="page-title">Подсчет закупок</h3>
         <div id="loading-indicator" style="display: none;">
             <p>Загрузка, пожалуйста подождите...</p>
             <div class="spinner"></div>
         </div>
         <form id="purchase-calculation-form">
-            <label for="calculation-order-date">Выберите дату заказа:</label>
-            <input type="date" id="calculation-order-date" name="calculation-order-date">
-            <button type="button" id="add-date-button">Добавить дату</button>
+            <label for="order-select">Выберите заказ:</label>
+            <select id="order-select" name="order-select">
+                <option value="">Выберите заказ:</option>
+                <!-- Динамически добавляемые опции -->
+            </select>
+            <button type="button" id="load-order-button">Загрузить заказ</button>
             <div id="date-list"></div>
             <button type="button" id="calculate-purchases-button">Рассчитать</button>
             <button type="button" class="back-button" onclick="loadAdminDashboard()"></button>
@@ -894,45 +897,68 @@ window.showPurchaseCalculationForm = function showPurchaseCalculationForm() {
     `;
 
     // Обработчики событий для кнопок
-    document.getElementById('add-date-button').addEventListener('click', addDateToList);
+    document.getElementById('load-order-button').addEventListener('click', addOrderToList);
     document.getElementById('calculate-purchases-button').addEventListener('click', calculatePurchases);
+
+    // Загрузим список заказов в select
+    loadOrders();
 }
 
-// Функция добавления даты в список
-function addDateToList() {
-    const dateInput = document.getElementById('calculation-order-date');
-    const dateList = document.getElementById('date-list');
+// Функция добавления заказа в список
+async function addOrderToList() {
+    const orderSelect = document.getElementById('order-select');
+    const selectedOrderId = orderSelect.value;
 
-    const selectedDate = dateInput.value;
-
-    // Проверка на пустую дату
-    if (!selectedDate) {
-        alert('Пожалуйста, выберите дату.');
+    if (!selectedOrderId) {
+        alert('Выберите заказ для добавления.');
         return;
     }
 
-    // Проверка на дублирование даты
-    if (document.querySelector(`.calculation-order-date[data-date="${selectedDate}"]`)) {
-        alert('Эта дата уже была добавлена.');
-        return;
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Пользователь не аутентифицирован.');
+            return;
+        }
+
+        const userOrdersRef = collection(db, `users/${user.uid}/orders`);
+        const docRef = doc(userOrdersRef, selectedOrderId);
+        const docSnapshot = await getDoc(docRef);
+
+        if (!docSnapshot.exists()) {
+            alert('Заказ не найден.');
+            return;
+        }
+
+        const orderData = docSnapshot.data();
+        const dateList = document.getElementById('date-list');
+        const formattedDate = orderData.orderDate.toDate().toISOString().split('T')[0];
+
+        // Проверка на дублирование даты
+        if (document.querySelector(`.calculation-order-date[data-date="${formattedDate}"]`)) {
+            alert('Заказы на эту дату уже были добавлены.');
+            return;
+        }
+
+        // Создание нового элемента для отображения даты и данных о заказчике
+        const dateElement = document.createElement('div');
+        dateElement.classList.add('calculation-order-date');
+        dateElement.setAttribute('data-date', orderData.orderDate.toDate().toISOString().split('T')[0]);
+        dateElement.setAttribute('data-order-id', selectedOrderId); // Добавляем ID заказа
+        dateElement.innerHTML = `
+            <p><strong>Дата заказа:</strong> ${orderData.orderDate.toDate().toISOString().split('T')[0]}</p>
+            <p><strong>Имя заказчика:</strong> ${orderData.customerName || 'Не указано'}</p>
+            <p><strong>Телефон заказчика:</strong> ${orderData.customerPhone || 'Не указано'}</p>
+            <button type="button" class="remove-date-button">Удалить</button>
+        `;
+
+        dateElement.querySelector('.remove-date-button').addEventListener('click', () => dateElement.remove());
+        dateList.appendChild(dateElement);
+
+    } catch (error) {
+        console.error('Ошибка при добавлении заказа в список:', error);
+        alert(`Ошибка при добавлении заказа: ${error.message}`);
     }
-
-    // Создание нового элемента для отображения даты
-    const dateElement = document.createElement('div');
-    dateElement.classList.add('calculation-order-date');
-    dateElement.setAttribute('data-date', selectedDate);
-    dateElement.textContent = selectedDate;
-
-    // Добавление кнопки для удаления даты
-    const removeButton = document.createElement('button');
-    removeButton.textContent = 'Удалить';
-    removeButton.addEventListener('click', () => dateElement.remove());
-
-    dateElement.appendChild(removeButton);
-    dateList.appendChild(dateElement);
-
-    // Очистка поля ввода даты после добавления
-    dateInput.value = '';
 }
 
 // Функция подсчета закупок
@@ -943,7 +969,7 @@ async function calculatePurchases() {
     const dateElements = document.querySelectorAll('.calculation-order-date');
 
     if (dateElements.length === 0) {
-        alert('Выберите хотя бы одну дату.');
+        alert('Добавьте хотя бы один заказ для расчета.');
         return;
     }
 
@@ -961,29 +987,30 @@ async function calculatePurchases() {
             return;
         }
 
-        // Проходим по каждой выбранной дате
+        // Проходим по каждому добавленному заказу
         for (const dateElement of dateElements) {
-            const date = dateElement.getAttribute('data-date');
-            console.log(`Загрузка заказов на дату: ${date}`);
+            const selectedDate = dateElement.getAttribute('data-date');
+            const orderId = dateElement.getAttribute('data-order-id'); // Теперь мы добавляем id заказа в data-атрибут
 
-            // Запрос заказов на указанную дату для конкретного пользователя
+            console.log(`Загрузка заказа с ID: ${orderId} на дату: ${selectedDate}`);
+
+            // Запрос заказа по ID для конкретного пользователя
             const userOrdersRef = collection(db, `users/${user.uid}/orders`);
-            const querySnapshot = await getDocs(query(userOrdersRef, where('orderDate', '==', date)));
+            const docRef = doc(userOrdersRef, orderId);
+            const docSnapshot = await getDoc(docRef);
 
-            if (querySnapshot.empty) {
-                console.warn(`Заказы на дату ${date} не найдены.`);
+            if (!docSnapshot.exists()) {
+                console.warn(`Заказ с ID ${orderId} не найден.`);
                 continue;
             }
 
-            for (const doc of querySnapshot.docs) {
-                const orderData = doc.data();
-                const menuItems = orderData.menuItems;
+            const orderData = docSnapshot.data();
+            const menuItems = orderData.menuItems;
 
-                console.log(`Обработка заказа с ${menuItems.length} элементами меню на дату ${date}`);
+            console.log(`Обработка заказа с ${menuItems.length} элементами меню на дату ${selectedDate}`);
 
-                for (const item of menuItems) {
-                    await getIngredientsForDish(user.uid, item.name, item.quantity, ingredientsMap);
-                }
+            for (const item of menuItems) {
+                await getIngredientsForDish(user.uid, item.name, item.quantity, ingredientsMap);
             }
         }
 
@@ -1032,7 +1059,6 @@ async function getIngredientsForDish(userId, dishName, quantity, ingredientsMap)
         }
     });
 }
-
 
 // Функция отображения ингредиентов
 function displayIngredients(ingredientsMap) {
@@ -1097,24 +1123,30 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-/* -------------------------------------------------------------------- */
+
+/* -------------------Форма оформления / редактирования / удаления заказа (печать заказа)--------------------- */
 
 // Показ формы оформления заказа
 window.showOrderForm = function showOrderForm() {
     showAdminContent();
+    loadOrders();
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
-    <div class="container">
+    <div class="show-order-container">
         <h3 class="page-title">Оформление заказа</h3>
         <form id="order-form">
-            <div class="container">
+            <div class="order-properties-container">
                 <label for="order-date">Дата заказа:</label>
-                <input type="date" id="order-date" name="order-date" required>
-            </div>
-
-            <div class="container">
-                <label for="end-date">Дата окончания:</label>
-                <input type="date" id="end-date" name="end-date" required>
+                <input type="date" id="order-date" name="order-date" required="">
+            
+                <label for="order-customer-name">Имя заказчика:</label>
+                <input type="text" id="order-customer-name" name="order-customer-name" required="">
+            
+                <label for="order-customer-phone">Телефон заказчика:</label>
+                <input type="tel" id="order-customer-phone" name="order-customer-phone" required="">
+            
+                <label for="order-else-properties">Дополнительные данные:</label>
+                <textarea name="order-else-properties" id="order-else-properties" cols="30" rows="10"></textarea>
             </div>
 
             <h4>Бланк заказа</h4>
@@ -1154,14 +1186,18 @@ window.showOrderForm = function showOrderForm() {
             <button type="button" class="back-button" onclick="loadAdminDashboard()"></button>
         </form>
 
-        </br><h3>Загрузка заказа по дате</h3>
-        <form id="load-order-form">
-            <label for="load-order-date">Выберите дату:</label>
-            <input type="date" id="load-order-date" name="load-order-date" required>
+        <h3>Загрузка заказа по дате</h3>
+        <div class="order-select-container">
+            <label for="order-select">Выберите заказ для редактирования:</label>
+            <select id="order-select" name="order-select">
+                <option value="">Выберите заказ:</option>
+                <!-- Динамически добавляемые опции -->
+            </select>
             <button type="button" id="load-order-button">Загрузить заказ</button>
-        </form>
+            <button type="button" id="delete-order-button">Удалить заказ</button>
+        </div>
 
-        <div id="print-modal" class="modal">
+        <div id="print-modal" class="modal hidden">
             <div class="modal-content">
                 <span class="modal-close-button">&times;</span>
                 <div id="print-content"></div>
@@ -1178,44 +1214,52 @@ window.showOrderForm = function showOrderForm() {
     document.getElementById('print-order').addEventListener('click', showPrintModal);
     document.getElementById('save-order').addEventListener('click', saveOrder);
     document.getElementById('load-order-button').addEventListener('click', loadOrderByDate);
+    document.getElementById('delete-order-button').addEventListener('click', deleteOrder);
 }
 
-// Загрузка заказа по дате
-let currentOrderId = null;
+// Загрузка заказа по дате и заказчику
+let currentOrderId = null; // Переменная для хранения текущего ID заказа
 
+// Загрузка заказа для редактирования
 async function loadOrderByDate() {
-    const loadOrderDate = document.getElementById('load-order-date').value;
+    const orderSelect = document.getElementById('order-select');
+    const selectedOrderId = orderSelect.value;
+
+    if (!selectedOrderId) {
+        alert('Выберите заказ для загрузки.');
+        return;
+    }
 
     try {
-        // Получаем текущего пользователя
         const user = auth.currentUser;
         if (!user) {
             alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
             return;
         }
 
-        // Запрос к базе данных Firestore, фильтрация по дате заказа и ID пользователя
-        const userOrdersRef = collection(db, `users/${user.uid}/orders`);
-        const querySnapshot = await getDocs(query(userOrdersRef, where('orderDate', '==', loadOrderDate)));
+        // Получаем ссылку на заказ
+        const orderRef = doc(db, `users/${user.uid}/orders/${selectedOrderId}`);
+        const docSnapshot = await getDoc(orderRef);
 
-        if (querySnapshot.empty) {
-            alert('Заказ на эту дату не найден.');
+        if (!docSnapshot.exists()) {
+            alert('Заказ не найден.');
             return;
         }
 
-        // Получение данных заказа
-        const docSnapshot = querySnapshot.docs[0];
         const orderData = docSnapshot.data();
-        currentOrderId = docSnapshot.id; // Сохранение ID заказа
+        currentOrderId = selectedOrderId; // Сохраняем ID заказа в переменной
 
-        // Заполнение формы данными заказа
-        document.getElementById('order-date').value = orderData.orderDate;
-        document.getElementById('end-date').value = orderData.endDate;
-
+        // Заполнение полей формы данными заказа
+        document.getElementById('order-date').value = orderData.orderDate.toDate().toISOString().split('T')[0];
+        document.getElementById('order-customer-name').value = orderData.customerName || '';
+        document.getElementById('order-customer-phone').value = orderData.customerPhone || '';
+        document.getElementById('order-else-properties').value = orderData.additionalProperties || '';
+        
+        // Очищаем и заполняем поля меню и дополнительных услуг
         const orderBlank = document.getElementById('order-blank');
         orderBlank.innerHTML = '';
 
-        // Группировка блюд по категориям при загрузке
+        // Группировка блюд по категориям
         const categories = {};
 
         orderData.menuItems.forEach(item => {
@@ -1228,8 +1272,8 @@ async function loadOrderByDate() {
             categories[category].push(item);
         });
 
+        // Создаем элементы для каждой категории и её блюд
         for (const [category, dishes] of Object.entries(categories)) {
-            // Создаем контейнер для категории
             let categoryContainer = document.createElement('div');
             categoryContainer.classList.add('category-container');
             categoryContainer.setAttribute('data-category', category);
@@ -1267,6 +1311,7 @@ async function loadOrderByDate() {
             orderBlank.appendChild(categoryContainer);
         }
 
+        // Заполнение дополнительных услуг
         const servicesContainer = document.getElementById('additional-services');
         servicesContainer.innerHTML = '<button type="button" id="add-service">Добавить услугу</button>';
 
@@ -1289,6 +1334,7 @@ async function loadOrderByDate() {
             servicesContainer.appendChild(serviceDiv);
         });
 
+        // Заполнение итоговых данных
         document.getElementById('total-sum').value = orderData.totalSum;
         document.getElementById('prepayment').value = orderData.prepayment;
         document.getElementById('final-sum').value = orderData.finalSum;
@@ -1444,21 +1490,21 @@ function updateTotalSum() {
     let totalSum = 0;
 
     orderItems.forEach(item => {
-        const quantity = item.querySelector('.dish-quantity').value;
-        const price = item.querySelector('.dish-quantity').getAttribute('data-price');
+        const quantity = parseFloat(item.querySelector('.dish-quantity').value) || 0;
+        const price = parseFloat(item.querySelector('.dish-quantity').getAttribute('data-price')) || 0;
         const totalPrice = (quantity * price).toFixed(2);
         item.querySelector('.dish-total-price').textContent = `${totalPrice} руб.`;
         totalSum += parseFloat(totalPrice);
     });
 
-    document.getElementById('total-sum').value = totalSum;
+    document.getElementById('total-sum').value = totalSum.toFixed(2);
     updateFinalSum();
 }
 
 // Обновление итоговой суммы блюда
 function updateDishTotalPrice(orderItem) {
-    const quantity = orderItem.querySelector('.dish-quantity').value;
-    const price = orderItem.querySelector('.dish-quantity').getAttribute('data-price');
+    const quantity = parseFloat(orderItem.querySelector('.dish-quantity').value) || 0;
+    const price = parseFloat(orderItem.querySelector('.dish-quantity').getAttribute('data-price')) || 0;
     const totalPrice = (quantity * price).toFixed(2);
     orderItem.querySelector('.dish-total-price').textContent = `${totalPrice} руб.`;
 
@@ -1493,8 +1539,8 @@ function addServiceField() {
 // Обновление итоговой суммы услуги
 function updateServiceTotal(event) {
     const serviceDiv = event.target.closest('.service');
-    const quantity = serviceDiv.querySelector('input[name="service-quantity"]').value;
-    const price = serviceDiv.querySelector('input[name="service-price"]').value;
+    const quantity = parseFloat(serviceDiv.querySelector('input[name="service-quantity"]').value) || 0;
+    const price = parseFloat(serviceDiv.querySelector('input[name="service-price"]').value) || 0;
     const total = (quantity * price).toFixed(2);
     serviceDiv.querySelector('input[name="service-total"]').value = total;
 
@@ -1518,23 +1564,67 @@ function updateFinalSum() {
 
 // Показ модального окна для печати
 function showPrintModal() {
-    const printContent = document.getElementById('print-content');
-    printContent.innerHTML = generatePrintContent();
-
+    const printContent = generatePrintContent(); // Генерируем контент для печати
     const printModal = document.getElementById('print-modal');
-    printModal.style.display = 'block';
+    const printContentContainer = document.getElementById('print-content');
+    
+    printContentContainer.innerHTML = printContent;  // Вставляем сгенерированный контент в модальное окно
+    printModal.classList.remove('hidden'); // Удаляем класс 'hidden', чтобы показать модальное окно
 
     // Обработчик закрытия модального окна
     const closeModalButton = document.querySelector('.modal-close-button');
     closeModalButton.addEventListener('click', () => {
-        printModal.style.display = 'none';
+        printModal.classList.add('hidden'); // Добавляем класс 'hidden', чтобы скрыть модальное окно
     });
 
     const confirmPrintButton = document.getElementById('confirm-print');
     confirmPrintButton.addEventListener('click', () => {
-        window.print();
-        printModal.style.display = 'none';
+        printElement(printContent);  // Передаем сгенерированный контент в функцию печати
+        printModal.classList.add('hidden'); // Скрываем модальное окно после печати
     });
+}
+
+// Функция для печати переданного HTML-контента
+function printElement(content) {
+    const printWindow = window.open('', '', 'height=600,width=800');
+
+    // Генерируем HTML-документ для печати
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Печать заказа</title>
+                <style>
+                    /* Стили для печати */
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                    }
+                    h3, h4, h5 {
+                        margin: 0;
+                        padding: 5px 0;
+                    }
+                    ul {
+                        list-style-type: none;
+                        padding: 0;
+                    }
+                    li {
+                        padding: 5px 0;
+                    }
+                    p {
+                        margin: 10px 0;
+                    }
+                </style>
+            </head>
+            <body>
+                ${content}
+            </body>
+        </html>
+    `);
+
+    printWindow.document.close();  // Закрываем поток записи
+    printWindow.focus();  // Устанавливаем фокус на новое окно
+    printWindow.print();  // Запускаем печать
+    printWindow.close();  // Закрываем окно после печати
 }
 
 // Генерация контента для печати
@@ -1594,46 +1684,45 @@ function generatePrintContent() {
     return printContent;
 }
 
-// Сохранение заказа
+// Сохранение заказа (нового или существующего)
 async function saveOrder() {
-    const orderDate = document.getElementById('order-date').value;
-    const endDate = document.getElementById('end-date').value;
+    const orderDate = new Date(document.getElementById('order-date').value);
     const totalSum = parseFloat(document.getElementById('total-sum').value) || 0;
     const prepayment = parseFloat(document.getElementById('prepayment').value) || 0;
     const finalSum = parseFloat(document.getElementById('final-sum').value) || 0;
 
-    let menuItems = [];
-    document.querySelectorAll('.order-item').forEach(item => {
-        const categoryContainer = item.closest('.category-container');
-        const category = categoryContainer ? categoryContainer.getAttribute('data-category') : 'Без категории';
-        menuItems.push({
-            name: item.querySelector('p').textContent,
-            quantity: parseInt(item.querySelector('.dish-quantity').value),
-            price: parseFloat(item.querySelector('.dish-quantity').getAttribute('data-price')),
-            total: parseFloat(item.querySelector('.dish-total-price').textContent),
-            category: category
-        });
-    });
-
-    let additionalServices = [];
-    document.querySelectorAll('.service').forEach(service => {
-        additionalServices.push({
-            name: service.querySelector('input[name="service-name"]').value,
-            quantity: parseInt(service.querySelector('input[name="service-quantity"]').value),
-            price: parseFloat(service.querySelector('input[name="service-price"]').value),
-            total: parseFloat(service.querySelector('input[name="service-total"]').value)
-        });
-    });
-
     const orderData = {
-        orderDate,
-        endDate,
-        menuItems,
-        additionalServices,
-        totalSum,
-        prepayment,
-        finalSum
+        orderDate: Timestamp.fromDate(orderDate),
+        customerName: document.getElementById('order-customer-name').value,
+        customerPhone: document.getElementById('order-customer-phone').value,
+        additionalProperties: document.getElementById('order-else-properties').value,
+        menuItems: [], // Здесь соберите данные всех блюд из формы
+        additionalServices: [], // Здесь соберите данные всех дополнительных услуг из формы
+        totalSum: totalSum,
+        prepayment: prepayment,
+        finalSum: finalSum
     };
+
+    // Собираем данные меню
+    document.querySelectorAll('.category-container').forEach(categoryContainer => {
+        const category = categoryContainer.getAttribute('data-category');
+        categoryContainer.querySelectorAll('.order-item').forEach(orderItem => {
+            const name = orderItem.querySelector('p').textContent;
+            const quantity = parseFloat(orderItem.querySelector('.dish-quantity').value) || 0;
+            const price = parseFloat(orderItem.querySelector('.dish-quantity').getAttribute('data-price')) || 0;
+            const total = parseFloat(orderItem.querySelector('.dish-total-price').textContent) || 0;
+            orderData.menuItems.push({ category, name, quantity, price, total });
+        });
+    });
+
+    // Собираем данные дополнительных услуг
+    document.querySelectorAll('.service').forEach(serviceDiv => {
+        const name = serviceDiv.querySelector('input[name="service-name"]').value;
+        const quantity = parseFloat(serviceDiv.querySelector('input[name="service-quantity"]').value) || 0;
+        const price = parseFloat(serviceDiv.querySelector('input[name="service-price"]').value) || 0;
+        const total = parseFloat(serviceDiv.querySelector('input[name="service-total"]').value) || 0;
+        orderData.additionalServices.push({ name, quantity, price, total });
+    });
 
     try {
         // Получаем текущего пользователя
@@ -1646,10 +1735,10 @@ async function saveOrder() {
         const userOrdersRef = collection(db, `users/${user.uid}/orders`);
 
         if (currentOrderId) {
-            // Обновление существующего заказа
+            // Если есть ID заказа, обновляем существующий заказ
             await updateDoc(doc(userOrdersRef, currentOrderId), orderData);
         } else {
-            // Создание нового заказа
+            // Если ID нет, создаем новый заказ
             await addDoc(userOrdersRef, orderData);
         }
         alert('Заказ успешно сохранен.');
@@ -1657,16 +1746,102 @@ async function saveOrder() {
         console.error('Ошибка при сохранении заказа:', error);
         alert(`Ошибка при сохранении заказа: ${error.message}`);
     }
+    loadOrders();
 }
 
-/* -------------------------------------------------------------------- */
+// Загрузка заказов в выпадающий список
+async function loadOrders() {
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Пользователь не аутентифицирован.');
+            return;
+        }
+
+        const userOrdersRef = collection(db, `users/${user.uid}/orders`);
+        const currentDate = new Date();
+        const oneMonthAgo = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
+        const oneMonthAgoTimestamp = Timestamp.fromDate(oneMonthAgo);
+
+        // Запрашиваем заказы за последний месяц
+        const querySnapshot = await getDocs(
+            query(userOrdersRef, where('orderDate', '>=', oneMonthAgoTimestamp))
+        );
+
+        const orderSelect = document.getElementById('order-select');
+        orderSelect.innerHTML = '<option value="">Выберите заказ:</option>'; // Очищаем старые опции
+
+        const ordersByDate = {};
+
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            const timestamp = data.orderDate.toDate(); // Преобразуем Timestamp в Date
+            const date = timestamp.toISOString().split('T')[0]; // Преобразуем Date в строку формата YYYY-MM-DD
+
+            if (!ordersByDate[date]) {
+                ordersByDate[date] = [];
+            }
+            ordersByDate[date].push({
+                id: doc.id,
+                customerName: data.customerName,
+                customerPhone: data.customerPhone
+            });
+        });
+
+        // Генерация опций для селекта
+        Object.keys(ordersByDate).sort().forEach(date => {
+            const group = document.createElement('optgroup');
+            group.label = date;
+            ordersByDate[date].forEach(order => {
+                const option = document.createElement('option');
+                option.value = order.id;
+                option.textContent = `${order.customerName} (${order.customerPhone})`;
+                group.appendChild(option);
+            });
+            orderSelect.appendChild(group);
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке заказов:', error);
+        alert(`Ошибка при загрузке заказов: ${error.message}`);
+    }
+}
+
+// Удаление заказа
+async function deleteOrder() {
+    const selectedOrderId = document.getElementById('order-select').value;
+    if (!selectedOrderId) {
+        alert('Выберите заказ для удаления.');
+        return;
+    }
+
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            alert('Пользователь не аутентифицирован.');
+            return;
+        }
+
+        const userOrdersRef = collection(db, `users/${user.uid}/orders`);
+        await deleteDoc(doc(userOrdersRef, selectedOrderId));
+        alert('Заказ успешно удален.');
+
+        loadOrders(); // Перезагружаем список заказов
+    } catch (error) {
+        console.error('Ошибка при удалении заказа:', error);
+        alert(`Ошибка при удалении заказа: ${error.message}`);
+    }
+}
+
+window.loadOrders = loadOrders;
+
+/* ---------------------Форма добавления / редактирования / удаления поставщиков-------------------------- */
 
 // Экспортируем функцию showSuppliers для использования в других модулях
 export async function showSuppliers() {
     showAdminContent();
     const adminContent = document.getElementById('admin-dashboard-content');
     adminContent.innerHTML = `
-        <div class="container">
+        <div class="show-suppliers-container">
             <h3 class="page-title">Список поставщиков</h3>
             <div id="loading-indicator" style="display: none;">
                 <p>Загрузка, пожалуйста подождите...</p>
@@ -1727,6 +1902,7 @@ export async function showSuppliers() {
             document.querySelectorAll('.delete-button').forEach(button => {
                 button.addEventListener('click', handleDeleteSupplierClick);
             });
+
         } else {
             console.error('Пользователь не аутентифицирован');
             alert('Пожалуйста, войдите в систему, чтобы просмотреть список поставщиков.');
@@ -1747,7 +1923,7 @@ window.showSuppliers = showSuppliers;
 window.showAddSupplierForm = function showAddSupplierForm() {
     const adminContent = document.getElementById('admin-dashboard-content');
     adminContent.innerHTML = `
-    <div class="container">
+    <div class="add-suppliers-form-container">
         <h2>Добавить поставщика</h2>
         <form id="add-supplier-form">
             <label for="suppliersName">Название:</label>
@@ -1836,7 +2012,7 @@ async function handleEditSupplierClick(event) {
 function showEditSupplierForm(supplierId, supplier) {
     const adminContent = document.getElementById('admin-dashboard-content');
     adminContent.innerHTML = `
-    <div class="container">
+    <div class="edit-suppliers-form-container">
         <h2>Редактировать поставщика</h2>
         <form id="edit-supplier-form">
             <label for="suppliersName">Название:</label>

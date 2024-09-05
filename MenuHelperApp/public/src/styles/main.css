@@ -2,7 +2,8 @@
 * {
   box-sizing: border-box;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  list-style: none; }
 
 body {
   font-family: "Open Sans", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -46,7 +47,8 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease; }
+  transition: background-color 0.3s ease;
+  margin-top: 10px; }
   button:hover {
     background-color: black; }
   button.admin {
@@ -81,6 +83,8 @@ button {
       background-color: #999999; }
   button__icon {
     margin-right: 10px; }
+  button.close-button {
+    margin-top: 0; }
 
 form {
   display: flex;
@@ -141,6 +145,49 @@ button[type="submit"] {
       top: 10px;
       right: 10px;
       color: #c94f4f; }
+
+.show-order-container #print-modal {
+  position: fixed;
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); }
+  .show-order-container #print-modal .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #611e1e;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    position: relative; }
+  .show-order-container #print-modal .modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer; }
+    .show-order-container #print-modal .modal-close-button:hover {
+      color: #c94f4f; }
+  .show-order-container #print-modal #confirm-print {
+    background-color: #000;
+    border: none;
+    padding: 10px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: block;
+    margin: 20px auto 0;
+    width: 100px; }
+    .show-order-container #print-modal #confirm-print:hover {
+      background-color: black; }
 
 #auth-container,
 #forgot-password-container {
@@ -231,13 +278,19 @@ button[type="submit"] {
     top: 100px;
     left: 350px; }
   #admin-dashboard-container #icon4 {
-    top: 250px;
-    left: 50px; }
+    top: 100px;
+    left: 500px; }
   #admin-dashboard-container #icon5 {
-    top: 250px;
-    left: 200px; }
+    top: 100px;
+    left: 650px; }
 
-.add-dish-container {
+.add-dish-container,
+.show-menu-container,
+.show-order-container,
+.calculation-form-container,
+.show-suppliers-container,
+.add-suppliers-form-container,
+.edit-suppliers-form-container {
   background-color: #fff;
   position: relative;
   max-width: 900px;
@@ -246,19 +299,56 @@ button[type="submit"] {
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   margin-top: 20px; }
-  .add-dish-container .page-title {
+  .add-dish-container .page-title,
+  .show-menu-container .page-title,
+  .show-order-container .page-title,
+  .calculation-form-container .page-title,
+  .show-suppliers-container .page-title,
+  .add-suppliers-form-container .page-title,
+  .edit-suppliers-form-container .page-title {
     font-family: "Cormorant", Georgia, "Times New Roman", Times, serif;
     color: #c94f4f;
-    font-size: 1.6rem;
+    font-size: 2.1rem;
+    font-weight: 900;
     margin-bottom: 20px;
     text-align: center; }
-  .add-dish-container form {
+  .add-dish-container form,
+  .show-menu-container form,
+  .show-order-container form,
+  .calculation-form-container form,
+  .show-suppliers-container form,
+  .add-suppliers-form-container form,
+  .edit-suppliers-form-container form {
     display: flex;
     flex-direction: column; }
     .add-dish-container form input[type="text"],
     .add-dish-container form input[type="number"],
     .add-dish-container form textarea,
-    .add-dish-container form select {
+    .add-dish-container form select,
+    .show-menu-container form input[type="text"],
+    .show-menu-container form input[type="number"],
+    .show-menu-container form textarea,
+    .show-menu-container form select,
+    .show-order-container form input[type="text"],
+    .show-order-container form input[type="number"],
+    .show-order-container form textarea,
+    .show-order-container form select,
+    .calculation-form-container form input[type="text"],
+    .calculation-form-container form input[type="number"],
+    .calculation-form-container form textarea,
+    .calculation-form-container form select,
+    .show-suppliers-container form input[type="text"],
+    .show-suppliers-container form input[type="number"],
+    .show-suppliers-container form textarea,
+    .show-suppliers-container form select,
+    .add-suppliers-form-container form input[type="text"],
+    .add-suppliers-form-container form input[type="number"],
+    .add-suppliers-form-container form textarea,
+    .add-suppliers-form-container form select,
+    .edit-suppliers-form-container form input[type="text"],
+    .edit-suppliers-form-container form input[type="number"],
+    .edit-suppliers-form-container form textarea,
+    .edit-suppliers-form-container form select {
       padding: 10px;
       margin-bottom: 15px;
       border: 1px solid #611e1e;
@@ -269,37 +359,127 @@ button[type="submit"] {
       .add-dish-container form input[type="text"]:focus,
       .add-dish-container form input[type="number"]:focus,
       .add-dish-container form textarea:focus,
-      .add-dish-container form select:focus {
+      .add-dish-container form select:focus,
+      .show-menu-container form input[type="text"]:focus,
+      .show-menu-container form input[type="number"]:focus,
+      .show-menu-container form textarea:focus,
+      .show-menu-container form select:focus,
+      .show-order-container form input[type="text"]:focus,
+      .show-order-container form input[type="number"]:focus,
+      .show-order-container form textarea:focus,
+      .show-order-container form select:focus,
+      .calculation-form-container form input[type="text"]:focus,
+      .calculation-form-container form input[type="number"]:focus,
+      .calculation-form-container form textarea:focus,
+      .calculation-form-container form select:focus,
+      .show-suppliers-container form input[type="text"]:focus,
+      .show-suppliers-container form input[type="number"]:focus,
+      .show-suppliers-container form textarea:focus,
+      .show-suppliers-container form select:focus,
+      .add-suppliers-form-container form input[type="text"]:focus,
+      .add-suppliers-form-container form input[type="number"]:focus,
+      .add-suppliers-form-container form textarea:focus,
+      .add-suppliers-form-container form select:focus,
+      .edit-suppliers-form-container form input[type="text"]:focus,
+      .edit-suppliers-form-container form input[type="number"]:focus,
+      .edit-suppliers-form-container form textarea:focus,
+      .edit-suppliers-form-container form select:focus {
         border-color: #000;
         outline: none;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
-    .add-dish-container form .weight-input {
+    .add-dish-container form .weight-input,
+    .show-menu-container form .weight-input,
+    .show-order-container form .weight-input,
+    .calculation-form-container form .weight-input,
+    .show-suppliers-container form .weight-input,
+    .add-suppliers-form-container form .weight-input,
+    .edit-suppliers-form-container form .weight-input {
       width: auto; }
-    .add-dish-container form #ingredients-container {
+    .add-dish-container form #ingredients-container,
+    .show-menu-container form #ingredients-container,
+    .show-order-container form #ingredients-container,
+    .calculation-form-container form #ingredients-container,
+    .show-suppliers-container form #ingredients-container,
+    .add-suppliers-form-container form #ingredients-container,
+    .edit-suppliers-form-container form #ingredients-container {
       margin-bottom: 20px; }
-      .add-dish-container form #ingredients-container .ingredients-label {
+      .add-dish-container form #ingredients-container .ingredients-label,
+      .show-menu-container form #ingredients-container .ingredients-label,
+      .show-order-container form #ingredients-container .ingredients-label,
+      .calculation-form-container form #ingredients-container .ingredients-label,
+      .show-suppliers-container form #ingredients-container .ingredients-label,
+      .add-suppliers-form-container form #ingredients-container .ingredients-label,
+      .edit-suppliers-form-container form #ingredients-container .ingredients-label {
         color: #000;
         font-size: 1.2rem;
         margin-bottom: 10px; }
-      .add-dish-container form #ingredients-container .ingredient-group {
+      .add-dish-container form #ingredients-container .ingredient-group,
+      .show-menu-container form #ingredients-container .ingredient-group,
+      .show-order-container form #ingredients-container .ingredient-group,
+      .calculation-form-container form #ingredients-container .ingredient-group,
+      .show-suppliers-container form #ingredients-container .ingredient-group,
+      .add-suppliers-form-container form #ingredients-container .ingredient-group,
+      .edit-suppliers-form-container form #ingredients-container .ingredient-group {
         display: flex;
         align-items: center;
         margin-bottom: 15px; }
         .add-dish-container form #ingredients-container .ingredient-group input[type="text"],
         .add-dish-container form #ingredients-container .ingredient-group input[type="number"],
-        .add-dish-container form #ingredients-container .ingredient-group select {
+        .add-dish-container form #ingredients-container .ingredient-group select,
+        .show-menu-container form #ingredients-container .ingredient-group input[type="text"],
+        .show-menu-container form #ingredients-container .ingredient-group input[type="number"],
+        .show-menu-container form #ingredients-container .ingredient-group select,
+        .show-order-container form #ingredients-container .ingredient-group input[type="text"],
+        .show-order-container form #ingredients-container .ingredient-group input[type="number"],
+        .show-order-container form #ingredients-container .ingredient-group select,
+        .calculation-form-container form #ingredients-container .ingredient-group input[type="text"],
+        .calculation-form-container form #ingredients-container .ingredient-group input[type="number"],
+        .calculation-form-container form #ingredients-container .ingredient-group select,
+        .show-suppliers-container form #ingredients-container .ingredient-group input[type="text"],
+        .show-suppliers-container form #ingredients-container .ingredient-group input[type="number"],
+        .show-suppliers-container form #ingredients-container .ingredient-group select,
+        .add-suppliers-form-container form #ingredients-container .ingredient-group input[type="text"],
+        .add-suppliers-form-container form #ingredients-container .ingredient-group input[type="number"],
+        .add-suppliers-form-container form #ingredients-container .ingredient-group select,
+        .edit-suppliers-form-container form #ingredients-container .ingredient-group input[type="text"],
+        .edit-suppliers-form-container form #ingredients-container .ingredient-group input[type="number"],
+        .edit-suppliers-form-container form #ingredients-container .ingredient-group select {
           margin-right: 10px; }
-        .add-dish-container form #ingredients-container .ingredient-group .remove-ingredient-button {
+        .add-dish-container form #ingredients-container .ingredient-group .remove-ingredient-button,
+        .show-menu-container form #ingredients-container .ingredient-group .remove-ingredient-button,
+        .show-order-container form #ingredients-container .ingredient-group .remove-ingredient-button,
+        .calculation-form-container form #ingredients-container .ingredient-group .remove-ingredient-button,
+        .show-suppliers-container form #ingredients-container .ingredient-group .remove-ingredient-button,
+        .add-suppliers-form-container form #ingredients-container .ingredient-group .remove-ingredient-button,
+        .edit-suppliers-form-container form #ingredients-container .ingredient-group .remove-ingredient-button {
           background: none;
           border: none;
           margin-top: -15px;
           color: #e74c3c;
           cursor: pointer; }
-          .add-dish-container form #ingredients-container .ingredient-group .remove-ingredient-button:hover {
+          .add-dish-container form #ingredients-container .ingredient-group .remove-ingredient-button:hover,
+          .show-menu-container form #ingredients-container .ingredient-group .remove-ingredient-button:hover,
+          .show-order-container form #ingredients-container .ingredient-group .remove-ingredient-button:hover,
+          .calculation-form-container form #ingredients-container .ingredient-group .remove-ingredient-button:hover,
+          .show-suppliers-container form #ingredients-container .ingredient-group .remove-ingredient-button:hover,
+          .add-suppliers-form-container form #ingredients-container .ingredient-group .remove-ingredient-button:hover,
+          .edit-suppliers-form-container form #ingredients-container .ingredient-group .remove-ingredient-button:hover {
             color: #d62c1a; }
-          .add-dish-container form #ingredients-container .ingredient-group .remove-ingredient-button i {
+          .add-dish-container form #ingredients-container .ingredient-group .remove-ingredient-button i,
+          .show-menu-container form #ingredients-container .ingredient-group .remove-ingredient-button i,
+          .show-order-container form #ingredients-container .ingredient-group .remove-ingredient-button i,
+          .calculation-form-container form #ingredients-container .ingredient-group .remove-ingredient-button i,
+          .show-suppliers-container form #ingredients-container .ingredient-group .remove-ingredient-button i,
+          .add-suppliers-form-container form #ingredients-container .ingredient-group .remove-ingredient-button i,
+          .edit-suppliers-form-container form #ingredients-container .ingredient-group .remove-ingredient-button i {
             font-size: 1.2rem; }
-    .add-dish-container form #add-ingredient {
+    .add-dish-container form #add-ingredient,
+    .show-menu-container form #add-ingredient,
+    .show-order-container form #add-ingredient,
+    .calculation-form-container form #add-ingredient,
+    .show-suppliers-container form #add-ingredient,
+    .add-suppliers-form-container form #add-ingredient,
+    .edit-suppliers-form-container form #add-ingredient {
       background-color: #000;
       border: none;
       padding: 10px;
@@ -308,9 +488,21 @@ button[type="submit"] {
       cursor: pointer;
       transition: background-color 0.2s ease;
       margin-bottom: 20px; }
-      .add-dish-container form #add-ingredient:hover {
+      .add-dish-container form #add-ingredient:hover,
+      .show-menu-container form #add-ingredient:hover,
+      .show-order-container form #add-ingredient:hover,
+      .calculation-form-container form #add-ingredient:hover,
+      .show-suppliers-container form #add-ingredient:hover,
+      .add-suppliers-form-container form #add-ingredient:hover,
+      .edit-suppliers-form-container form #add-ingredient:hover {
         background-color: black; }
-    .add-dish-container form #save-dish-button {
+    .add-dish-container form #save-dish-button,
+    .show-menu-container form #save-dish-button,
+    .show-order-container form #save-dish-button,
+    .calculation-form-container form #save-dish-button,
+    .show-suppliers-container form #save-dish-button,
+    .add-suppliers-form-container form #save-dish-button,
+    .edit-suppliers-form-container form #save-dish-button {
       background-color: #000;
       border: none;
       padding: 10px;
@@ -318,13 +510,37 @@ button[type="submit"] {
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.2s ease; }
-      .add-dish-container form #save-dish-button:hover {
+      .add-dish-container form #save-dish-button:hover,
+      .show-menu-container form #save-dish-button:hover,
+      .show-order-container form #save-dish-button:hover,
+      .calculation-form-container form #save-dish-button:hover,
+      .show-suppliers-container form #save-dish-button:hover,
+      .add-suppliers-form-container form #save-dish-button:hover,
+      .edit-suppliers-form-container form #save-dish-button:hover {
         background-color: black; }
-    .add-dish-container form #shared-by-container {
+    .add-dish-container form #shared-by-container,
+    .show-menu-container form #shared-by-container,
+    .show-order-container form #shared-by-container,
+    .calculation-form-container form #shared-by-container,
+    .show-suppliers-container form #shared-by-container,
+    .add-suppliers-form-container form #shared-by-container,
+    .edit-suppliers-form-container form #shared-by-container {
       margin-bottom: 20px; }
-      .add-dish-container form #shared-by-container input[type="text"] {
+      .add-dish-container form #shared-by-container input[type="text"],
+      .show-menu-container form #shared-by-container input[type="text"],
+      .show-order-container form #shared-by-container input[type="text"],
+      .calculation-form-container form #shared-by-container input[type="text"],
+      .show-suppliers-container form #shared-by-container input[type="text"],
+      .add-suppliers-form-container form #shared-by-container input[type="text"],
+      .edit-suppliers-form-container form #shared-by-container input[type="text"] {
         width: 100%; }
-  .add-dish-container .back-button {
+  .add-dish-container .back-button,
+  .show-menu-container .back-button,
+  .show-order-container .back-button,
+  .calculation-form-container .back-button,
+  .show-suppliers-container .back-button,
+  .add-suppliers-form-container .back-button,
+  .edit-suppliers-form-container .back-button {
     position: absolute;
     top: 5px;
     right: 2%;
@@ -335,31 +551,73 @@ button[type="submit"] {
     cursor: pointer;
     margin-top: 20px;
     transition: background-color 0.2s ease; }
-    .add-dish-container .back-button::before {
+    .add-dish-container .back-button::before,
+    .show-menu-container .back-button::before,
+    .show-order-container .back-button::before,
+    .calculation-form-container .back-button::before,
+    .show-suppliers-container .back-button::before,
+    .add-suppliers-form-container .back-button::before,
+    .edit-suppliers-form-container .back-button::before {
       content: "\f053";
       font-family: 'Font Awesome 5 Free';
       font-weight: 900; }
-  .add-dish-container .back-button:hover {
+  .add-dish-container .back-button:hover,
+  .show-menu-container .back-button:hover,
+  .show-order-container .back-button:hover,
+  .calculation-form-container .back-button:hover,
+  .show-suppliers-container .back-button:hover,
+  .add-suppliers-form-container .back-button:hover,
+  .edit-suppliers-form-container .back-button:hover {
     background-color: #000; }
-  .add-dish-container .edit-dish-container {
+  .add-dish-container .edit-dish-container,
+  .show-menu-container .edit-dish-container,
+  .show-order-container .edit-dish-container,
+  .calculation-form-container .edit-dish-container,
+  .show-suppliers-container .edit-dish-container,
+  .add-suppliers-form-container .edit-dish-container,
+  .edit-suppliers-form-container .edit-dish-container {
     margin-top: 20px;
     background-color: #b3b3b3;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
-    .add-dish-container .edit-dish-container h4 {
+    .add-dish-container .edit-dish-container h4,
+    .show-menu-container .edit-dish-container h4,
+    .show-order-container .edit-dish-container h4,
+    .calculation-form-container .edit-dish-container h4,
+    .show-suppliers-container .edit-dish-container h4,
+    .add-suppliers-form-container .edit-dish-container h4,
+    .edit-suppliers-form-container .edit-dish-container h4 {
       color: #000;
       font-size: 1.4rem;
       margin-bottom: 15px;
       text-align: center; }
-    .add-dish-container .edit-dish-container form {
+    .add-dish-container .edit-dish-container form,
+    .show-menu-container .edit-dish-container form,
+    .show-order-container .edit-dish-container form,
+    .calculation-form-container .edit-dish-container form,
+    .show-suppliers-container .edit-dish-container form,
+    .add-suppliers-form-container .edit-dish-container form,
+    .edit-suppliers-form-container .edit-dish-container form {
       display: flex;
       flex-direction: column; }
-      .add-dish-container .edit-dish-container form label {
+      .add-dish-container .edit-dish-container form label,
+      .show-menu-container .edit-dish-container form label,
+      .show-order-container .edit-dish-container form label,
+      .calculation-form-container .edit-dish-container form label,
+      .show-suppliers-container .edit-dish-container form label,
+      .add-suppliers-form-container .edit-dish-container form label,
+      .edit-suppliers-form-container .edit-dish-container form label {
         font-size: 1rem;
         color: #000;
         margin-bottom: 10px; }
-      .add-dish-container .edit-dish-container form select {
+      .add-dish-container .edit-dish-container form select,
+      .show-menu-container .edit-dish-container form select,
+      .show-order-container .edit-dish-container form select,
+      .calculation-form-container .edit-dish-container form select,
+      .show-suppliers-container .edit-dish-container form select,
+      .add-suppliers-form-container .edit-dish-container form select,
+      .edit-suppliers-form-container .edit-dish-container form select {
         padding: 10px;
         margin-bottom: 15px;
         border: 1px solid #611e1e;
@@ -367,12 +625,30 @@ button[type="submit"] {
         font-size: 1rem;
         background-color: #b3b3b3;
         color: #000; }
-        .add-dish-container .edit-dish-container form select:focus {
+        .add-dish-container .edit-dish-container form select:focus,
+        .show-menu-container .edit-dish-container form select:focus,
+        .show-order-container .edit-dish-container form select:focus,
+        .calculation-form-container .edit-dish-container form select:focus,
+        .show-suppliers-container .edit-dish-container form select:focus,
+        .add-suppliers-form-container .edit-dish-container form select:focus,
+        .edit-suppliers-form-container .edit-dish-container form select:focus {
           border-color: #000;
           outline: none;
           box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
       .add-dish-container .edit-dish-container form #load-dish-button,
-      .add-dish-container .edit-dish-container form #delete-dish-button {
+      .add-dish-container .edit-dish-container form #delete-dish-button,
+      .show-menu-container .edit-dish-container form #load-dish-button,
+      .show-menu-container .edit-dish-container form #delete-dish-button,
+      .show-order-container .edit-dish-container form #load-dish-button,
+      .show-order-container .edit-dish-container form #delete-dish-button,
+      .calculation-form-container .edit-dish-container form #load-dish-button,
+      .calculation-form-container .edit-dish-container form #delete-dish-button,
+      .show-suppliers-container .edit-dish-container form #load-dish-button,
+      .show-suppliers-container .edit-dish-container form #delete-dish-button,
+      .add-suppliers-form-container .edit-dish-container form #load-dish-button,
+      .add-suppliers-form-container .edit-dish-container form #delete-dish-button,
+      .edit-suppliers-form-container .edit-dish-container form #load-dish-button,
+      .edit-suppliers-form-container .edit-dish-container form #delete-dish-button {
         background-color: #000;
         border: none;
         padding: 10px;
@@ -382,322 +658,232 @@ button[type="submit"] {
         transition: background-color 0.2s ease;
         margin-top: 10px; }
         .add-dish-container .edit-dish-container form #load-dish-button:hover,
-        .add-dish-container .edit-dish-container form #delete-dish-button:hover {
+        .add-dish-container .edit-dish-container form #delete-dish-button:hover,
+        .show-menu-container .edit-dish-container form #load-dish-button:hover,
+        .show-menu-container .edit-dish-container form #delete-dish-button:hover,
+        .show-order-container .edit-dish-container form #load-dish-button:hover,
+        .show-order-container .edit-dish-container form #delete-dish-button:hover,
+        .calculation-form-container .edit-dish-container form #load-dish-button:hover,
+        .calculation-form-container .edit-dish-container form #delete-dish-button:hover,
+        .show-suppliers-container .edit-dish-container form #load-dish-button:hover,
+        .show-suppliers-container .edit-dish-container form #delete-dish-button:hover,
+        .add-suppliers-form-container .edit-dish-container form #load-dish-button:hover,
+        .add-suppliers-form-container .edit-dish-container form #delete-dish-button:hover,
+        .edit-suppliers-form-container .edit-dish-container form #load-dish-button:hover,
+        .edit-suppliers-form-container .edit-dish-container form #delete-dish-button:hover {
           background-color: black; }
-      .add-dish-container .edit-dish-container form #delete-dish-button {
+      .add-dish-container .edit-dish-container form #delete-dish-button,
+      .show-menu-container .edit-dish-container form #delete-dish-button,
+      .show-order-container .edit-dish-container form #delete-dish-button,
+      .calculation-form-container .edit-dish-container form #delete-dish-button,
+      .show-suppliers-container .edit-dish-container form #delete-dish-button,
+      .add-suppliers-form-container .edit-dish-container form #delete-dish-button,
+      .edit-suppliers-form-container .edit-dish-container form #delete-dish-button {
         background-color: #e74c3c; }
-        .add-dish-container .edit-dish-container form #delete-dish-button:hover {
+        .add-dish-container .edit-dish-container form #delete-dish-button:hover,
+        .show-menu-container .edit-dish-container form #delete-dish-button:hover,
+        .show-order-container .edit-dish-container form #delete-dish-button:hover,
+        .calculation-form-container .edit-dish-container form #delete-dish-button:hover,
+        .show-suppliers-container .edit-dish-container form #delete-dish-button:hover,
+        .add-suppliers-form-container .edit-dish-container form #delete-dish-button:hover,
+        .edit-suppliers-form-container .edit-dish-container form #delete-dish-button:hover {
           background-color: #d62c1a; }
 
-.show-menu-container {
-  position: relative;
-  padding: 20px; }
-  .show-menu-container .page-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 15px; }
-  .show-menu-container .back-button {
-    position: absolute;
-    top: 5px;
-    right: 2%;
-    border: none;
-    padding: 10px;
-    color: #b3b3b3;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.2s ease; }
-    .show-menu-container .back-button::before {
-      content: "\f053";
-      font-family: 'Font Awesome 5 Free';
-      font-weight: 900; }
-  .show-menu-container .back-button:hover {
-    background-color: #000; }
-  .show-menu-container #loading-indicator {
-    display: none;
-    text-align: center; }
-    .show-menu-container #loading-indicator p {
-      font-size: 16px;
-      margin-bottom: 10px; }
-    .show-menu-container #loading-indicator .spinner {
-      border: 4px solid #b3b3b3;
-      border-top: 4px solid #c94f4f;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite; }
+.show-menu-container #loading-indicator {
+  display: none;
+  text-align: center; }
+  .show-menu-container #loading-indicator p {
+    font-size: 16px;
+    margin-bottom: 10px; }
+  .show-menu-container #loading-indicator .spinner {
+    border: 4px solid #b3b3b3;
+    border-top: 4px solid #c94f4f;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite; }
 @keyframes spin {
   0% {
     transform: rotate(0deg); }
   100% {
     transform: rotate(360deg); } }
-  .show-menu-container #menu-list .category {
-    margin-bottom: 20px; }
-    .show-menu-container #menu-list .category h4 {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #000; }
-    .show-menu-container #menu-list .category .dish-container {
+.show-menu-container #menu-list .category {
+  margin-bottom: 10px; }
+  .show-menu-container #menu-list .category h4 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 5px 0;
+    color: #000; }
+  .show-menu-container #menu-list .category .dish-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; }
+    .show-menu-container #menu-list .category .dish-container .dish-card {
       display: flex;
-      flex-direction: column;
-      gap: 15px; }
-      .show-menu-container #menu-list .category .dish-container .dish-card {
+      align-items: center;
+      background-color: #fff;
+      border: 1px solid #b3b3b3;
+      border-radius: 8px;
+      padding: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      height: 50px; }
+      .show-menu-container #menu-list .category .dish-container .dish-card h5 {
+        font-weight: bold;
+        margin-right: 20px;
+        color: #000;
+        line-height: 1.2;
+        flex-shrink: 0;
+        width: 150px; }
+      .show-menu-container #menu-list .category .dish-container .dish-card .ingredients {
+        font-size: 14px;
+        color: #b3b3b3;
+        margin-right: 10px;
+        flex-shrink: 1;
+        width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
+      .show-menu-container #menu-list .category .dish-container .dish-card p {
+        margin-right: 10px;
+        font-size: 14px;
+        color: #000;
+        flex-shrink: 0; }
+        .show-menu-container #menu-list .category .dish-container .dish-card p.weight {
+          font-weight: bold; }
+      .show-menu-container #menu-list .category .dish-container .dish-card .price-container {
         display: flex;
         align-items: center;
-        background-color: #fff;
-        border: 1px solid #b3b3b3;
-        border-radius: 8px;
-        padding: 15px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        height: 50px; }
-        .show-menu-container #menu-list .category .dish-container .dish-card h5 {
-          margin: 5px 20px 5px 0;
-          font-weight: bold;
-          color: #000;
-          flex-shrink: 0;
-          width: 150px;
-          line-height: 1.2; }
-        .show-menu-container #menu-list .category .dish-container .dish-card .ingredients {
-          font-size: 14px;
-          color: #b3b3b3;
-          margin-right: 20px;
-          flex-shrink: 0;
-          width: 20%;
-          max-width: 200px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis; }
-        .show-menu-container #menu-list .category .dish-container .dish-card p {
-          margin-right: 20px;
-          font-size: 14px;
-          color: #000;
-          flex-shrink: 0; }
-          .show-menu-container #menu-list .category .dish-container .dish-card p.weight {
-            font-weight: bold; }
-        .show-menu-container #menu-list .category .dish-container .dish-card .price-container {
+        margin-left: auto; }
+        .show-menu-container #menu-list .category .dish-container .dish-card .price-container .price-input {
+          border: 1px solid #b3b3b3;
+          border-radius: 4px;
+          padding: 5px;
+          width: 60px; }
+        .show-menu-container #menu-list .category .dish-container .dish-card .price-container .edit-button {
+          background-color: #b3b3b3;
+          border: none;
+          color: #fff;
+          padding: 3px;
+          margin: 0 5px;
+          border-radius: 3px;
+          cursor: pointer;
           display: flex;
           align-items: center;
-          margin-left: auto; }
-          .show-menu-container #menu-list .category .dish-container .dish-card .price-container .price-input {
-            border: 1px solid #b3b3b3;
-            border-radius: 4px;
-            padding: 5px;
-            width: 60px; }
-          .show-menu-container #menu-list .category .dish-container .dish-card .price-container .edit-button {
-            background-color: #c94f4f;
-            border: none;
-            color: #fff;
-            padding: 6px 8px;
-            margin: 0 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px; }
-          .show-menu-container #menu-list .category .dish-container .dish-card .price-container .save-button,
-          .show-menu-container #menu-list .category .dish-container .dish-card .price-container .cancel-button,
-          .show-menu-container #menu-list .category .dish-container .dish-card .price-container .delete-button {
-            background-color: #c94f4f;
-            border: none;
-            color: #fff;
-            padding: 6px 8px;
-            margin: 0 5px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px; }
-            .show-menu-container #menu-list .category .dish-container .dish-card .price-container .save-button.save-button,
-            .show-menu-container #menu-list .category .dish-container .dish-card .price-container .cancel-button.save-button,
-            .show-menu-container #menu-list .category .dish-container .dish-card .price-container .delete-button.save-button {
-              background-color: #c94f4f;
-              display: none; }
-            .show-menu-container #menu-list .category .dish-container .dish-card .price-container .save-button.cancel-button,
-            .show-menu-container #menu-list .category .dish-container .dish-card .price-container .cancel-button.cancel-button,
-            .show-menu-container #menu-list .category .dish-container .dish-card .price-container .delete-button.cancel-button {
-              background-color: #e74c3c;
-              display: none; }
-            .show-menu-container #menu-list .category .dish-container .dish-card .price-container .save-button.delete-button,
-            .show-menu-container #menu-list .category .dish-container .dish-card .price-container .cancel-button.delete-button,
-            .show-menu-container #menu-list .category .dish-container .dish-card .price-container .delete-button.delete-button {
-              background-color: #000;
-              border: none;
-              padding: 10px;
-              color: white;
-              border-radius: 5px;
-              cursor: pointer;
-              transition: background-color 0.2s ease;
-              margin-top: 10px; }
-              .show-menu-container #menu-list .category .dish-container .dish-card .price-container .save-button.delete-button:hover,
-              .show-menu-container #menu-list .category .dish-container .dish-card .price-container .cancel-button.delete-button:hover,
-              .show-menu-container #menu-list .category .dish-container .dish-card .price-container .delete-button.delete-button:hover {
-                background-color: black; }
-
-.show-order-container {
-  background-color: #b3b3b3;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-top: 20px; }
-  .show-order-container .page-title {
-    color: #000;
-    font-size: 1.6rem;
-    margin-bottom: 20px;
-    text-align: center; }
-  .show-order-container form {
-    display: flex;
-    flex-direction: column; }
-    .show-order-container form .container {
-      margin-bottom: 15px; }
-      .show-order-container form .container label {
-        font-size: 1rem;
-        color: #000;
-        margin-bottom: 5px;
-        display: block; }
-      .show-order-container form .container input[type="text"],
-      .show-order-container form .container input[type="number"],
-      .show-order-container form .container input[type="tel"],
-      .show-order-container form .container input[type="date"],
-      .show-order-container form .container select {
-        width: 100%;
+          justify-content: center;
+          font-size: 12px; }
+        .show-menu-container #menu-list .category .dish-container .dish-card .price-container .save-button,
+        .show-menu-container #menu-list .category .dish-container .dish-card .price-container .cancel-button {
+          background-color: #b3b3b3;
+          border: none;
+          color: #fff;
+          padding: 3px;
+          margin: 0 5px;
+          border-radius: 3px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px; }
+          .show-menu-container #menu-list .category .dish-container .dish-card .price-container .save-button.save-button,
+          .show-menu-container #menu-list .category .dish-container .dish-card .price-container .cancel-button.save-button {
+            background-color: #b3b3b3;
+            display: none; }
+          .show-menu-container #menu-list .category .dish-container .dish-card .price-container .save-button.cancel-button,
+          .show-menu-container #menu-list .category .dish-container .dish-card .price-container .cancel-button.cancel-button {
+            background-color: #e74c3c;
+            display: none; }
+      .show-menu-container #menu-list .category .dish-container .dish-card .delete-button {
+        background: none;
+        border: none;
         padding: 10px;
-        margin-top: 5px;
-        border: 1px solid #611e1e;
+        color: #c94f4f;
         border-radius: 5px;
-        font-size: 1rem;
-        background-color: #b3b3b3;
-        color: #000; }
-        .show-order-container form .container input[type="text"]:focus,
-        .show-order-container form .container input[type="number"]:focus,
-        .show-order-container form .container input[type="tel"]:focus,
-        .show-order-container form .container input[type="date"]:focus,
-        .show-order-container form .container select:focus {
-          border-color: #000;
-          outline: none;
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
-      .show-order-container form .container span {
-        margin-left: 5px;
-        font-size: 1rem;
-        color: #000; }
-    .show-order-container form h4 {
-      color: #000;
-      font-size: 1.4rem;
-      margin-bottom: 10px; }
-    .show-order-container form #order-blank,
-    .show-order-container form #additional-services {
-      margin-bottom: 20px;
-      background-color: #e6e6e6;
-      padding: 15px;
-      border-radius: 5px;
-      border: 1px solid #611e1e;
-      min-height: 50px; }
-    .show-order-container form #add-dish-to-order,
-    .show-order-container form #add-service {
-      background-color: #000;
-      border: none;
-      padding: 10px;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      margin-bottom: 20px; }
-      .show-order-container form #add-dish-to-order:hover,
-      .show-order-container form #add-service:hover {
-        background-color: black; }
-    .show-order-container form #print-order,
-    .show-order-container form #save-order,
-    .show-order-container form .back-button {
-      background-color: #000;
-      border: none;
-      padding: 10px;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      margin-right: 10px; }
-      .show-order-container form #print-order:hover,
-      .show-order-container form #save-order:hover,
-      .show-order-container form .back-button:hover {
-        background-color: black; }
-    .show-order-container form .back-button {
-      background-color: #b3b3b3; }
-      .show-order-container form .back-button:hover {
-        background-color: #999999; }
-  .show-order-container #load-order-form {
-    margin-top: 20px; }
-    .show-order-container #load-order-form label {
+        cursor: pointer;
+        transition: background-color 0.2s ease; }
+        .show-menu-container #menu-list .category .dish-container .dish-card .delete-button:hover {
+          color: #af3636; }
+
+.show-order-container form {
+  display: flex;
+  flex-direction: column; }
+  .show-order-container form .order-properties-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px; }
+    .show-order-container form .order-properties-container label {
+      display: inline;
+      width: 30%;
       font-size: 1rem;
       color: #000;
       margin-bottom: 5px;
-      display: block; }
-    .show-order-container #load-order-form input[type="date"] {
+      margin-top: 5px; }
+    .show-order-container form .order-properties-container input[type="text"],
+    .show-order-container form .order-properties-container input[type="number"],
+    .show-order-container form .order-properties-container input[type="tel"],
+    .show-order-container form .order-properties-container input[type="date"],
+    .show-order-container form .order-properties-container textarea {
+      display: inline;
+      width: 60%;
       padding: 10px;
-      margin-top: 5px;
+      margin-bottom: 5px;
       border: 1px solid #611e1e;
       border-radius: 5px;
       font-size: 1rem;
       background-color: #b3b3b3;
       color: #000; }
-      .show-order-container #load-order-form input[type="date"]:focus {
-        border-color: #000;
+      .show-order-container form .order-properties-container input[type="text"]:focus,
+      .show-order-container form .order-properties-container input[type="number"]:focus,
+      .show-order-container form .order-properties-container input[type="tel"]:focus,
+      .show-order-container form .order-properties-container input[type="date"]:focus,
+      .show-order-container form .order-properties-container textarea:focus {
+        border-color: #c94f4f;
         outline: none;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
-    .show-order-container #load-order-form #load-order-button {
-      background-color: #000;
-      border: none;
-      padding: 10px;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      margin-top: 10px; }
-      .show-order-container #load-order-form #load-order-button:hover {
-        background-color: black; }
-  .show-order-container #print-modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
+    .show-order-container form .order-properties-container textarea {
+      height: 100px; }
+  .show-order-container form h4 {
+    color: #000;
+    font-size: 1.4rem;
+    margin-bottom: 10px; }
+  .show-order-container form #order-blank,
+  .show-order-container form #additional-services {
+    margin-bottom: 20px;
+    background-color: #b3b3b3;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #611e1e;
+    min-height: 50px; }
+  .show-order-container form label {
+    font-size: 1rem;
+    color: #000;
+    margin-bottom: 5px; }
+  .show-order-container form select {
     width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5); }
-    .show-order-container #print-modal .modal-content {
-      background-color: white;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #611e1e;
-      border-radius: 10px;
-      width: 80%;
-      max-width: 600px;
-      position: relative; }
-    .show-order-container #print-modal .modal-close-button {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      color: #000;
-      font-size: 1.5rem;
-      font-weight: bold;
-      cursor: pointer; }
-      .show-order-container #print-modal .modal-close-button:hover {
-        color: #e74c3c; }
-    .show-order-container #print-modal #confirm-print {
-      background-color: #000;
-      border: none;
-      padding: 10px;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      display: block;
-      margin: 20px auto 0;
-      width: 100px; }
-      .show-order-container #print-modal #confirm-print:hover {
-        background-color: black; }
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #611e1e;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #b3b3b3;
+    color: #000; }
+    .show-order-container form select:focus {
+      border-color: #c94f4f;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
+  .show-order-container form button {
+    background-color: #000;
+    border: none;
+    padding: 10px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-bottom: 10px; }
+    .show-order-container form button:hover {
+      background-color: black; }
+  .show-order-container form .back-button {
+    background-color: #000;
+    color: #b3b3b3; }
 
 /*# sourceMappingURL=main.css.map */

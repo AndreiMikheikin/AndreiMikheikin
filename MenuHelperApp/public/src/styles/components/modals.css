@@ -22,4 +22,47 @@
       right: 10px;
       color: #c94f4f; }
 
+.show-order-container #print-modal {
+  position: fixed;
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); }
+  .show-order-container #print-modal .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #611e1e;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    position: relative; }
+  .show-order-container #print-modal .modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer; }
+    .show-order-container #print-modal .modal-close-button:hover {
+      color: #c94f4f; }
+  .show-order-container #print-modal #confirm-print {
+    background-color: #000;
+    border: none;
+    padding: 10px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: block;
+    margin: 20px auto 0;
+    width: 100px; }
+    .show-order-container #print-modal #confirm-print:hover {
+      background-color: black; }
+
 /*# sourceMappingURL=modals.css.map */

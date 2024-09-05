@@ -1,21 +1,23 @@
 /*
 Error: Undefined mixin 'button-style'.
-        on line 4 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss, in `button-style'
-        from line 4 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss
+        on line 8 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss, in `button-style'
+        from line 8 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss
 
-1: // components/buttons.scss
-2: 
-3: button {
-4:   @include button-style($primary-color, $accent-color);  // Черный фон, золотой текст
-5: 
-6:   &.admin {
-7:     @include button-style($accent-color, $primary-color);  // Золотой фон, черный текст
-8:   }
-9: 
+3: @import '../variables';  // Ensure access to variables
+4: 
+5: button {
+6:     
+7: 
+8:     @include button-style($primary-color, $background-color);  // Primary button style
+9:     margin-top: 10px;
+10: 
+11:     &.admin {
+12:         @include button-style($accent-color, $primary-color);  // Admin button style
+13:     }
 
 Backtrace:
-C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss:4:in `button-style'
-C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss:4
+C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss:8:in `button-style'
+C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss:8
 C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:352:in `block in visit_mixin'
 C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:98:in `block in with_mixin'
 C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:135:in `with_frame'
@@ -64,4 +66,4 @@ C:/Program Files (x86)/Koala/bin/sass:22:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined mixin 'button-style'.\A         on line 4 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss, in `button-style'\A         from line 4 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss\A \A 1: // components/buttons.scss\A 2: \A 3: button {\A 4:   @include button-style($primary-color, $accent-color);  // Черный фон, золотой текст\A 5: \A 6:   &.admin {\A 7:     @include button-style($accent-color, $primary-color);  // Золотой фон, черный текст\A 8:   }\A 9: "; }
+  content: "Error: Undefined mixin 'button-style'.\A         on line 8 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss, in `button-style'\A         from line 8 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss\A \A 3: @import '../variables';  // Ensure access to variables\A 4: \A 5: button {\A 6:     \A 7: \A 8:     @include button-style($primary-color, $background-color);  // Primary button style\A 9:     margin-top: 10px;\A 10: \A 11:     &.admin {\A 12:         @include button-style($accent-color, $primary-color);  // Admin button style\A 13:     }"; }

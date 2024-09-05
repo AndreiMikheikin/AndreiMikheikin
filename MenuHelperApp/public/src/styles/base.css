@@ -1,21 +1,21 @@
 /*
 Error: Undefined variable: "$font-stack".
-        on line 10 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\base.scss
+        on line 11 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\base.scss
 
-5:   margin: 0;
 6:   padding: 0;
-7: }
-8: 
-9: body {
-10:   font-family: $font-stack;
-11:   font-size: $base-font-size;
-12:   font-style: normal;
-13:   background-color: $main-bg-color;
-14:   color: $text-color;
-15:   line-height: 1.6;
+7:   list-style: none;
+8: }
+9: 
+10: body {
+11:   font-family: $font-stack;
+12:   font-size: $base-font-size;
+13:   font-style: normal;
+14:   background-color: $main-bg-color;
+15:   color: $text-color;
+16:   line-height: 1.6;
 
 Backtrace:
-C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\base.scss:10
+C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\base.scss:11
 C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/script/tree/variable.rb:49:in `_perform'
 C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/script/tree/node.rb:50:in `perform'
 C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:402:in `visit_prop'
@@ -62,4 +62,4 @@ C:/Program Files (x86)/Koala/bin/sass:22:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined variable: \"$font-stack\".\A         on line 10 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\base.scss\A \A 5:   margin: 0;\A 6:   padding: 0;\A 7: }\A 8: \A 9: body {\A 10:   font-family: $font-stack;\A 11:   font-size: $base-font-size;\A 12:   font-style: normal;\A 13:   background-color: $main-bg-color;\A 14:   color: $text-color;\A 15:   line-height: 1.6;"; }
+  content: "Error: Undefined variable: \"$font-stack\".\A         on line 11 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\base.scss\A \A 6:   padding: 0;\A 7:   list-style: none;\A 8: }\A 9: \A 10: body {\A 11:   font-family: $font-stack;\A 12:   font-size: $base-font-size;\A 13:   font-style: normal;\A 14:   background-color: $main-bg-color;\A 15:   color: $text-color;\A 16:   line-height: 1.6;"; }

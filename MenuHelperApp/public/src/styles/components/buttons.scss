@@ -3,7 +3,10 @@
 @import '../variables';  // Ensure access to variables
 
 button {
+    
+
     @include button-style($primary-color, $background-color);  // Primary button style
+    margin-top: 10px;
 
     &.admin {
         @include button-style($accent-color, $primary-color);  // Admin button style
@@ -19,5 +22,9 @@ button {
 
     &__icon {
         margin-right: 10px;
+    }
+
+    &.close-button {
+        margin-top: 0;
     }
 }

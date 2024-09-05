@@ -148,8 +148,11 @@ function toggleForm() {
     // Обновление текста и видимости элементов
     title.textContent = isLogin ? 'Регистрация' : 'Вход';
     toggleLink.textContent = isLogin ? 'Есть аккаунт? Авторизация' : 'Нет аккаунта? Регистрация';
-    confirmPassword.style.display = isLogin ? 'block' : 'none';
-    requirements.style.display = isLogin ? 'block' : 'none';
+    
+    // Переключение классов вместо стиля
+    confirmPassword.classList.toggle('hidden', !isLogin);
+    requirements.classList.toggle('hidden', !isLogin);
+    
     submitBtn.textContent = isLogin ? 'Зарегистрироваться' : 'Войти';
 
     // Валидация формы после переключения
@@ -175,13 +178,12 @@ function toggleForgotPasswordForm() {
     const authContainer = document.getElementById('auth-container');
     const forgotPasswordContainer = document.getElementById('forgot-password-container');
 
-    // Переключаем видимость контейнеров
-    if (forgotPasswordContainer.style.display === 'none') {
-        authContainer.style.display = 'none';
-        forgotPasswordContainer.style.display = 'block';
+    if (forgotPasswordContainer.classList.contains('hidden')) {
+        authContainer.classList.add('hidden');
+        forgotPasswordContainer.classList.remove('hidden');
     } else {
-        forgotPasswordContainer.style.display = 'none';
-        authContainer.style.display = 'block';
+        forgotPasswordContainer.classList.add('hidden');
+        authContainer.classList.remove('hidden');
     }
 }
 
