@@ -9,7 +9,7 @@ Error: Undefined variable: "$primary-color".
 5:   padding: 20px;
 6:   text-align: center;
 7: 
-8:   img {
+8:   svg {
 9:     width: 200px;
 
 Backtrace:
@@ -60,4 +60,4 @@ C:/Program Files (x86)/Koala/bin/sass:22:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined variable: \"$primary-color\".\A         on line 4 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\header.scss\A \A 1: // components/header.scss\A 2: \A 3: header {\A 4:   background-color: $primary-color;  // Черный фон\A 5:   padding: 20px;\A 6:   text-align: center;\A 7: \A 8:   img {\A 9:     width: 200px;"; }
+  content: "Error: Undefined variable: \"$primary-color\".\A         on line 4 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\header.scss\A \A 1: // components/header.scss\A 2: \A 3: header {\A 4:   background-color: $primary-color;  // Черный фон\A 5:   padding: 20px;\A 6:   text-align: center;\A 7: \A 8:   svg {\A 9:     width: 200px;"; }

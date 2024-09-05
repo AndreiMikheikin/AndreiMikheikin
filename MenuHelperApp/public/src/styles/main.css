@@ -36,10 +36,26 @@ header {
   background-color: #000;
   padding: 20px;
   text-align: center; }
-  header img {
+  header svg {
     width: 200px;
     height: auto; }
-
+  header #logo path:nth-child(1),
+  header #logo path:nth-child(2),
+  header #logo path:nth-child(3),
+  header #logo path:nth-child(4) {
+    stroke-dasharray: 20px;
+    stroke-dashoffset: 20px; }
+  header #logo path:nth-child(1) {
+    animation: anim-logo 2s ease forwards 0.3s; }
+  header #logo path:nth-child(2) {
+    animation: anim-logo 2s ease forwards 0.6s; }
+  header #logo path:nth-child(3) {
+    animation: anim-logo 2s ease forwards 0.9s; }
+  header #logo path:nth-child(4) {
+    animation: anim-logo 2s ease forwards 1.2s; }
+@keyframes anim-logo {
+  to {
+    stroke-dashoffset: 0; } }
 button {
   background-color: #000;
   color: #fff;
