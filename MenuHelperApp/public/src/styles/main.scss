@@ -1,12 +1,13 @@
-@import 'variables';          // Импорт переменных для цветов, шрифтов и других настроек
-@import 'mixins';             // Импорт миксинов для повторно используемых стилей
-@import 'base';               // Импорт глобальных базовых стилей (например, reset, стили для body)
-@import 'layout/container';   // Импорт стилей для контейнеров
-@import 'components/header';  // Импорт стилей для компонента header
-@import 'components/buttons'; // Импорт стилей для кнопок
-@import 'components/forms';   // Импорт стилей для форм
-@import 'components/fonts';   // Импорт стилей и настроек шрифтов
-@import 'components/modals';  // Импорт стилей для модальных окон
-@import 'pages/auth';         // Импорт стилей для страниц аутентификации
-@import 'pages/admin-dashboard';  // Импорт стилей рабочего стола администратора
-@import 'pages/admin';  // Импорт стилей динамического контента администратора
+@import 'variables';
+@import 'mixins';
+@import 'base';
+@import 'layout/container';
+@import 'components/header';
+@import 'components/buttons';
+@import 'components/forms';
+@import 'components/fonts';
+@import 'components/modals';
+@import 'pages/auth';
+@import 'pages/admin-dashboard';
+@import 'pages/admin';
+@import 'pages/user';

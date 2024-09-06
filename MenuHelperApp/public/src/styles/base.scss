@@ -8,10 +8,10 @@
 }
 
 body {
-  font-family: $font-stack;
-  font-size: $base-font-size;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
   font-style: normal;
-  background-color: $main-bg-color;
+  background-color: $background-color;
   color: $text-color;
   line-height: 1.6;
   overflow-y: auto;  // Разрешить вертикальный scroll

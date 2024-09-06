@@ -41,7 +41,7 @@ export function loadAdminDashboard() {
         // Заполняем adminContainer содержимым
         adminContainer.innerHTML = `
             <h2>Рабочий стол</h2>
-            <button class="logout" onclick="logout()"><i class="fas fa-times"></i></button>
+            <button class="logout" onclick="logout()"><span class="material-icons-outlined">close</span></button>
             <div class="icon-container" id="${ICON1_ID}" draggable="true">
                 <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
                 <p>Добавить блюдо</p>
@@ -148,7 +148,7 @@ async function addIngredientField() {
             <option value="">Выберите поставщика</option>
             ${supplierOptions}
         </select>
-        <button type="button" class="remove-ingredient-button"><i class="fa fa-trash"></i></button>
+        <button type="button" class="remove-ingredient-button"><span class="material-icons-outlined">delete</span></button>
     `;
 
     // Добавляем новую группу ингредиентов в контейнер
@@ -271,7 +271,7 @@ window.showDishForm = async function showDishForm() {
                         <option value="">Выберите поставщика</option>
                         ${supplierOptions}
                     </select>
-                    <button type="button" class="remove-ingredient-button"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="remove-ingredient-button"><span class="material-icons-outlined">delete</span></button>
                 </div>
             </div>
             <button type="button" id="add-ingredient" class="add-ingredient-button">Добавить ингредиент</button>
@@ -287,7 +287,7 @@ window.showDishForm = async function showDishForm() {
             </div>
             <button type="submit" id="save-dish-button" class="submit-button">Добавить блюдо</button>
         </form>
-        <button class="back-button" onclick="loadAdminDashboard()"></button>
+        <button class="back-button" onclick="loadAdminDashboard()"><span class="material-icons-outlined">arrow_back</span></button>
         <div class="edit-dish-container">
             <h4>Редактировать существующее блюдо</h4>
             <form id="load-dish-form">
@@ -647,7 +647,7 @@ window.showMenu = async function showMenu() {
             </div>
             <div id="menu-list"></div>
             
-            <button class="back-button" onclick="loadAdminDashboard()"></button>
+            <button class="back-button" onclick="loadAdminDashboard()"><span class="material-icons-outlined">arrow_back</span></button>
         </div>
     `;
 
@@ -714,11 +714,11 @@ window.showMenu = async function showMenu() {
                     <p>Вес: ${dish.totalWeight ? dish.totalWeight : 'Не указано'} гр</p>
                     <div class="price-container">
                         <input type="number" value="${dish.price}" class="price-input" data-id="${dish.id}" data-original-value="${dish.price}" disabled> руб.
-                        <button class="edit-button" aria-label="Редактировать"><i class="fa fa-edit"></i></button>
-                        <button class="save-button" data-id="${dish.id}" style="display:none" aria-label="Сохранить"><i class="fa fa-save"></i></button>
-                        <button class="cancel-button" style="display:none" aria-label="Отменить"><i class="fa fa-times"></i></button>
+                        <button class="edit-button" aria-label="Редактировать"><span class="material-icons-outlined">edit</span></button>
+                        <button class="save-button" data-id="${dish.id}" style="display:none" aria-label="Сохранить"><span class="material-icons-outlined">save</span></button>
+                        <button class="cancel-button" style="display:none" aria-label="Отменить"><span class="material-icons-outlined">close</span></button>
                     </div>
-                    <button class="delete-button" data-id="${dish.id}" aria-label="Удалить"><i class="fa fa-trash"></i></button>
+                    <button class="delete-button" data-id="${dish.id}" aria-label="Удалить"><span class="material-icons-outlined">delete</span></button>
                 `;
 
                     // Найдем элемент с классом ingredients и добавим атрибут title
@@ -888,7 +888,7 @@ window.showPurchaseCalculationForm = function showPurchaseCalculationForm() {
             <button type="button" id="load-order-button">Загрузить заказ</button>
             <div id="date-list"></div>
             <button type="button" id="calculate-purchases-button">Рассчитать</button>
-            <button type="button" class="back-button" onclick="loadAdminDashboard()"></button>
+            <button type="button" class="back-button" onclick="loadAdminDashboard()"><span class="material-icons-outlined">arrow_back</span></button>
         </form>
         <div id="ingredients-list">
             <!-- Здесь будет отображен список ингредиентов и их вес -->
@@ -949,7 +949,7 @@ async function addOrderToList() {
             <p><strong>Дата заказа:</strong> ${orderData.orderDate.toDate().toISOString().split('T')[0]}</p>
             <p><strong>Имя заказчика:</strong> ${orderData.customerName || 'Не указано'}</p>
             <p><strong>Телефон заказчика:</strong> ${orderData.customerPhone || 'Не указано'}</p>
-            <button type="button" class="remove-date-button">Удалить</button>
+            <button type="button" class="remove-date-button"><span class="material-icons-outlined">delete</span></button>
         `;
 
         dateElement.querySelector('.remove-date-button').addEventListener('click', () => dateElement.remove());
@@ -1136,17 +1136,25 @@ window.showOrderForm = function showOrderForm() {
         <h3 class="page-title">Оформление заказа</h3>
         <form id="order-form">
             <div class="order-properties-container">
-                <label for="order-date">Дата заказа:</label>
-                <input type="date" id="order-date" name="order-date" required="">
-            
-                <label for="order-customer-name">Имя заказчика:</label>
-                <input type="text" id="order-customer-name" name="order-customer-name" required="">
-            
-                <label for="order-customer-phone">Телефон заказчика:</label>
-                <input type="tel" id="order-customer-phone" name="order-customer-phone" required="">
-            
-                <label for="order-else-properties">Дополнительные данные:</label>
-                <textarea name="order-else-properties" id="order-else-properties" cols="30" rows="10"></textarea>
+                <div class="property">
+                    <label for="order-date">Дата заказа:</label>
+                    <input type="date" id="order-date" name="order-date" required="">
+                </div>
+
+                <div class="property">
+                    <label for="order-customer-name">Имя заказчика:</label>
+                    <input type="text" id="order-customer-name" name="order-customer-name" required="">
+                </div>
+
+                <div class="property">
+                    <label for="order-customer-phone">Телефон заказчика:</label>
+                    <input type="tel" id="order-customer-phone" name="order-customer-phone" required="">
+                </div>
+
+                <div class="property">
+                    <label for="order-else-properties">Дополнительные данные:</label>
+                    <textarea name="order-else-properties" id="order-else-properties" cols="30" rows="5"></textarea>
+                </div>
             </div>
 
             <h4>Бланк заказа</h4>
@@ -1165,7 +1173,7 @@ window.showOrderForm = function showOrderForm() {
             </select>
             <button type="button" id="add-dish-to-order">Добавить блюдо</button>
 
-            <h4>Дополнительные услуги</h4></br>
+            <h4>Дополнительные услуги</h4>
             <div id="additional-services">
                 <!-- Здесь будут добавляться дополнительные услуги -->
             </div>
@@ -1181,9 +1189,9 @@ window.showOrderForm = function showOrderForm() {
                 <input type="number" id="final-sum" name="final-sum" readonly><span>&nbsp;руб.</span>
             </div>
 
-            <button type="button" id="print-order">Распечатать</button>
+            <button type="button" id="print-order">Распечатать заказ</button>
             <button type="button" id="save-order">Сохранить заказ</button>
-            <button type="button" class="back-button" onclick="loadAdminDashboard()"></button>
+            <button type="button" class="back-button" onclick="loadAdminDashboard()"><span class="material-icons-outlined">arrow_back</span></button>
         </form>
 
         <h3>Загрузка заказа по дате</h3>
@@ -1193,8 +1201,8 @@ window.showOrderForm = function showOrderForm() {
                 <option value="">Выберите заказ:</option>
                 <!-- Динамически добавляемые опции -->
             </select>
-            <button type="button" id="load-order-button">Загрузить заказ</button>
-            <button type="button" id="delete-order-button">Удалить заказ</button>
+            <button type="button" id="load-order-button"><span class="material-icons-outlined">upload</span></button>
+            <button type="button" id="delete-order-button"><span class="material-icons-outlined">delete</span></button>
         </div>
 
         <div id="print-modal" class="modal hidden">
@@ -1286,13 +1294,13 @@ async function loadOrderByDate() {
             // Добавляем блюда в соответствующий контейнер категории
             dishes.forEach(item => {
                 const orderItem = document.createElement('div');
-                orderItem.classList.add('order-item');
+                orderItem.classList.add('dish-card');
                 orderItem.innerHTML = `
                     <p>${item.name}</p>
                     <input type="number" value="${item.quantity}" min="1" class="dish-quantity" data-price="${item.price}">
                     <span>${item.price} руб.</span>
                     <span class="dish-total-price">${item.total} руб.</span>
-                    <button type="button" class="remove-button"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="remove-button"><span class="material-icons-outlined">delete</span></button>
                 `;
                 orderItem.querySelector('.remove-button').addEventListener('click', () => {
                     categoryContainer.removeChild(orderItem);
@@ -1313,7 +1321,7 @@ async function loadOrderByDate() {
 
         // Заполнение дополнительных услуг
         const servicesContainer = document.getElementById('additional-services');
-        servicesContainer.innerHTML = '<button type="button" id="add-service">Добавить услугу</button>';
+        servicesContainer.innerHTML = '';
 
         orderData.additionalServices.forEach(service => {
             const serviceDiv = document.createElement('div');
@@ -1323,7 +1331,7 @@ async function loadOrderByDate() {
                 <input type="number" name="service-quantity" value="${service.quantity}" min="1">
                 <input type="number" name="service-price" value="${service.price}" required>
                 <input type="number" name="service-total" value="${service.total}" readonly>
-                <button type="button" class="remove-service">Удалить</button>
+                <button type="button" class="remove-service"><span class="material-icons-outlined">delete</span></button>
             `;
             serviceDiv.querySelector('.remove-service').addEventListener('click', () => {
                 serviceDiv.remove();
@@ -1454,11 +1462,13 @@ function addDishToOrder() {
     const orderItem = document.createElement('div');
     orderItem.classList.add('order-item');
     orderItem.innerHTML = `
-        <p>${selectedItem.name}</p>
-        <input type="number" value="1" min="1" class="dish-quantity" data-price="${selectedItem.price}">
-        <span>${selectedItem.price} руб.</span>
-        <span class="dish-total-price">${selectedItem.price} руб.</span>
-        <button type="button" class="remove-button"><i class="fa fa-trash"></i></button>
+        <div class="dish-card">
+            <p>${selectedItem.name}</p>
+            <input type="number" value="1" min="1" class="dish-quantity" data-price="${selectedItem.price}">
+            <span>${selectedItem.price} руб.</span>
+            <span class="dish-total-price">${selectedItem.price} руб.</span>
+            <button type="button" class="remove-button"><span class="material-icons-outlined">delete</span></button>
+        </div>
     `
     updateTotalSum();
     ;
@@ -1522,7 +1532,7 @@ function addServiceField() {
         <input type="number" name="service-quantity" placeholder="Количество" value="1" min="1">
         <input type="number" name="service-price" placeholder="Цена" required>
         <input type="number" name="service-total" placeholder="Итоговая сумма" readonly>
-        <button type="button" class="remove-service"><i class="fa fa-trash"></i></button>
+        <button type="button" class="remove-service"><span class="material-icons-outlined">delete</span></button>
     `;
 
     serviceDiv.querySelector('.remove-service').addEventListener('click', () => {
@@ -1630,12 +1640,17 @@ function printElement(content) {
 // Генерация контента для печати
 function generatePrintContent() {
     const orderDate = document.getElementById('order-date').value;
+    const customerName = document.getElementById('order-customer-name').value;
+    const customerPhone = document.getElementById('order-customer-phone').value;
+    const elseProperties = document.getElementById('order-else-properties').value;
     const totalSum = parseFloat(document.getElementById('total-sum').value).toFixed(2);
     const prepayment = parseFloat(document.getElementById('prepayment').value).toFixed(2);
     const finalSum = parseFloat(document.getElementById('final-sum').value).toFixed(2);
 
     let printContent = `
         <h3>Заказ на дату: ${orderDate}</h3>
+        <h4>Заказчик: ${customerName} <> ${customerPhone}</h4>
+        <h5>Примечания: ${elseProperties}</h5>
         <h4>Бланк заказа:</h4>
     `;
 
@@ -1848,8 +1863,8 @@ export async function showSuppliers() {
                 <div class="spinner"></div>
             </div>
             <div id="supplier-list"></div>
-            <button id="add-supplier-btn" onclick="showAddSupplierForm()">Добавить поставщика</button>
-            <button class="back-button" onclick="loadAdminDashboard()"></button>
+            <button id="add-supplier-btn" onclick="showAddSupplierForm()"><span class="material-icons-outlined">add</span></button>
+            <button class="back-button" onclick="loadAdminDashboard()"><span class="material-icons-outlined">arrow_back</span></button>
         </div>
     `;
 
@@ -1888,8 +1903,8 @@ export async function showSuppliers() {
                     <p>Название: ${supplier.suppliersName}</p>
                     <p>Телефон: ${supplier.suppliersPhone}</p>
                     <p>Адрес: ${supplier.suppliersAdress}</p>
-                    <button class="edit-button" data-id="${doc.id}">Редактировать</button>
-                    <button class="delete-button" data-id="${doc.id}">Удалить</button>
+                    <button class="edit-button" data-id="${doc.id}"><span class="material-icons-outlined">edit</span></button>
+                    <button class="delete-button" data-id="${doc.id}"><span class="material-icons-outlined">delete</span></button>
                 `;
                 supplierList.appendChild(supplierElement);
             });
@@ -1935,9 +1950,9 @@ window.showAddSupplierForm = function showAddSupplierForm() {
             <label for="suppliersAdress">Адрес:</label>
             <input type="text" id="suppliersAdress" name="suppliersAdress" required>
             
-            <button type="submit" id="save-supplier">Сохранить</button>
+            <button type="submit" id="save-supplier"><span class="material-icons-outlined">save</span></button>
         </form>
-        <button class="back-button" onclick="showSuppliers()"></button>
+        <button class="back-button" onclick="showSuppliers()"><span class="material-icons-outlined">arrow_back</span></button>
     </div>
     `;
 
@@ -2024,9 +2039,9 @@ function showEditSupplierForm(supplierId, supplier) {
             <label for="suppliersAdress">Адрес:</label>
             <input type="text" id="suppliersAdress" name="suppliersAdress" value="${supplier.suppliersAdress}" required>
             
-            <button type="submit">Сохранить изменения</button>
+            <button type="submit"><span class="material-icons-outlined">save</span></button>
         </form>
-        <button class="back-button" onclick="showSuppliers()"></button>
+        <button class="back-button" onclick="showSuppliers()"><span class="material-icons-outlined">arrow_back</span></button>
     </div>
     `;
 
@@ -2094,16 +2109,4 @@ async function handleDeleteSupplierClick(event) {
             alert(`Ошибка при удалении поставщика: ${error.message}`);
         }
     }
-}
-
-/* -------------------------------------------------------------------- */
-
-// Функция выхода
-window.logout = function logout() {
-    signOut(auth).then(() => {
-        document.getElementById('admin-dashboard-container').style.display = 'none';
-        document.getElementById('auth-container').style.display = 'block';
-    }).catch((error) => {
-        alert(`Ошибка при выходе: ${error.message}`);
-    });
 }

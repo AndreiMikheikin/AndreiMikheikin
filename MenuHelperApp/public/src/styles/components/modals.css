@@ -6,21 +6,21 @@
   z-index: 1000;
   width: 90%;
   max-width: 500px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); }
+  background-color: #F5F0E1;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
   .modal-content {
-    padding: 20px;
+    padding: 16px;
     position: relative; }
     .modal-content .close-button {
       background: none;
       border: none;
-      font-size: 1.5rem;
+      font-size: 18px;
       cursor: pointer;
       position: absolute;
       top: 10px;
       right: 10px;
-      color: #c94f4f; }
+      color: #C29D6E; }
 
 .show-order-container #print-modal {
   position: fixed;
@@ -33,11 +33,11 @@
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.5); }
   .show-order-container #print-modal .modal-content {
-    background-color: #fff;
+    background-color: #F5F0E1;
     margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #611e1e;
-    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid #8A6E58;
+    border-radius: 8px;
     width: 80%;
     max-width: 600px;
     position: relative; }
@@ -45,24 +45,24 @@
     position: absolute;
     top: 10px;
     right: 15px;
-    color: #000;
-    font-size: 1.5rem;
+    color: #2F241D;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer; }
     .show-order-container #print-modal .modal-close-button:hover {
-      color: #c94f4f; }
+      color: #C29D6E; }
   .show-order-container #print-modal #confirm-print {
-    background-color: #000;
+    background-color: #4B3B2F;
     border: none;
-    padding: 10px;
-    color: #fff;
+    padding: 8px;
+    color: #F5F0E1;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.3s ease;
     display: block;
-    margin: 20px auto 0;
+    margin: 24px auto 0;
     width: 100px; }
     .show-order-container #print-modal #confirm-print:hover {
-      background-color: black; }
+      background-color: #2c221b; }
 
 /*# sourceMappingURL=modals.css.map */

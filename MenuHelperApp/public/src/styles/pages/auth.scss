@@ -1,34 +1,33 @@
-// pages/auth.scss
+@import '../variables';  // Ensure access to variables
 
 #auth-container,
 #forgot-password-container {
-  @include flex-center;
-  flex-direction: column;
-  margin-top: 20px;
-  padding: 10px;
-  background-color: $background-color; // Белый фон
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  width: 90%;
-  max-width: 400px;
-  border: 2px solid $accent-color;
-
+    @include flex-center;
+    flex-direction: column;
+    margin-top: $margin-base;
+    padding: $padding-base;
+    background-color: $background-color;
+    box-shadow: $box-shadow-light;
+    border-radius: $border-radius;
+    width: 90%;
+    max-width: 400px;
+    border: 2px solid $accent-color;
 }
 
 .role-selection {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+    display: flex;
+    gap: $margin-small;
+    margin-bottom: $margin-base;
 
-  .selected {
-    background-color: lighten($accent-color, 25%);
-  }
+    .selected {
+        background-color: lighten($accent-color, 25%);
+    }
 }
 
 .toggle-link,
 .forgot-password-link {
-  margin-top: 15px;
-  color: $accent-color;
-  cursor: pointer;
-  text-align: center;
+    margin-top: $margin-base;
+    color: $accent-color;
+    cursor: pointer;
+    text-align: center;
 }

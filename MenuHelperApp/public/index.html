@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MenuHelper - Your assistant for managing menus and user roles">
     <title>MenuHelper</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
     <link rel="shortcut icon" href="images/icons/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="src/styles/main.css">
 </head>
@@ -39,9 +39,9 @@
     <!-- Приветственное модальное окно -->
     <div class="modal hidden" id="welcome-modal" role="dialog" aria-labelledby="welcome-message">
         <div class="modal-content">
-            <button class="close-button" id="close-button" aria-label="Закрыть модальное окно">&times;</button>
             <h2 id="welcome-message"></h2>
         </div>
+        <button class="close-button" id="close-button" aria-label="Закрыть модальное окно"><span class="material-icons-outlined">close</span></button>
     </div>
 
     <main>
@@ -95,7 +95,7 @@
             <div id="user-dashboard-content">
                 <!-- Содержимое панели пользователя -->
             </div>
-            <button onclick="logout()">Выйти</button>
+            <button onclick="logout()"><span class="material-icons-outlined">close</span></button>
         </div>
 
         <!-- Контейнер восстановления пароля -->

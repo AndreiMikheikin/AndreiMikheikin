@@ -1,30 +1,233 @@
-// components/buttons.scss
-
 @import '../variables';  // Ensure access to variables
 
 button {
-    
+    background-color: $button-bg-color;
+    color: $button-text-color;
+    padding: $button-padding;
+    border-radius: $button-border-radius;
+    border: none;
+    cursor: pointer;
+    transition: background-color $transition-duration ease;
 
-    @include button-style($primary-color, $background-color);  // Primary button style
-    margin-top: 10px;
+    &:hover {
+        background-color: $button-hover-bg-color;
+    }
 
     &.admin {
-        @include button-style($accent-color, $primary-color);  // Admin button style
+        background-color: $secondary-color;
+        color: $text-color;
+
+        &:hover {
+            background-color: darken($secondary-color, 10%);
+        }
     }
 
     &.user {
-        @include button-style($accent-color, $primary-color);  // User button style
+        background-color: $accent-color;
+        color: $text-color;
+
+        &:hover {
+            background-color: darken($accent-color, 10%);
+        }
     }
 
     &--secondary {
-        @include button-style($secondary-color, $background-color);  // Secondary button style
+        background-color: $border-color;
+        color: $background-color;
+
+        &:hover {
+            background-color: darken($border-color, 10%);
+        }
     }
 
     &__icon {
-        margin-right: 10px;
+        margin-right: $margin-small;
     }
 
     &.close-button {
-        margin-top: 0;
+        position: absolute;
+        top: $margin-small;
+        right: $margin-small;
+        background: none;
+        border: none;
+        font-family: $font-family-icons;
+        font-size: $icon-size-large; 
+        color: $secondary-color; 
+        cursor: pointer;
+        padding: 0;
+    
+        &:hover {
+            color: darken($secondary-color, 15%);
+        }
+
+        span {
+            font-size: $font-size-large;
+        }
+    }
+
+    &.back-button {
+        position: absolute;
+        top: $margin-small;
+        right: $margin-small;
+        background: none;
+        border: none;
+        font-family: $font-family-icons;
+        font-size: $icon-size-large; 
+        color: $secondary-color; 
+        cursor: pointer;
+        padding: 0;
+    
+        &:hover {
+            color: darken($secondary-color, 15%);
+        }
+
+        span {
+            font-size: $font-size-large * 2;
+        }
+    }
+
+    &.logout {
+        position: absolute;
+        top: $margin-small;
+        right: $margin-small;
+        background: none;
+        border: none;
+        font-family: $font-family-icons;
+        font-size: $icon-size-large; 
+        color: lighten($primary-color, 15%); 
+        cursor: pointer;
+        padding: 0;
+    
+        &:hover {
+            color: $primary-color;
+        }
+
+        span {
+            font-size: $font-size-large * 2;
+        }
+    }
+
+    &.remove-ingredient-button {
+        background: none;
+        border: none;
+        font-family: $font-family-icons;
+        font-size: $icon-size-large; 
+        color: lighten($error-color, 15%); 
+        cursor: pointer;
+        padding: 0;
+    
+        &:hover {
+            color: $error-color;
+        }
+
+        span {
+            position: relative;
+            top: $padding-small * 2 - 3px;
+            color: inherit;
+            font-size: $font-size-large * 2;
+        }
+    }
+
+    &.submit-button {
+        background-color: $button-bg-color;
+        color: $button-text-color;
+        padding: $button-padding;
+        border: none;
+        border-radius: $button-border-radius;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $button-hover-bg-color;
+        }
+    }
+
+    &.edit-button {
+        background-color: $secondary-color;
+        border: none;
+        color: $background-color;
+        padding: 3px;
+        margin: 0 $margin-small;
+        border-radius: 3px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: $font-family-icons;
+        font-size: $font-size-small;
+    }
+
+    &.save-button {
+        background-color: $secondary-color;
+        border: none;
+        color: $background-color;
+        padding: $padding-small / 2;
+        margin: 0 $margin-small;
+        border-radius: 3px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: $font-size-small;
+
+        &.save-button {
+            background-color: $secondary-color;
+            display: none;
+        }
+
+    }
+
+    &.delete-button {
+        background: none;
+        border: none;
+        padding: $padding-small / 2;
+        margin: 0 $margin-small;
+        color: lighten($error-color, 15%);
+        cursor: pointer;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: $error-color;
+        }
+
+        &.cancel-button {
+            display: none;
+        }
+    }
+
+    &.remove-button,
+    &.remove-service {
+        background: none;
+        border: none;
+        padding: $padding-small / 2;
+        margin: 0 $margin-small;
+        color: lighten($error-color, 15%);
+        cursor: pointer;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: $error-color;
+        }
+
+        &.cancel-button {
+            display: none;
+        }
+    }
+
+    &.cancel-button {
+        background: none;
+        border: none;
+        padding: $padding-small / 2;
+        margin: 0 $margin-small;
+        color: lighten($error-color, 15%);
+        cursor: pointer;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: $error-color;
+        }
+
+        &.cancel-button {
+            display: none;
+        }
     }
 }

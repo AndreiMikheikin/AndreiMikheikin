@@ -1,65 +1,350 @@
-/*
-Error: Undefined variable: "$background-color".
-        on line 10 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\pages\admin.scss
+#admin-dashboard-content {
+  position: relative;
+  padding: 16px;
+  background-color: #F5F0E1;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+  #admin-dashboard-content .add-dish-container,
+  #admin-dashboard-content .show-menu-container,
+  #admin-dashboard-content .show-order-container,
+  #admin-dashboard-content .calculation-form-container,
+  #admin-dashboard-content .show-suppliers-container,
+  #admin-dashboard-content .add-suppliers-form-container,
+  #admin-dashboard-content .edit-suppliers-form-container {
+    position: relative;
+    padding: 16px;
+    background-color: #F5F0E1;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 16px auto; }
+    #admin-dashboard-content .add-dish-container .page-title,
+    #admin-dashboard-content .show-menu-container .page-title,
+    #admin-dashboard-content .show-order-container .page-title,
+    #admin-dashboard-content .calculation-form-container .page-title,
+    #admin-dashboard-content .show-suppliers-container .page-title,
+    #admin-dashboard-content .add-suppliers-form-container .page-title,
+    #admin-dashboard-content .edit-suppliers-form-container .page-title {
+      font-family: "Cormorant", Georgia, "Times New Roman", Times, serif;
+      color: #C29D6E;
+      font-size: 2.1rem;
+      font-weight: 900;
+      margin-bottom: 16px;
+      text-align: center; }
+    #admin-dashboard-content .add-dish-container form,
+    #admin-dashboard-content .show-menu-container form,
+    #admin-dashboard-content .show-order-container form,
+    #admin-dashboard-content .calculation-form-container form,
+    #admin-dashboard-content .show-suppliers-container form,
+    #admin-dashboard-content .add-suppliers-form-container form,
+    #admin-dashboard-content .edit-suppliers-form-container form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px; }
+      #admin-dashboard-content .add-dish-container form input,
+      #admin-dashboard-content .add-dish-container form textarea,
+      #admin-dashboard-content .add-dish-container form select,
+      #admin-dashboard-content .show-menu-container form input,
+      #admin-dashboard-content .show-menu-container form textarea,
+      #admin-dashboard-content .show-menu-container form select,
+      #admin-dashboard-content .show-order-container form input,
+      #admin-dashboard-content .show-order-container form textarea,
+      #admin-dashboard-content .show-order-container form select,
+      #admin-dashboard-content .calculation-form-container form input,
+      #admin-dashboard-content .calculation-form-container form textarea,
+      #admin-dashboard-content .calculation-form-container form select,
+      #admin-dashboard-content .show-suppliers-container form input,
+      #admin-dashboard-content .show-suppliers-container form textarea,
+      #admin-dashboard-content .show-suppliers-container form select,
+      #admin-dashboard-content .add-suppliers-form-container form input,
+      #admin-dashboard-content .add-suppliers-form-container form textarea,
+      #admin-dashboard-content .add-suppliers-form-container form select,
+      #admin-dashboard-content .edit-suppliers-form-container form input,
+      #admin-dashboard-content .edit-suppliers-form-container form textarea,
+      #admin-dashboard-content .edit-suppliers-form-container form select {
+        margin-bottom: 8px;
+        padding: 12px;
+        border-radius: 4px;
+        border: 1px solid #8A6E58;
+        background-color: #FFFFFF;
+        color: #4B3B2F; }
+        #admin-dashboard-content .add-dish-container form input:focus,
+        #admin-dashboard-content .add-dish-container form textarea:focus,
+        #admin-dashboard-content .add-dish-container form select:focus,
+        #admin-dashboard-content .show-menu-container form input:focus,
+        #admin-dashboard-content .show-menu-container form textarea:focus,
+        #admin-dashboard-content .show-menu-container form select:focus,
+        #admin-dashboard-content .show-order-container form input:focus,
+        #admin-dashboard-content .show-order-container form textarea:focus,
+        #admin-dashboard-content .show-order-container form select:focus,
+        #admin-dashboard-content .calculation-form-container form input:focus,
+        #admin-dashboard-content .calculation-form-container form textarea:focus,
+        #admin-dashboard-content .calculation-form-container form select:focus,
+        #admin-dashboard-content .show-suppliers-container form input:focus,
+        #admin-dashboard-content .show-suppliers-container form textarea:focus,
+        #admin-dashboard-content .show-suppliers-container form select:focus,
+        #admin-dashboard-content .add-suppliers-form-container form input:focus,
+        #admin-dashboard-content .add-suppliers-form-container form textarea:focus,
+        #admin-dashboard-content .add-suppliers-form-container form select:focus,
+        #admin-dashboard-content .edit-suppliers-form-container form input:focus,
+        #admin-dashboard-content .edit-suppliers-form-container form textarea:focus,
+        #admin-dashboard-content .edit-suppliers-form-container form select:focus {
+          border-color: #C29D6E;
+          outline: none; }
+      #admin-dashboard-content .add-dish-container form .weight-input,
+      #admin-dashboard-content .show-menu-container form .weight-input,
+      #admin-dashboard-content .show-order-container form .weight-input,
+      #admin-dashboard-content .calculation-form-container form .weight-input,
+      #admin-dashboard-content .show-suppliers-container form .weight-input,
+      #admin-dashboard-content .add-suppliers-form-container form .weight-input,
+      #admin-dashboard-content .edit-suppliers-form-container form .weight-input {
+        width: 100px; }
+    #admin-dashboard-content .add-dish-container .edit-dish-container,
+    #admin-dashboard-content .show-menu-container .edit-dish-container,
+    #admin-dashboard-content .show-order-container .edit-dish-container,
+    #admin-dashboard-content .calculation-form-container .edit-dish-container,
+    #admin-dashboard-content .show-suppliers-container .edit-dish-container,
+    #admin-dashboard-content .add-suppliers-form-container .edit-dish-container,
+    #admin-dashboard-content .edit-suppliers-form-container .edit-dish-container {
+      margin-top: 16px; }
+      #admin-dashboard-content .add-dish-container .edit-dish-container h4,
+      #admin-dashboard-content .show-menu-container .edit-dish-container h4,
+      #admin-dashboard-content .show-order-container .edit-dish-container h4,
+      #admin-dashboard-content .calculation-form-container .edit-dish-container h4,
+      #admin-dashboard-content .show-suppliers-container .edit-dish-container h4,
+      #admin-dashboard-content .add-suppliers-form-container .edit-dish-container h4,
+      #admin-dashboard-content .edit-suppliers-form-container .edit-dish-container h4 {
+        color: #4B3B2F; }
+      #admin-dashboard-content .add-dish-container .edit-dish-container select,
+      #admin-dashboard-content .show-menu-container .edit-dish-container select,
+      #admin-dashboard-content .show-order-container .edit-dish-container select,
+      #admin-dashboard-content .calculation-form-container .edit-dish-container select,
+      #admin-dashboard-content .show-suppliers-container .edit-dish-container select,
+      #admin-dashboard-content .add-suppliers-form-container .edit-dish-container select,
+      #admin-dashboard-content .edit-suppliers-form-container .edit-dish-container select {
+        width: 100%; }
+  #admin-dashboard-content .show-menu-container #loading-indicator {
+    display: none;
+    text-align: center; }
+    #admin-dashboard-content .show-menu-container #loading-indicator p {
+      font-size: 16px;
+      margin-bottom: 8px; }
+    #admin-dashboard-content .show-menu-container #loading-indicator .spinner {
+      border: 4px solid #D4A373;
+      border-top: 4px solid #C29D6E;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite; }
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+  #admin-dashboard-content .show-menu-container #menu-list .category {
+    margin-bottom: 8px; }
+    #admin-dashboard-content .show-menu-container #menu-list .category h4 {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 5px 0;
+      color: #2F241D; }
+    #admin-dashboard-content .show-menu-container #menu-list .category .dish-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px; }
+      #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card {
+        display: flex;
+        align-items: center;
+        background-color: #F5F0E1;
+        border: 1px solid #D4A373;
+        border-radius: 8px;
+        padding: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        height: 50px; }
+        #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card h5 {
+          font-weight: bold;
+          margin-right: 16px;
+          color: #2F241D;
+          line-height: 1.2;
+          flex-shrink: 0;
+          width: 150px; }
+        #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card .ingredients {
+          font-size: 14px;
+          color: #D4A373;
+          margin-right: 8px;
+          flex-shrink: 1;
+          width: 200px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis; }
+        #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card p {
+          margin-right: 8px;
+          font-size: 14px;
+          color: #2F241D;
+          flex-shrink: 0; }
+          #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card p.weight {
+            font-weight: bold; }
+        #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card .price-container {
+          display: flex;
+          align-items: center;
+          margin-left: auto; }
+          #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card .price-container .price-input {
+            border: 1px solid #D4A373;
+            border-radius: 8px;
+            padding: 8px;
+            width: 60px; }
+  #admin-dashboard-content .show-order-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    background-color: #F5F0E1;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 0 auto; }
+    #admin-dashboard-content .show-order-container form .order-properties-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 8px; }
+      #admin-dashboard-content .show-order-container form .order-properties-container .property {
+        display: flex; }
+        #admin-dashboard-content .show-order-container form .order-properties-container .property label {
+          display: inline;
+          width: 200px;
+          font-size: 14px;
+          color: #2F241D;
+          margin-bottom: 8px;
+          margin-top: 8px; }
+        #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="text"],
+        #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="number"],
+        #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="tel"],
+        #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="date"],
+        #admin-dashboard-content .show-order-container form .order-properties-container .property textarea {
+          display: inline;
+          width: 100%;
+          padding: 8px;
+          margin-bottom: 8px;
+          border: 1px solid #8A6E58;
+          border-radius: 8px;
+          font-size: 16px;
+          background-color: #D4A373;
+          color: #2F241D; }
+          #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="text"]:focus,
+          #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="number"]:focus,
+          #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="tel"]:focus,
+          #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="date"]:focus,
+          #admin-dashboard-content .show-order-container form .order-properties-container .property textarea:focus {
+            border-color: #C29D6E;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
+        #admin-dashboard-content .show-order-container form .order-properties-container .property textarea {
+          height: 100px; }
+  #admin-dashboard-content .show-order-container h4 {
+    color: #4B3B2F;
+    font-size: 18px;
+    margin-top: 16px; }
+  #admin-dashboard-content .show-order-container #order-blank,
+  #admin-dashboard-content .show-order-container #additional-services {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+    background-color: #D4A373;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #8A6E58; }
+    #admin-dashboard-content .show-order-container #order-blank h3,
+    #admin-dashboard-content .show-order-container #additional-services h3 {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 5px 0;
+      color: #2F241D; }
+    #admin-dashboard-content .show-order-container #order-blank .dish-card,
+    #admin-dashboard-content .show-order-container #order-blank .service,
+    #admin-dashboard-content .show-order-container #additional-services .dish-card,
+    #admin-dashboard-content .show-order-container #additional-services .service {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #F5F0E1;
+      border: 1px solid #D4A373;
+      border-radius: 8px;
+      padding: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      height: 50px; }
+      #admin-dashboard-content .show-order-container #order-blank .dish-card p,
+      #admin-dashboard-content .show-order-container #order-blank .service p,
+      #admin-dashboard-content .show-order-container #additional-services .dish-card p,
+      #admin-dashboard-content .show-order-container #additional-services .service p {
+        font-size: 14px;
+        font-weight: bold;
+        margin: 0 16px;
+        color: #2F241D;
+        line-height: 1.2;
+        flex-shrink: 0;
+        width: 200px; }
+      #admin-dashboard-content .show-order-container #order-blank .dish-card input[type="text"],
+      #admin-dashboard-content .show-order-container #order-blank .service input[type="text"],
+      #admin-dashboard-content .show-order-container #additional-services .dish-card input[type="text"],
+      #admin-dashboard-content .show-order-container #additional-services .service input[type="text"] {
+        width: auto;
+        margin: 0 8px;
+        line-height: 1.2; }
+      #admin-dashboard-content .show-order-container #order-blank .dish-card input[type="number"],
+      #admin-dashboard-content .show-order-container #order-blank .service input[type="number"],
+      #admin-dashboard-content .show-order-container #additional-services .dish-card input[type="number"],
+      #admin-dashboard-content .show-order-container #additional-services .service input[type="number"] {
+        width: 80px;
+        margin-right: 16px;
+        margin-bottom: 0;
+        line-height: 1.2; }
+      #admin-dashboard-content .show-order-container #order-blank .dish-card span,
+      #admin-dashboard-content .show-order-container #order-blank .service span,
+      #admin-dashboard-content .show-order-container #additional-services .dish-card span,
+      #admin-dashboard-content .show-order-container #additional-services .service span {
+        margin-right: 8px; }
+  #admin-dashboard-content .show-order-container label {
+    font-size: 16px;
+    color: #2F241D;
+    margin-bottom: 8px; }
+  #admin-dashboard-content .show-order-container select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #8A6E58;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #D4A373;
+    color: #2F241D; }
+    #admin-dashboard-content .show-order-container select:focus {
+      border-color: #C29D6E;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
+  #admin-dashboard-content .show-suppliers-container #supplier-list,
+  #admin-dashboard-content .add-suppliers-form-container #supplier-list,
+  #admin-dashboard-content .edit-suppliers-form-container #supplier-list {
+    display: flex;
+    justify-content: space-evenly; }
+    #admin-dashboard-content .show-suppliers-container #supplier-list .supplier-item,
+    #admin-dashboard-content .add-suppliers-form-container #supplier-list .supplier-item,
+    #admin-dashboard-content .edit-suppliers-form-container #supplier-list .supplier-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      min-width: 200px;
+      min-height: 150px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease; }
+      #admin-dashboard-content .show-suppliers-container #supplier-list .supplier-item:hover,
+      #admin-dashboard-content .add-suppliers-form-container #supplier-list .supplier-item:hover,
+      #admin-dashboard-content .edit-suppliers-form-container #supplier-list .supplier-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+      #admin-dashboard-content .show-suppliers-container #supplier-list .supplier-item .delete-button,
+      #admin-dashboard-content .add-suppliers-form-container #supplier-list .supplier-item .delete-button,
+      #admin-dashboard-content .edit-suppliers-form-container #supplier-list .supplier-item .delete-button {
+        display: inline; }
 
-5: .show-order-container,
-6: .calculation-form-container,
-7: .show-suppliers-container,
-8: .add-suppliers-form-container,
-9: .edit-suppliers-form-container {
-10:     background-color: $background-color;
-11:     position: relative;
-12:     max-width: 900px;
-13:     margin: 0 auto;
-14:     padding: 20px;
-15:     border-radius: 10px;
-
-Backtrace:
-C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\pages\admin.scss:10
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/script/tree/variable.rb:49:in `_perform'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/script/tree/node.rb:50:in `perform'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:402:in `visit_prop'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:36:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:162:in `block in visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:79:in `block in with_base'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:135:in `with_frame'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:79:in `with_base'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:162:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:444:in `block (2 levels) in visit_rule'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:444:in `map'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:444:in `block in visit_rule'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:183:in `with_environment'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:442:in `visit_rule'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:36:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:162:in `block in visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:79:in `block in with_base'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:135:in `with_frame'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:79:in `with_base'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:162:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:52:in `map'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:52:in `visit_children'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:171:in `block in visit_children'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:183:in `with_environment'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:170:in `visit_children'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:36:in `block in visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:190:in `visit_root'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:36:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:161:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:10:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/root_node.rb:36:in `css_tree'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/root_node.rb:29:in `render_with_sourcemap'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/engine.rb:389:in `_render_with_sourcemap'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/engine.rb:307:in `render_with_sourcemap'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/exec/sass_scss.rb:391:in `run'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/exec/sass_scss.rb:63:in `process_result'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/exec/base.rb:52:in `parse'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/exec/base.rb:19:in `parse!'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/bin/sass:13:in `<top (required)>'
-C:/Program Files (x86)/Koala/bin/sass:22:in `load'
-C:/Program Files (x86)/Koala/bin/sass:22:in `<main>'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: Undefined variable: \"$background-color\".\A         on line 10 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\pages\admin.scss\A \A 5: .show-order-container,\A 6: .calculation-form-container,\A 7: .show-suppliers-container,\A 8: .add-suppliers-form-container,\A 9: .edit-suppliers-form-container {\A 10:     background-color: $background-color;\A 11:     position: relative;\A 12:     max-width: 900px;\A 13:     margin: 0 auto;\A 14:     padding: 20px;\A 15:     border-radius: 10px;"; }
+/*# sourceMappingURL=admin.css.map */

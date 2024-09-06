@@ -1,36 +1,52 @@
-// components/forms.scss
+@import '../variables';  // Ensure access to variables
 
 form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: $margin-small;
 }
 
 input {
-  padding: 10px;
-  border: 1px solid $primary-color;  // Черная рамка
-  border-radius: 4px;
-  background-color: $background-color;  // Белый фон
-  color: $primary-color;  // Черный текст
+    padding: $input-padding;
+    border: 1px solid $input-border-color;
+    border-radius: $input-border-radius;
+    background-color: $input-bg-color;
+    color: $input-text-color;
+    margin-bottom: $margin-small;
+
+    &:focus {
+        border-color: $input-focus-border-color;
+        outline: none;
+    }
 }
 
 input[type="submit"],
 button[type="submit"] {
-  @include button-style($primary-color, $accent-color);  // Черный фон, золотой текст
-  width: 100%;
+    background-color: $button-bg-color;
+    color: $button-text-color;
+    padding: $button-padding;
+    border-radius: $button-border-radius;
+    border: none;
+    cursor: pointer;
+    transition: background-color $transition-duration ease;
+    width: 100%;
+
+    &:hover {
+        background-color: $button-hover-bg-color;
+    }
 }
 
 .password-requirements {
-  font-size: 0.9em;
-  color: $text-color;
+    font-size: $font-size-small;
+    color: $text-color;
 
-  .requirement {
-    display: flex;
-    align-items: center;
+    .requirement {
+        display: flex;
+        align-items: center;
 
-    .check {
-      margin-right: 5px;
-      color: $accent-color;  // Золотой цвет
+        .check {
+            margin-right: $margin-small;
+            color: $accent-color;
+        }
     }
-  }
 }

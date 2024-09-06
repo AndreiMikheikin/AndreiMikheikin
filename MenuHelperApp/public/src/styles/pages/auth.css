@@ -3,16 +3,16 @@ Error: Undefined mixin 'flex-center'.
         on line 5 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\pages\auth.scss, in `flex-center'
         from line 5 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\pages\auth.scss
 
-1: // pages/auth.scss
+1: @import '../variables';  // Ensure access to variables
 2: 
 3: #auth-container,
 4: #forgot-password-container {
-5:   @include flex-center;
-6:   flex-direction: column;
-7:   margin-top: 20px;
-8:   padding: 10px;
-9:   background-color: $background-color; // Белый фон
-10:   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+5:     @include flex-center;
+6:     flex-direction: column;
+7:     margin-top: $margin-base;
+8:     padding: $padding-base;
+9:     background-color: $background-color;
+10:     box-shadow: $box-shadow-light;
 
 Backtrace:
 C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\pages\auth.scss:5:in `flex-center'
@@ -65,4 +65,4 @@ C:/Program Files (x86)/Koala/bin/sass:22:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined mixin 'flex-center'.\A         on line 5 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\pages\auth.scss, in `flex-center'\A         from line 5 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\pages\auth.scss\A \A 1: // pages/auth.scss\A 2: \A 3: #auth-container,\A 4: #forgot-password-container {\A 5:   @include flex-center;\A 6:   flex-direction: column;\A 7:   margin-top: 20px;\A 8:   padding: 10px;\A 9:   background-color: $background-color; // Белый фон\A 10:   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);"; }
+  content: "Error: Undefined mixin 'flex-center'.\A         on line 5 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\pages\auth.scss, in `flex-center'\A         from line 5 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\pages\auth.scss\A \A 1: @import '../variables';  // Ensure access to variables\A 2: \A 3: #auth-container,\A 4: #forgot-password-container {\A 5:     @include flex-center;\A 6:     flex-direction: column;\A 7:     margin-top: $margin-base;\A 8:     padding: $padding-base;\A 9:     background-color: $background-color;\A 10:     box-shadow: $box-shadow-light;"; }

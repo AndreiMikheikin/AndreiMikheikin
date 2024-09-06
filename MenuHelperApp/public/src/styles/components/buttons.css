@@ -1,69 +1,162 @@
-/*
-Error: Undefined mixin 'button-style'.
-        on line 8 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss, in `button-style'
-        from line 8 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss
+button {
+  background-color: #C29D6E;
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease; }
+  button:hover {
+    background-color: #b2854b; }
+  button.admin {
+    background-color: #D4A373;
+    color: #2F241D; }
+    button.admin:hover {
+      background-color: #c8894c; }
+  button.user {
+    background-color: #C29D6E;
+    color: #2F241D; }
+    button.user:hover {
+      background-color: #b2854b; }
+  button--secondary {
+    background-color: #8A6E58;
+    color: #F5F0E1; }
+    button--secondary:hover {
+      background-color: #6b5544; }
+  button__icon {
+    margin-right: 8px; }
+  button.close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-family: "Material Symbols Outlined";
+    font-size: 32px;
+    color: #D4A373;
+    cursor: pointer;
+    padding: 0; }
+    button.close-button:hover {
+      color: #c07d3b; }
+    button.close-button span {
+      font-size: 18px; }
+  button.back-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-family: "Material Symbols Outlined";
+    font-size: 32px;
+    color: #D4A373;
+    cursor: pointer;
+    padding: 0; }
+    button.back-button:hover {
+      color: #c07d3b; }
+    button.back-button span {
+      font-size: 36px; }
+  button.logout {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-family: "Material Symbols Outlined";
+    font-size: 32px;
+    color: #7a604c;
+    cursor: pointer;
+    padding: 0; }
+    button.logout:hover {
+      color: #4B3B2F; }
+    button.logout span {
+      font-size: 36px; }
+  button.remove-ingredient-button {
+    background: none;
+    border: none;
+    font-family: "Material Symbols Outlined";
+    font-size: 32px;
+    color: #ee6123;
+    cursor: pointer;
+    padding: 0; }
+    button.remove-ingredient-button:hover {
+      color: #B7410E; }
+    button.remove-ingredient-button span {
+      position: relative;
+      top: 13px;
+      color: inherit;
+      font-size: 36px; }
+  button.submit-button {
+    background-color: #C29D6E;
+    color: #FFFFFF;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer; }
+    button.submit-button:hover {
+      background-color: #b2854b; }
+  button.edit-button {
+    background-color: #D4A373;
+    border: none;
+    color: #F5F0E1;
+    padding: 3px;
+    margin: 0 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Material Symbols Outlined";
+    font-size: 14px; }
+  button.save-button {
+    background-color: #D4A373;
+    border: none;
+    color: #F5F0E1;
+    padding: 4px;
+    margin: 0 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px; }
+    button.save-button.save-button {
+      background-color: #D4A373;
+      display: none; }
+  button.delete-button {
+    background: none;
+    border: none;
+    padding: 4px;
+    margin: 0 8px;
+    color: #ee6123;
+    cursor: pointer;
+    transition: color 0.2s ease; }
+    button.delete-button:hover {
+      color: #B7410E; }
+    button.delete-button.cancel-button {
+      display: none; }
+  button.remove-button, button.remove-service {
+    background: none;
+    border: none;
+    padding: 4px;
+    margin: 0 8px;
+    color: #ee6123;
+    cursor: pointer;
+    transition: color 0.2s ease; }
+    button.remove-button:hover, button.remove-service:hover {
+      color: #B7410E; }
+    button.remove-button.cancel-button, button.remove-service.cancel-button {
+      display: none; }
+  button.cancel-button {
+    background: none;
+    border: none;
+    padding: 4px;
+    margin: 0 8px;
+    color: #ee6123;
+    cursor: pointer;
+    transition: color 0.2s ease; }
+    button.cancel-button:hover {
+      color: #B7410E; }
+    button.cancel-button.cancel-button {
+      display: none; }
 
-3: @import '../variables';  // Ensure access to variables
-4: 
-5: button {
-6:     
-7: 
-8:     @include button-style($primary-color, $background-color);  // Primary button style
-9:     margin-top: 10px;
-10: 
-11:     &.admin {
-12:         @include button-style($accent-color, $primary-color);  // Admin button style
-13:     }
-
-Backtrace:
-C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss:8:in `button-style'
-C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss:8
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:352:in `block in visit_mixin'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:98:in `block in with_mixin'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:135:in `with_frame'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:98:in `with_mixin'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:350:in `visit_mixin'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:36:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:162:in `block in visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:79:in `block in with_base'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:135:in `with_frame'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:79:in `with_base'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:162:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:444:in `block (2 levels) in visit_rule'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:444:in `map'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:444:in `block in visit_rule'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:183:in `with_environment'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:442:in `visit_rule'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:36:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:162:in `block in visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:79:in `block in with_base'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:135:in `with_frame'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/stack.rb:79:in `with_base'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:162:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:52:in `map'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:52:in `visit_children'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:171:in `block in visit_children'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:183:in `with_environment'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:170:in `visit_children'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:36:in `block in visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:190:in `visit_root'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/base.rb:36:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:161:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/visitors/perform.rb:10:in `visit'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/root_node.rb:36:in `css_tree'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/tree/root_node.rb:29:in `render_with_sourcemap'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/engine.rb:389:in `_render_with_sourcemap'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/engine.rb:307:in `render_with_sourcemap'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/exec/sass_scss.rb:391:in `run'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/exec/sass_scss.rb:63:in `process_result'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/exec/base.rb:52:in `parse'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/lib/sass/exec/base.rb:19:in `parse!'
-C:/Program Files (x86)/Koala/rubygems/gems/sass-3.5.2/bin/sass:13:in `<top (required)>'
-C:/Program Files (x86)/Koala/bin/sass:22:in `load'
-C:/Program Files (x86)/Koala/bin/sass:22:in `<main>'
-*/
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Error: Undefined mixin 'button-style'.\A         on line 8 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss, in `button-style'\A         from line 8 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\components\buttons.scss\A \A 3: @import '../variables';  // Ensure access to variables\A 4: \A 5: button {\A 6:     \A 7: \A 8:     @include button-style($primary-color, $background-color);  // Primary button style\A 9:     margin-top: 10px;\A 10: \A 11:     &.admin {\A 12:         @include button-style($accent-color, $primary-color);  // Admin button style\A 13:     }"; }
+/*# sourceMappingURL=buttons.css.map */

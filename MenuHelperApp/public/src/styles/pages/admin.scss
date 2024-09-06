@@ -1,463 +1,322 @@
-// admin.scss
+@import '../variables';
 
-.add-dish-container,
-.show-menu-container,
-.show-order-container,
-.calculation-form-container,
-.show-suppliers-container,
-.add-suppliers-form-container,
-.edit-suppliers-form-container {
-    background-color: $background-color;
+#admin-dashboard-content {
     position: relative;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
+    padding: $padding-base;
+    background-color: $background-color;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow-light;
 
-    .page-title {
-        font-family: $title;
-        color: $accent-color;
-        font-size: 2.1rem;
-         font-weight: 900;
-        margin-bottom: 20px;
-        text-align: center;
-    }
+    .add-dish-container,
+    .show-menu-container,
+    .show-order-container,
+    .calculation-form-container,
+    .show-suppliers-container,
+    .add-suppliers-form-container,
+    .edit-suppliers-form-container {
+        position: relative;
+        padding: $padding-base;
+        background-color: $background-color;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow-light;
+        margin: $margin-base auto;
 
-    form {
-        display: flex;
-        flex-direction: column;
-
-        input[type="text"],
-        input[type="number"],
-        textarea,
-        select {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid $border-color;
-            border-radius: 5px;
-            font-size: 1rem;
-            background-color: $secondary-color;
-            color: $text-color;
-
-            &:focus {
-                border-color: $primary-color;
-                outline: none;
-                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-            }
-        }
-
-        .weight-input {
-            width: auto; // Ширина поля для веса ингредиента
-        }
-
-        #ingredients-container {
-            margin-bottom: 20px;
-
-            .ingredients-label {
-                color: $primary-color;
-                font-size: 1.2rem;
-                margin-bottom: 10px;
-            }
-
-            .ingredient-group {
-                display: flex;
-                align-items: center;
-                margin-bottom: 15px;
-
-                input[type="text"],
-                input[type="number"],
-                select {
-                    margin-right: 10px;
-                }
-
-                .remove-ingredient-button {
-                    background: none;
-                    border: none;
-                    margin-top: -15px;
-                    color: $error-color;
-                    cursor: pointer;
-
-                    &:hover {
-                        color: darken($error-color, 10%);
-                    }
-
-                    i {
-                        font-size: 1.2rem;
-                    }
-                }
-            }
-        }
-
-        #add-ingredient {
-            background-color: $primary-color;
-            border: none;
-            padding: 10px;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            margin-bottom: 20px;
-
-            &:hover {
-                background-color: darken($primary-color, 10%);
-            }
-        }
-
-        #save-dish-button {
-            background-color: $primary-color;
-            border: none;
-            padding: 10px;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-
-            &:hover {
-                background-color: darken($primary-color, 10%);
-            }
-        }
-
-        #shared-by-container {
-            margin-bottom: 20px;
-
-            input[type="text"] {
-                width: 100%;
-            }
-        }
-    }
-
-    .back-button {
-        position: absolute;
-        top: 5px;
-        right: 2%;
-        border: none;
-        padding: 10px;
-        color: $secondary-color;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 20px;
-        transition: background-color 0.2s ease;
-
-        &::before {
-            content: "\f053"; // Иконка стрелки назад из FontAwesome
-            font-family: 'Font Awesome 5 Free';
+        .page-title {
+            font-family: $font-family-heading;
+            color: $accent-color;
+            font-size: 2.1rem;
             font-weight: 900;
-        }
-    }
-
-    .back-button:hover {
-        background-color: $primary-color;
-    }
-
-    .edit-dish-container {
-        margin-top: 20px;
-        background-color: $secondary-color;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-
-        h4 {
-            color: $primary-color;
-            font-size: 1.4rem;
-            margin-bottom: 15px;
+            margin-bottom: $margin-base;
             text-align: center;
         }
 
         form {
             display: flex;
             flex-direction: column;
+            gap: $margin-small;
 
-            label {
-                font-size: 1rem;
-                color: $text-color;
-                margin-bottom: 10px;
+            input,
+            textarea,
+            select {
+                margin-bottom: $margin-small;
+                padding: $input-padding;
+                border-radius: $input-border-radius;
+                border: 1px solid $input-border-color;
+                background-color: $input-bg-color;
+                color: $input-text-color;
+
+                &:focus {
+                    border-color: $input-focus-border-color;
+                    outline: none;
+                }
+            }
+
+            .weight-input {
+                width: 100px;
+            }
+
+        }
+
+        .edit-dish-container {
+            margin-top: $margin-base;
+
+            h4 {
+                color: $primary-color;
             }
 
             select {
-                padding: 10px;
-                margin-bottom: 15px;
-                border: 1px solid $border-color;
-                border-radius: 5px;
-                font-size: 1rem;
-                background-color: $secondary-color;
-                color: $text-color;
-
-                &:focus {
-                    border-color: $primary-color;
-                    outline: none;
-                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-                }
-            }
-
-            #load-dish-button,
-            #delete-dish-button {
-                background-color: $primary-color;
-                border: none;
-                padding: 10px;
-                color: white;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.2s ease;
-                margin-top: 10px;
-
-                &:hover {
-                    background-color: darken($primary-color, 10%);
-                }
-            }
-
-            #delete-dish-button {
-                background-color: $error-color;
-
-                &:hover {
-                    background-color: darken($error-color, 10%);
-                }
+                width: 100%;
             }
         }
     }
-}
 
-.show-menu-container {
+    .show-menu-container {
 
-    // Индикатор загрузки
-    #loading-indicator {
-        display: none; // Скрыт по умолчанию
-        text-align: center;
+        // Индикатор загрузки
+        #loading-indicator {
+            display: none; // Скрыт по умолчанию
+            text-align: center;
 
-        p {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        .spinner {
-            border: 4px solid $secondary-color; // Светло-серый
-            border-top: 4px solid $accent-color; // Красный
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-    }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    // Стили списка меню
-    #menu-list {
-        .category {
-            margin-bottom: 10px;
-
-            h4 {
-                font-size: 18px;
-                font-weight: bold;
-                margin: 5px 0;
-                color: $text-color;
+            p {
+                font-size: $font-size-base;
+                margin-bottom: $margin-small;
             }
 
-            .dish-container {
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
+            .spinner {
+                border: 4px solid $secondary-color; // Светло-серый
+                border-top: 4px solid $accent-color; // Красный
+                border-radius: 50%;
+                width: $icon-size-base;
+                height: $icon-size-base;
+                animation: spin 1s linear infinite;
+            }
+        }
 
-                .dish-card {
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        // Стили списка меню
+        #menu-list {
+            .category {
+                margin-bottom: $margin-small;
+
+                h4 {
+                    font-size: $font-size-large;
+                    font-weight: bold;
+                    margin: 5px 0;
+                    color: $text-color;
+                }
+
+                .dish-container {
                     display: flex;
-                    align-items: center;
-                    background-color: $background-color;
-                    border: 1px solid $secondary-color;
-                    border-radius: 8px;
-                    padding: 5px;
-                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                    width: 100%;
-                    height: 50px; // Максимальная высота
+                    flex-direction: column;
+                    gap: $padding-base;
 
-                    h5 {
-                        font-weight: bold;
-                        margin-right: 20px;
-                        color: $text-color;
-                        line-height: 1.2;
-                        flex-shrink: 0;
-                        width: 150px; // Фиксированная ширина
-                    }
-
-                    .ingredients {
-                        font-size: 14px;
-                        color: $secondary-color;
-                        margin-right: 10px;
-                        flex-shrink: 1;
-                        width: 200px; // Фиксированная ширина
-                        white-space: nowrap; // Запрещает перенос слов
-                        overflow: hidden;
-                        text-overflow: ellipsis; // Добавляет "..." для длинного текста
-                    }
-
-                    p {
-                        margin-right: 10px;
-                        font-size: 14px;
-                        color: $text-color;
-                        flex-shrink: 0;
-
-                        &.weight {
-                            font-weight: bold;
-                        }
-                    }
-
-                    .price-container {
+                    .dish-card {
                         display: flex;
                         align-items: center;
-                        margin-left: auto; // Выравнивает контейнер вправо
+                        background-color: $background-color;
+                        border: 1px solid $secondary-color;
+                        border-radius: $border-radius;
+                        padding: $padding-small;
+                        box-shadow: $box-shadow-light;
+                        width: 100%;
+                        height: 50px; // Максимальная высота
 
-                        .price-input {
-                            border: 1px solid $secondary-color;
-                            border-radius: 4px;
-                            padding: 5px;
-                            width: 60px;
-                            // Убран отступ справа
+                        h5 {
+                            font-weight: bold;
+                            margin-right: $margin-base;
+                            color: $text-color;
+                            line-height: 1.2;
+                            flex-shrink: 0;
+                            width: 150px; // Фиксированная ширина
                         }
 
-                        .edit-button {
-                            background-color: $secondary-color;
-                            border: none;
-                            color: $background-color;
-                            padding: 3px;
-                            margin: 0 5px; // Добавлен отступ справа
-                            border-radius: 3px;
-                            cursor: pointer;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            font-size: 12px;
+                        .ingredients {
+                            font-size: $font-size-small;
+                            color: $secondary-color;
+                            margin-right: $margin-small;
+                            flex-shrink: 1;
+                            width: 200px; // Фиксированная ширина
+                            white-space: nowrap; // Запрещает перенос слов
+                            overflow: hidden;
+                            text-overflow: ellipsis; // Добавляет "..." для длинного текста
                         }
 
-                        .save-button,
-                        .cancel-button {
-                            background-color: $secondary-color;
-                            border: none;
-                            color: $background-color;
-                            padding: 3px;
-                            margin: 0 5px;
-                            border-radius: 3px;
-                            cursor: pointer;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            font-size: 12px;
+                        p {
+                            margin-right: $margin-small;
+                            font-size: $font-size-small;
+                            color: $text-color;
+                            flex-shrink: 0;
 
-                            &.save-button {
-                                background-color: $secondary-color;
-                                display: none;
-                            }
-
-                            &.cancel-button {
-                                background-color: $error-color;
-                                display: none;
+                            &.weight {
+                                font-weight: bold;
                             }
                         }
-                    }
 
-                    .delete-button {
-                        background: none;
-                        border: none;
-                        padding: 10px;
-                        color: $accent-color;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        transition: background-color 0.2s ease;
+                        .price-container {
+                            display: flex;
+                            align-items: center;
+                            margin-left: auto; // Выравнивает контейнер вправо
 
-                        &:hover {
-                            color: darken($accent-color, 10%);
+                            .price-input {
+                                border: 1px solid $secondary-color;
+                                border-radius: $border-radius;
+                                padding: $padding-small;
+                                width: 60px;
+                            }
                         }
                     }
                 }
             }
         }
     }
-}
 
-.show-order-container {
+    .show-order-container {
 
-    form {
-        display: flex;
-        flex-direction: column;
-
-        .order-properties-container {
+        form {
             display: flex;
             flex-direction: column;
-            margin-bottom: 5px;
+            gap: 10px;
+            padding: $padding-base; // Добавлен отступ для формы
+            background-color: $background-color;
+            border-radius: $border-radius;
+            box-shadow: $box-shadow-light;
+            width: 100%;
+            margin: 0 auto;
 
-            label {
-                display: inline;
-                width: 30%;
-                font-size: 1rem;
-                color: $text-color; // Черный цвет текста
-                margin-bottom: 5px;
-                margin-top: 5px;
-            }
+            .order-properties-container {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: $margin-small;
 
-            input[type="text"],
-            input[type="number"],
-            input[type="tel"],
-            input[type="date"],
-            textarea {
-                display: inline;
-                width: 60%;
-                padding: 10px;
-                margin-bottom: 5px;
-                border: 1px solid $border-color;
-                border-radius: 5px;
-                font-size: 1rem;
-                background-color: $secondary-color; // Светло-серый фон
-                color: $text-color;
+                .property {
+                    display: flex;
 
-                &:focus {
-                    border-color: $accent-color;
-                    outline: none;
-                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+                    label {
+                        display: inline;
+                        width: 200px;
+                        font-size: $font-size-small;
+                        color: $text-color;
+                        margin-bottom: $margin-small;
+                        margin-top: $margin-small;
+                    }
+
+                    input[type="text"],
+                    input[type="number"],
+                    input[type="tel"],
+                    input[type="date"],
+                    textarea {
+                        display: inline;
+                        width: 100%; // Ширина 100% для инпутов
+                        padding: $padding-small;
+                        margin-bottom: $margin-small;
+                        border: 1px solid $border-color;
+                        border-radius: $border-radius;
+                        font-size: $font-size-base;
+                        background-color: $secondary-color;
+                        color: $text-color;
+
+                        &:focus {
+                            border-color: $accent-color;
+                            outline: none;
+                            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+                        }
+                    }
+
+                    textarea {
+                        height: 100px;
+                    }
                 }
-            }
-
-            textarea {
-                height: 100px;
             }
         }
 
         h4 {
             color: $primary-color;
-            font-size: 1.4rem;
-            margin-bottom: 10px;
+            font-size: $font-size-large;
+            margin-top: $margin-base;
         }
 
         #order-blank,
         #additional-services {
-            margin-bottom: 20px;
-            background-color: $secondary-color; // Светло-серый фон
-            padding: 15px;
-            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: $margin-large;
+            background-color: $secondary-color;
+            padding: $padding-base;
+            border-radius: $border-radius;
             border: 1px solid $border-color;
-            min-height: 50px; // Минимальная высота для контейнеров
+
+            h3 {
+                font-size: $font-size-large;
+                font-weight: bold;
+                margin: 5px 0;
+                color: $text-color;
+            }
+
+            .dish-card,
+            .service {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: $background-color;
+                border: 1px solid $secondary-color;
+                border-radius: $border-radius;
+                padding: $padding-small;
+                box-shadow: $box-shadow-light;
+                width: 100%;
+                height: 50px; // Максимальная высота
+
+                p {
+                    font-size: $font-size-small;
+                    font-weight: bold;
+                    margin: 0 $margin-base;
+                    color: $text-color;
+                    line-height: 1.2;
+                    flex-shrink: 0;
+                    width: 200px;
+                }
+
+                input[type="text"] {
+                    width: auto;
+                    margin: 0 $margin-small;
+                    line-height: 1.2;
+                }
+
+                input[type="number"] {
+                    width: 80px;
+                    margin-right: $margin-base;
+                    margin-bottom: 0;
+                    line-height: 1.2;
+                }
+
+                span {
+                    margin-right: $margin-small;
+                }
+            }
         }
 
         label {
-            font-size: 1rem;
+            font-size: $font-size-base;
             color: $text-color;
-            margin-bottom: 5px;
+            margin-bottom: $margin-small;
         }
 
         select {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: $padding-small;
+            margin-bottom: $margin-base;
             border: 1px solid $border-color;
-            border-radius: 5px;
-            font-size: 1rem;
-            background-color: $secondary-color; // Светло-серый фон
+            border-radius: $border-radius;
+            font-size: $font-size-base;
+            background-color: $secondary-color;
             color: $text-color;
 
             &:focus {
@@ -466,25 +325,37 @@
                 box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             }
         }
+    }
 
-        button {
-            background-color: $primary-color;
-            border: none;
-            padding: 10px;
-            color: $background-color; // Белый текст
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            margin-bottom: 10px;
+    .show-suppliers-container,
+    .add-suppliers-form-container,
+    .edit-suppliers-form-container {
+        
+        #supplier-list {
+            display: flex;
+            justify-content: space-evenly;
 
-            &:hover {
-                background-color: darken($primary-color, 10%);
+            .supplier-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background-color: lighten($background-color, 20%);
+                box-shadow: $box-shadow-light;
+                min-width: 200px;
+                min-height: 150px;
+                transition: transform $transition-duration ease, box-shadow $transition-duration ease;
+
+                &:hover {
+                    transform: scale(1.05);
+                    box-shadow: $box-shadow-heavy;
+                }
+
+                .delete-button {
+                    display: inline;
+                }
             }
-        }
 
-        .back-button {
-            background-color: $primary-color;
-            color: $secondary-color;
+            
         }
     }
 }

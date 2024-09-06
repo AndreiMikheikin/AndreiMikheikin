@@ -1,5 +1,5 @@
 /*
-Error: Undefined variable: "$font-stack".
+Error: Undefined variable: "$font-family-base".
         on line 11 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\base.scss
 
 6:   padding: 0;
@@ -7,10 +7,10 @@ Error: Undefined variable: "$font-stack".
 8: }
 9: 
 10: body {
-11:   font-family: $font-stack;
-12:   font-size: $base-font-size;
+11:   font-family: $font-family-base;
+12:   font-size: $font-size-base;
 13:   font-style: normal;
-14:   background-color: $main-bg-color;
+14:   background-color: $background-color;
 15:   color: $text-color;
 16:   line-height: 1.6;
 
@@ -62,4 +62,4 @@ C:/Program Files (x86)/Koala/bin/sass:22:in `<main>'
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined variable: \"$font-stack\".\A         on line 11 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\base.scss\A \A 6:   padding: 0;\A 7:   list-style: none;\A 8: }\A 9: \A 10: body {\A 11:   font-family: $font-stack;\A 12:   font-size: $base-font-size;\A 13:   font-style: normal;\A 14:   background-color: $main-bg-color;\A 15:   color: $text-color;\A 16:   line-height: 1.6;"; }
+  content: "Error: Undefined variable: \"$font-family-base\".\A         on line 11 of C:\Users\user\Desktop\IT-Accademy\AndreiMikheikin\MenuHelperApp\public\src\styles\base.scss\A \A 6:   padding: 0;\A 7:   list-style: none;\A 8: }\A 9: \A 10: body {\A 11:   font-family: $font-family-base;\A 12:   font-size: $font-size-base;\A 13:   font-style: normal;\A 14:   background-color: $background-color;\A 15:   color: $text-color;\A 16:   line-height: 1.6;"; }

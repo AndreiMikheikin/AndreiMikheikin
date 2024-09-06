@@ -1,17 +1,55 @@
 // variables.scss
 
-// Цветовая палитра
-$primary-color: #000;  // Черный
-$secondary-color: lighten($primary-color, 70%);  // Более светлый серый
-$accent-color: #c94f4f;  // Красный акцент
-$border-color: darken($accent-color, 30%); // Более темный красный акцент
-$background-color: #fff;  // Белый фон
-$main-bg-color: #c94f4f;  // Красный акцент
-$error-color: #e74c3c;  // Красный для ошибок
-$text-color: $primary-color;  // Текст будет черным
+// Цвета
+$primary-color: #4B3B2F;  // Темно-коричневый
+$secondary-color: #D4A373;  // Золотисто-бежевый
+$accent-color: #C29D6E;  // Золотисто-карамельный
+$background-color: #F5F0E1;  // Мягкий кремовый фон
+$border-color: #8A6E58;  // Темный коричневый для границ
+$text-color: #2F241D;  // Теплый темно-коричневый текст
+$error-color: #B7410E;  // Терракотовый цвет для ошибок
 
 // Шрифты
-$font-stack: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-$title: 'Cormorant', Georgia, 'Times New Roman', Times, serif;
-$icon: 'Material Symbols Outlined';
-$base-font-size: 16px;
+$font-family-base: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+$font-family-heading: 'Cormorant', Georgia, 'Times New Roman', Times, serif;
+$font-family-icons: 'Material Symbols Outlined';
+
+// Размеры текста
+$font-size-base: 16px;
+$font-size-large: 18px;
+$font-size-small: 14px;
+
+// Кнопки
+$button-bg-color: $accent-color;
+$button-text-color: #FFFFFF;
+$button-hover-bg-color: darken($accent-color, 10%);
+$button-padding: 12px 24px;
+$button-border-radius: 4px;
+
+// Поля ввода
+$input-bg-color: #FFFFFF;
+$input-border-color: $border-color;
+$input-text-color: $primary-color;
+$input-padding: 12px;
+$input-border-radius: 4px;
+$input-focus-border-color: $accent-color;
+
+// Отступы и поля
+$padding-small: 8px;
+$padding-base: 16px;
+$padding-large: 24px;
+$margin-small: 8px;
+$margin-base: 16px;
+$margin-large: 24px;
+
+// Тени и эффекты
+$box-shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
+$box-shadow-heavy: 0 4px 8px rgba(0, 0, 0, 0.3);
+$transition-duration: 0.3s;
+$border-radius: 8px;
+
+// Иконки
+$icon-size-small: 16px;
+$icon-size-base: 24px;
+$icon-size-large: 32px;
+$icon-color: $accent-color;
