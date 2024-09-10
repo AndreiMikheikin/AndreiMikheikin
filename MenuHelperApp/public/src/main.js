@@ -1,4 +1,4 @@
-import { loadAdminDashboard, showSuppliers } from './admin.js';
+import { loadAdminDashboard, showCollectionButtons } from './admin.js';
 
 const ICON1_ID = 'icon1';
 const ICON2_ID = 'icon2';
@@ -71,7 +71,7 @@ export function addIconEventListeners() {
     document.getElementById(ICON2_ID).addEventListener('dblclick', showMenu);
     document.getElementById(ICON3_ID).addEventListener('dblclick', showPurchaseCalculationForm);
     document.getElementById(ICON4_ID).addEventListener('dblclick', showOrderForm);
-    document.getElementById(ICON5_ID).addEventListener('dblclick', showSuppliers);
+    document.getElementById(ICON5_ID).addEventListener('dblclick', showCollectionButtons);
 
     document.getElementById(ICON1_ID).addEventListener('touchend', handleTouchEnd);
     document.getElementById(ICON2_ID).addEventListener('touchend', handleTouchEnd);
@@ -97,7 +97,7 @@ function handleTouchEnd(event) {
                 showOrderForm();
                 break;
             case ICON5_ID:
-                showSuppliers();
+                showCollectionButtons();
                 break;
         }
     }, 200);

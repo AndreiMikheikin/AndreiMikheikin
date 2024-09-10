@@ -1,7 +1,7 @@
 // Импорт необходимых функций из Firestore
 import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, doc, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { initializeDragAndDrop, saveIconPositions, addIconEventListeners } from './main.js';
 
 // Конфигурация Firebase
@@ -59,8 +59,8 @@ export function loadAdminDashboard() {
                 <p>Оформление заказа</p>
             </div>
             <div class="icon-container" id="${ICON5_ID}" draggable="true">
-                <img src="images/icons/contact_icon.svg" alt="Справочник поставщиков">
-                <p>Справочник поставщиков</p>
+                <img src="images/icons/contact_icon.svg" alt="Коллекции элементов">
+                <p>Коллекции элементов</p>
             </div>
         `;
 
@@ -137,7 +137,7 @@ async function addIngredientField() {
 
     // Добавляем HTML-контент
     ingredientDiv.innerHTML = `
-        <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
+        <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Название ингредиента" required>
         <input type="number" name="ingredient-weight" placeholder="Вес" class="weight-input" required>
         <select name="ingredient-unit">
             <option value="г">г</option>
@@ -203,38 +203,53 @@ function addEventListeners() {
     });
 }
 
-// Функция для загрузки списка поставщиков
-async function loadSupplierOptions() {
+// Функция для загрузки списка поставщиков из localStorage
+function loadSupplierOptions() {
     console.log('Функция loadSupplierOptions() вызвана');
 
-    const user = auth.currentUser;
-    if (user) {
-        const userUid = user.uid;
-        const suppliersRef = collection(db, `users/${userUid}/suppliers`);
+    try {
+        const auth = getAuth();
+        const user = auth.currentUser;
 
-        // Выполняем запрос к Firestore и логируем его
-        const querySnapshot = await getDocs(suppliersRef);
-        console.log('Запрос к базе данных выполнен. Полученные данные:', querySnapshot);
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return `<option value="">Ошибка: пользователь не аутентифицирован</option>`;
+        }
 
-        if (querySnapshot.empty) {
+        // Формируем ключ для localStorage
+        const userUID = user.uid;
+        const localStorageKey = `collection_suppliers_${userUID}`;
+        console.log('Используемый ключ localStorage:', localStorageKey);
+
+        // Получаем данные о поставщиках из localStorage
+        const suppliersData = localStorage.getItem(localStorageKey);
+
+        if (!suppliersData) {
             console.log('Список поставщиков пуст.');
             return `<option value="">У вас нет поставщиков. <a href="#" onclick="showAddSupplierForm()">Добавьте первого поставщика!</a></option>`;
         }
 
-        // Генерация списка <option> с именем поставщика и логирование каждого поставщика
+        // Парсим данные
+        const suppliers = JSON.parse(suppliersData);
+        console.log('Загруженные данные о поставщиках из localStorage:', suppliers);
+
+        // Генерация списка <option> с именем поставщика
         let options = '';
-        querySnapshot.forEach((doc) => {
-            const supplier = doc.data();
-            console.log('Найден поставщик:', supplier);
-            options += `<option value="${doc.id}">${supplier.suppliersName}</option>`;
+        suppliers.forEach((supplier) => {
+            // Проверка на наличие свойства "name" у каждого поставщика
+            if (supplier.name) {
+                options += `<option value="${supplier.id}">${supplier.name}</option>`;
+            } else {
+                console.warn(`У поставщика с ID ${supplier.id} отсутствует поле "name"`);
+            }
         });
 
         console.log('Сформированные опции для селекта:', options);
         return options;
-    } else {
-        console.error('Пользователь не аутентифицирован');
-        alert('Пожалуйста, войдите в систему, чтобы загрузить список поставщиков.');
-        return `<option value="">Ошибка загрузки поставщиков</option>`;
+
+    } catch (error) {
+        console.error('Произошла ошибка при загрузке данных из localStorage:', error);
+        return `<option value="">Ошибка загрузки данных</option>`;
     }
 }
 
@@ -260,7 +275,7 @@ window.showDishForm = async function showDishForm() {
             <div id="ingredients-container">
                 <h4 class="ingredients-label">Ингредиенты</h4>
                 <div class="ingredient-group">
-                    <input type="text" name="ingredient-name" placeholder="Название ингредиента" required>
+                    <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Название ингредиента" required>
                     <input type="number" name="ingredient-weight" placeholder="Вес" class="weight-input" required>
                     <select name="ingredient-unit">
                         <option value="г">г</option>
@@ -311,6 +326,50 @@ window.showDishForm = async function showDishForm() {
     // Обработчик отправки формы
     const form = document.getElementById('dish-form');
     form.addEventListener('submit', handleSubmit);
+
+    // Универсальная функция для получения данных из localStorage
+    function getDataFromLocalStorage(localStorageKey) {
+        console.log(`Загрузка данных из localStorage по ключу: ${localStorageKey}`);
+
+        // Получаем данные из localStorage
+        const data = localStorage.getItem(localStorageKey);
+
+        if (!data) {
+            console.log('Данные не найдены в localStorage');
+            return [];
+        }
+
+        // Парсим данные
+        const items = JSON.parse(data);
+
+        // Создаем массив имен элементов
+        const itemNames = items.map(item => item.name);
+
+        console.log(`Загруженные данные:`, itemNames);
+        return itemNames;
+    }
+
+    // Инициализация автозаполнения для поля с категориями
+    $(document).ready(function () {
+        // Получаем категории из localStorage
+        const userUID = getAuth().currentUser.uid;
+        const categoriesKey = `collection_categories_${userUID}`;
+        const categories = getDataFromLocalStorage(categoriesKey);
+
+        // Инициализация автозаполнения для поля с категориями
+        $("#category-name").autocomplete({
+            source: categories
+        });
+
+        // Получаем ингредиенты из localStorage
+        const ingredientsKey = `collection_ingredients_${userUID}`;
+        const ingredients = getDataFromLocalStorage(ingredientsKey);
+
+        // Инициализация автозаполнения для поля с ингредиентами
+        $("#ingredient-name").autocomplete({
+            source: ingredients
+        });
+    });
 }
 
 // Функция для загрузки опций блюд в выпадающий список
@@ -524,13 +583,55 @@ async function handleSubmit(event) {
     };
 
     try {
+        // Добавляем проверки и добавление категорий и ингредиентов
+        const userUid = user.uid;
+
+        // Проверка наличия категории
+        const categoriesRef = collection(db, `users/${userUid}/categories`);
+        const categoryQuery = query(categoriesRef, where('name', '==', categoryName));
+        const categorySnapshot = await getDocs(categoryQuery);
+
+        let categoryExists = false;
+        if (categorySnapshot.empty) {
+            // Категория не существует, добавляем её
+            await addDoc(categoriesRef, {
+                name: categoryName,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
+            categoryExists = false;
+            console.log(`Новая категория "${categoryName}" добавлена в коллекцию категорий.`);
+        } else {
+            categoryExists = true;
+        }
+
+        // Проверка наличия ингредиентов
+        const ingredientsRef = collection(db, `users/${userUid}/ingredients`);
+        const ingredientNames = ingredients.map(ing => ing.name);
+        const ingredientsQuery = query(ingredientsRef, where('name', 'in', ingredientNames));
+        const ingredientsSnapshot = await getDocs(ingredientsQuery);
+
+        const existingIngredientNames = ingredientsSnapshot.docs.map(doc => doc.data().name);
+        const newIngredients = ingredients.filter(ing => !existingIngredientNames.includes(ing.name));
+
+        // Добавляем новые ингредиенты
+        for (const newIngredient of newIngredients) {
+            await addDoc(ingredientsRef, {
+                name: newIngredient.name,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
+            console.log(`Новый ингредиент "${newIngredient.name}" добавлен в коллекцию ингредиентов.`);
+        }
+
+        // Продолжаем сохранение блюда
         const dishesRef = collection(db, `users/${user.uid}/menu`);
-        const querySnapshot = await getDocs(
+        const dishQuerySnapshot = await getDocs(
             query(dishesRef, where('name', '==', dishData.name), where('category', '==', dishData.category))
         );
 
         let existingDishId = null;
-        querySnapshot.forEach((doc) => {
+        dishQuerySnapshot.forEach((doc) => {
             existingDishId = doc.id;
         });
 
@@ -581,6 +682,12 @@ async function handleSubmit(event) {
             }
 
             alert('Блюдо добавлено успешно!');
+        }
+
+        if (!categoryExists || newIngredients.length > 0) {
+            if (confirm('Были добавлены новые категории или ингредиенты. Выполнить синхронизацию коллекций сейчас?')) {
+                await syncAllCollections(); // Предполагается, что у вас есть функция синхронизации всех коллекций
+            }
         }
 
         form.reset();
@@ -1133,6 +1240,17 @@ window.showOrderForm = function showOrderForm() {
     const adminContent = document.getElementById(ADMIN_DASHBOARD_CONTENT_ID);
     adminContent.innerHTML = `
     <div class="show-order-container">
+        <h3>Загрузка заказа по дате</h3>
+        <div class="order-select-container">
+            <label for="order-select">Выберите заказ для редактирования:</label>
+            <select id="order-select" name="order-select">
+                <option value="">Выберите заказ:</option>
+                <!-- Динамически добавляемые опции -->
+            </select>
+            <button type="button" id="load-order-button"><span class="material-icons-outlined">upload</span></button>
+            <button type="button" id="delete-order-button"><span class="material-icons-outlined">delete</span></button>
+        </div>
+
         <h3 class="page-title">Оформление заказа</h3>
         <form id="order-form">
             <div class="order-properties-container">
@@ -1194,17 +1312,6 @@ window.showOrderForm = function showOrderForm() {
             <button type="button" class="back-button" onclick="loadAdminDashboard()"><span class="material-icons-outlined">arrow_back</span></button>
         </form>
 
-        <h3>Загрузка заказа по дате</h3>
-        <div class="order-select-container">
-            <label for="order-select">Выберите заказ для редактирования:</label>
-            <select id="order-select" name="order-select">
-                <option value="">Выберите заказ:</option>
-                <!-- Динамически добавляемые опции -->
-            </select>
-            <button type="button" id="load-order-button"><span class="material-icons-outlined">upload</span></button>
-            <button type="button" id="delete-order-button"><span class="material-icons-outlined">delete</span></button>
-        </div>
-
         <div id="print-modal" class="modal hidden">
             <div class="modal-content">
                 <span class="modal-close-button">&times;</span>
@@ -1262,7 +1369,7 @@ async function loadOrderByDate() {
         document.getElementById('order-customer-name').value = orderData.customerName || '';
         document.getElementById('order-customer-phone').value = orderData.customerPhone || '';
         document.getElementById('order-else-properties').value = orderData.additionalProperties || '';
-        
+
         // Очищаем и заполняем поля меню и дополнительных услуг
         const orderBlank = document.getElementById('order-blank');
         orderBlank.innerHTML = '';
@@ -1577,7 +1684,7 @@ function showPrintModal() {
     const printContent = generatePrintContent(); // Генерируем контент для печати
     const printModal = document.getElementById('print-modal');
     const printContentContainer = document.getElementById('print-content');
-    
+
     printContentContainer.innerHTML = printContent;  // Вставляем сгенерированный контент в модальное окно
     printModal.classList.remove('hidden'); // Удаляем класс 'hidden', чтобы показать модальное окно
 
@@ -1849,123 +1956,233 @@ async function deleteOrder() {
 
 window.loadOrders = loadOrders;
 
-/* ---------------------Форма добавления / редактирования / удаления поставщиков-------------------------- */
+/* ---------------------Форма добавления / редактирования / удаления коллекций-------------------------- */
 
-// Экспортируем функцию showSuppliers для использования в других модулях
-export async function showSuppliers() {
-    showAdminContent();
-    const adminContent = document.getElementById('admin-dashboard-content');
-    adminContent.innerHTML = `
-        <div class="show-suppliers-container">
-            <h3 class="page-title">Список поставщиков</h3>
-            <div id="loading-indicator" style="display: none;">
-                <p>Загрузка, пожалуйста подождите...</p>
-                <div class="spinner"></div>
+// Получить данные из localStorage по ключу
+function getFromLocalStorage(key) {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : null;
+}
+
+// Сохранить данные в localStorage
+function setToLocalStorage(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+// Функция для проверки дубликатов и удаления повторяющихся элементов
+function removeDuplicates(dataArray, key = 'name') {
+    const uniqueData = dataArray.filter((value, index, self) =>
+        index === self.findIndex((item) => item[key] === value[key])
+    );
+    return uniqueData;
+}
+
+// Синхронизация коллекций (Firestore -> localStorage)
+async function syncCollectionFromFirestore(collectionType) {
+    try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return;
+        }
+
+        const userUid = user.uid;
+        let collectionRef;
+        let localStorageKey = `collection_${collectionType}_${userUid}`;
+
+        // Определяем коллекцию в зависимости от типа
+        switch (collectionType) {
+            case 'suppliers':
+                collectionRef = collection(db, `users/${userUid}/suppliers`);
+                break;
+            case 'categories':
+                collectionRef = collection(db, `users/${userUid}/categories`);
+                break;
+            case 'services':
+                collectionRef = collection(db, `users/${userUid}/services`);
+                break;
+            case 'ingredients':
+                collectionRef = collection(db, `users/${userUid}/ingredients`);
+                break;
+            default:
+                console.error('Неверный тип коллекции.');
+                return;
+        }
+
+        // Загружаем данные из Firestore
+        const collectionSnapshot = await getDocs(collectionRef);
+        const collectionData = collectionSnapshot.docs.map(doc => {
+            const data = doc.data();
+
+            // Для поставщиков сохраняем phone и address, для остальных только name
+            if (collectionType === 'suppliers') {
+                return { id: doc.id, name: data.name, phone: data.phone, address: data.address, createdAt: data.createdAt, updatedAt: data.updatedAt };
+            } else {
+                return { id: doc.id, name: data.name, createdAt: data.createdAt, updatedAt: data.updatedAt };
+            }
+        });
+
+        // Удаление дубликатов перед сохранением в localStorage
+        const uniqueCollectionData = removeDuplicates(collectionData);
+
+        // Сохраняем данные в localStorage
+        setToLocalStorage(localStorageKey, uniqueCollectionData);
+
+        console.log(`Коллекция ${collectionType} синхронизирована с Firestore и сохранена в localStorage`);
+    } catch (error) {
+        console.error(`Ошибка при синхронизации ${collectionType}:`, error);
+    }
+}
+
+// Вызов синхронизации для всех коллекций
+async function syncAllCollections() {
+    await syncCollectionFromFirestore('suppliers');
+    await syncCollectionFromFirestore('categories');
+    await syncCollectionFromFirestore('services');
+    await syncCollectionFromFirestore('ingredients');
+    alert('Синхронизация всех коллекций завершена!');
+}
+
+// Функция для отображения коллекций поставщиков, категорий и дополнительных услуг
+async function showCollections(collectionType) {
+    try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return;
+        }
+
+        const userUid = user.uid;
+        let localStorageKey = `collection_${collectionType}_${userUid}`;
+
+        // Берем данные из localStorage
+        const collectionData = getFromLocalStorage(localStorageKey);
+
+        if (!collectionData) {
+            alert(`Данные ${collectionType} не найдены в localStorage. Пожалуйста, выполните синхронизацию.`);
+            return;
+        }
+
+        const collectionContent = document.getElementById('collection-content');
+        let title;
+
+        // Устанавливаем заголовок в зависимости от типа коллекции
+        switch (collectionType) {
+            case 'suppliers':
+                title = 'Список поставщиков';
+                break;
+            case 'categories':
+                title = 'Список категорий';
+                break;
+            case 'services':
+                title = 'Дополнительные услуги';
+                break;
+            case 'ingredients':
+                title = 'Ингредиенты';
+                break;
+        }
+
+        // Формируем HTML-контент для отображения
+        collectionContent.innerHTML = `
+            <div class="${collectionType}-list">
+                <h2>${title}</h2>
+                <ul id="${collectionType}-ul">
+                    ${collectionData.map(item => `
+                        <li>
+                            <strong>${item.name || 'Не указано'}</strong> <br>
+                            ${collectionType === 'suppliers' ? `
+                                Телефон: ${item.phone || 'Не указан'} <br>
+                                Адрес: ${item.address || 'Не указан'} <br>
+                            ` : ''}
+                            <button data-id="${item.id}" class="edit-${collectionType}-btn">
+                                <span class="material-icons-outlined">edit</span>
+                            </button>
+                            <button data-id="${item.id}" class="delete-${collectionType}-btn">
+                                <span class="material-icons-outlined">delete</span>
+                            </button>
+                        </li>
+                    `).join('')}
+                </ul>
+                <button class="add-${collectionType}-btn" onclick="showAddForm('${collectionType}')">
+                    <span class="material-icons-outlined">add</span> Добавить элемент
+                </button>
             </div>
-            <div id="supplier-list"></div>
-            <button id="add-supplier-btn" onclick="showAddSupplierForm()"><span class="material-icons-outlined">add</span></button>
-            <button class="back-button" onclick="loadAdminDashboard()"><span class="material-icons-outlined">arrow_back</span></button>
+            `;
+
+        // Добавляем обработчики для кнопок редактирования и удаления
+        const editButtons = document.querySelectorAll(`.edit-${collectionType}-btn`);
+        editButtons.forEach(button => button.addEventListener('click', (event) => handleCollectionsEditClick(event, collectionType)));
+
+        const deleteButtons = document.querySelectorAll(`.delete-${collectionType}-btn`);
+        deleteButtons.forEach(button => button.addEventListener('click', (event) => handleCollectionsDeleteClick(event, collectionType)));
+    } catch (error) {
+        console.error(`Ошибка при загрузке ${collectionType}:`, error);
+        alert(`Ошибка при загрузке ${collectionType}: ${error.message}`);
+    }
+}
+
+// Функция для отображения формы добавления нового элемента
+function showAddForm(collectionType) {
+    const collectionContent = document.getElementById('collection-content');
+
+    // Генерируем дополнительные поля для коллекции "Поставщики"
+    const additionalFields = collectionType === 'suppliers' ? `
+        <label for="suppliersPhone">Телефон:</label>
+        <input type="text" id="suppliersPhone" name="suppliersPhone" required>
+        
+        <label for="suppliersAddress">Адрес:</label>
+        <input type="text" id="suppliersAddress" name="suppliersAddress" required>
+    ` : '';
+
+    const collectionTitles = {
+        suppliers: 'поставщики',
+        categories: 'категории',
+        services: 'дополнительные услуги',
+        ingredients: 'ингредиенты'
+    };
+
+    const titleInRussian = collectionTitles[collectionType] || 'Элемент';
+
+    // Отображаем форму для добавления элемента коллекции
+    collectionContent.innerHTML = `
+        <div class="add-${collectionType}-form-container">
+            <h2>Добавить элемент в коллекцию ${titleInRussian}</h2>
+            <form id="add-${collectionType}-form">
+                <label for="${collectionType}Name">Название:</label>
+                <input type="text" id="${collectionType}Name" name="${collectionType}Name" required>
+
+                ${additionalFields}
+                
+                <button type="submit"><span class="material-icons-outlined">save</span> Сохранить</button>
+            </form>
+            <button class="back-button" onclick="showCollections('${collectionType}')">Назад</button>
         </div>
     `;
 
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const supplierList = document.getElementById('supplier-list');
+    const formContainer = document.querySelector('.add-' + collectionType + '-form-container');
+    formContainer.style.position = 'relative';
 
-    // Показываем индикатор загрузки
-    loadingIndicator.style.display = 'flex';
-
-    try {
-        const auth = getAuth();
-        const user = auth.currentUser;
-
-        if (user) {
-            const userUid = user.uid;
-
-            // Получаем коллекцию suppliers для текущего пользователя
-            const suppliersRef = collection(db, `users/${userUid}/suppliers`);
-            const querySnapshot = await getDocs(suppliersRef);
-            supplierList.innerHTML = '';
-
-            if (querySnapshot.empty) {
-                supplierList.innerHTML = `
-                    <p>У вас пока нет поставщиков. <a href="#" onclick="showAddSupplierForm()">Добавьте первого поставщика!</a></p>
-                `;
-                return;
-            }
-
-            querySnapshot.forEach((doc) => {
-                const supplier = doc.data();
-                console.log('Получен поставщик с сервера:', { id: doc.id, ...supplier });
-
-                const supplierElement = document.createElement('div');
-                supplierElement.classList.add('supplier-item');
-                supplierElement.innerHTML = `
-                    <p>Название: ${supplier.suppliersName}</p>
-                    <p>Телефон: ${supplier.suppliersPhone}</p>
-                    <p>Адрес: ${supplier.suppliersAdress}</p>
-                    <button class="edit-button" data-id="${doc.id}"><span class="material-icons-outlined">edit</span></button>
-                    <button class="delete-button" data-id="${doc.id}"><span class="material-icons-outlined">delete</span></button>
-                `;
-                supplierList.appendChild(supplierElement);
-            });
-
-            // Добавление обработчиков событий для кнопок редактирования и удаления
-            document.querySelectorAll('.edit-button').forEach(button => {
-                button.addEventListener('click', handleEditSupplierClick);
-            });
-
-            document.querySelectorAll('.delete-button').forEach(button => {
-                button.addEventListener('click', handleDeleteSupplierClick);
-            });
-
-        } else {
-            console.error('Пользователь не аутентифицирован');
-            alert('Пожалуйста, войдите в систему, чтобы просмотреть список поставщиков.');
-        }
-    } catch (error) {
-        console.error('Ошибка при загрузке списка поставщиков:', error);
-        alert(`Ошибка при загрузке списка поставщиков: ${error.message}`);
-    } finally {
-        // Скрываем индикатор загрузки
-        loadingIndicator.style.display = 'none';
-    }
+    // Обрабатываем отправку формы
+    const addForm = document.getElementById(`add-${collectionType}-form`);
+    addForm.addEventListener('submit', (event) => handleCollectionsAddItem(event, collectionType));
 }
 
-// Делаем функцию доступной в глобальной области видимости
-window.showSuppliers = showSuppliers;
-
-// Функция для показа формы добавления нового поставщика
-window.showAddSupplierForm = function showAddSupplierForm() {
-    const adminContent = document.getElementById('admin-dashboard-content');
-    adminContent.innerHTML = `
-    <div class="add-suppliers-form-container">
-        <h2>Добавить поставщика</h2>
-        <form id="add-supplier-form">
-            <label for="suppliersName">Название:</label>
-            <input type="text" id="suppliersName" name="suppliersName" required>
-            
-            <label for="suppliersPhone">Телефон:</label>
-            <input type="text" id="suppliersPhone" name="suppliersPhone" required>
-            
-            <label for="suppliersAdress">Адрес:</label>
-            <input type="text" id="suppliersAdress" name="suppliersAdress" required>
-            
-            <button type="submit" id="save-supplier"><span class="material-icons-outlined">save</span></button>
-        </form>
-        <button class="back-button" onclick="showSuppliers()"><span class="material-icons-outlined">arrow_back</span></button>
-    </div>
-    `;
-
-    document.getElementById('add-supplier-form').addEventListener('submit', handleAddSupplierSubmit);
-};
-
-// Функция для обработки добавления нового поставщика
-async function handleAddSupplierSubmit(event) {
+// Обработчик добавления нового элемента в коллекцию
+async function handleCollectionsAddItem(event, collectionType) {
     event.preventDefault();
 
-    const suppliersName = event.target.suppliersName.value;
-    const suppliersPhone = event.target.suppliersPhone.value;
-    const suppliersAdress = event.target.suppliersAdress.value;
+    const itemName = document.getElementById(`${collectionType}Name`).value;
+    const itemPhone = collectionType === 'suppliers' ? document.getElementById('suppliersPhone').value : null;
+    const itemAddress = collectionType === 'suppliers' ? document.getElementById('suppliersAddress').value : null;
+
+    if (!itemName) {
+        alert('Пожалуйста, введите название.');
+        return;
+    }
 
     try {
         const auth = getAuth();
@@ -1977,26 +2194,65 @@ async function handleAddSupplierSubmit(event) {
         }
 
         const userUid = user.uid;
-        const suppliersRef = collection(db, `users/${userUid}/suppliers`);
-        await addDoc(suppliersRef, {
-            suppliersName,
-            suppliersPhone,
-            suppliersAdress,
+        let collectionRef;
+        let localStorageKey = `collection_${collectionType}_${userUid}`;
+
+        // Определяем коллекцию в зависимости от типа
+        switch (collectionType) {
+            case 'suppliers':
+                collectionRef = collection(db, `users/${userUid}/suppliers`);
+                break;
+            case 'categories':
+                collectionRef = collection(db, `users/${userUid}/categories`);
+                break;
+            case 'services':
+                collectionRef = collection(db, `users/${userUid}/services`);
+                break;
+            case 'ingredients':
+                collectionRef = collection(db, `users/${userUid}/ingredients`);
+                break;
+        }
+
+        // Данные для добавления
+        const newItem = {
+            name: itemName,
             createdAt: new Date(),
-        });
+            updatedAt: new Date(),
+        };
 
-        alert('Поставщик успешно добавлен!');
-        showSuppliers();  // Перезагрузка списка поставщиков
+        if (collectionType === 'suppliers') {
+            newItem.phone = itemPhone;
+            newItem.address = itemAddress;
+        }
+
+        // Добавляем элемент в Firestore
+        const newDoc = await addDoc(collectionRef, newItem);
+
+        // Добавляем элемент в localStorage
+        const cachedData = getFromLocalStorage(localStorageKey) || [];
+        cachedData.push({ id: newDoc.id, ...newItem });
+        setToLocalStorage(localStorageKey, cachedData);
+
+        alert('Элемент успешно добавлен!');
+        showCollections(collectionType);  // Обновляем список
     } catch (error) {
-        console.error('Ошибка при добавлении поставщика:', error);
-        alert(`Ошибка при добавлении поставщика: ${error.message}`);
+        console.error(`Ошибка при добавлении элемента в ${collectionType}:`, error);
+        alert(`Ошибка при добавлении элемента в ${collectionType}: ${error.message}`);
     }
 }
 
-// Функция для обработки редактирования поставщика
-async function handleEditSupplierClick(event) {
-    const button = event.currentTarget;
-    const supplierId = button.getAttribute('data-id');
+// Обработчик удаления элемента из коллекции
+async function handleCollectionsDeleteClick(event, collectionType) {
+    const itemId = event.target.closest('button').getAttribute('data-id');
+
+    if (!itemId) {
+        alert('ID элемента не найден.');
+        return;
+    }
+
+    if (!confirm('Вы уверены, что хотите удалить этот элемент?')) {
+        return;
+    }
 
     try {
         const auth = getAuth();
@@ -2008,53 +2264,139 @@ async function handleEditSupplierClick(event) {
         }
 
         const userUid = user.uid;
-        const supplierDocRef = doc(db, `users/${userUid}/suppliers`, supplierId);
-        const supplierDoc = await getDoc(supplierDocRef);
+        let docRef;
+        let localStorageKey = `collection_${collectionType}_${userUid}`;
 
-        if (supplierDoc.exists()) {
-            const supplier = supplierDoc.data();
-            showEditSupplierForm(supplierId, supplier);
-        } else {
-            alert('Поставщик не найден.');
+        // Определяем документ в зависимости от типа коллекции и ID элемента
+        switch (collectionType) {
+            case 'suppliers':
+                docRef = doc(db, `users/${userUid}/suppliers`, itemId);
+                break;
+            case 'categories':
+                docRef = doc(db, `users/${userUid}/categories`, itemId);
+                break;
+            case 'services':
+                docRef = doc(db, `users/${userUid}/services`, itemId);
+                break;
+            case 'ingredients':
+                docRef = doc(db, `users/${userUid}/ingredients`, itemId);
+                break;
         }
+
+        // Удаляем элемент из Firestore
+        await deleteDoc(docRef);
+
+        // Удаляем элемент из localStorage
+        const cachedData = getFromLocalStorage(localStorageKey) || [];
+        const updatedData = cachedData.filter(item => item.id !== itemId);
+        setToLocalStorage(localStorageKey, updatedData);
+
+        alert('Элемент успешно удален!');
+        showCollections(collectionType);  // Обновляем список
     } catch (error) {
-        console.error('Ошибка при загрузке данных поставщика:', error);
-        alert(`Ошибка при загрузке данных поставщика: ${error.message}`);
+        console.error(`Ошибка при удалении элемента из ${collectionType}:`, error);
+        alert(`Ошибка при удалении элемента из ${collectionType}: ${error.message}`);
     }
 }
 
-// Функция для показа формы редактирования поставщика
-function showEditSupplierForm(supplierId, supplier) {
-    const adminContent = document.getElementById('admin-dashboard-content');
-    adminContent.innerHTML = `
-    <div class="edit-suppliers-form-container">
-        <h2>Редактировать поставщика</h2>
-        <form id="edit-supplier-form">
-            <label for="suppliersName">Название:</label>
-            <input type="text" id="suppliersName" name="suppliersName" value="${supplier.suppliersName}" required>
-            
-            <label for="suppliersPhone">Телефон:</label>
-            <input type="text" id="suppliersPhone" name="suppliersPhone" value="${supplier.suppliersPhone}" required>
-            
-            <label for="suppliersAdress">Адрес:</label>
-            <input type="text" id="suppliersAdress" name="suppliersAdress" value="${supplier.suppliersAdress}" required>
-            
-            <button type="submit"><span class="material-icons-outlined">save</span></button>
-        </form>
-        <button class="back-button" onclick="showSuppliers()"><span class="material-icons-outlined">arrow_back</span></button>
-    </div>
+// Обработчик редактирования элемента
+async function handleCollectionsEditClick(event, collectionType) {
+    const button = event.currentTarget;
+    const itemId = button.getAttribute('data-id');
+
+    try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (!user) {
+            alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
+            return;
+        }
+
+        const userUid = user.uid;
+        let collectionDocRef;
+
+        // Определяем документ коллекции в зависимости от типа
+        switch (collectionType) {
+            case 'suppliers':
+                collectionDocRef = doc(db, `users/${userUid}/suppliers`, itemId);
+                break;
+            case 'categories':
+                collectionDocRef = doc(db, `users/${userUid}/categories`, itemId);
+                break;
+            case 'services':
+                collectionDocRef = doc(db, `users/${userUid}/services`, itemId);
+                break;
+        }
+
+        const docSnapshot = await getDoc(collectionDocRef);
+        if (docSnapshot.exists()) {
+            const item = docSnapshot.data();
+            showEditForm(itemId, collectionType, item);
+        } else {
+            alert('Элемент не найден.');
+        }
+    } catch (error) {
+        console.error(`Ошибка при загрузке данных элемента из ${collectionType}:`, error);
+        alert(`Ошибка при загрузке данных элемента из ${collectionType}: ${error.message}`);
+    }
+}
+
+// Функция для отображения формы редактирования элемента
+function showEditForm(itemId, collectionType, itemData) {
+    const collectionContent = document.getElementById('collection-content');
+
+    // Генерируем дополнительные поля для коллекции "Поставщики"
+    const additionalFields = collectionType === 'suppliers' ? `
+        <label for="suppliersPhone">Телефон:</label>
+        <input type="text" id="suppliersPhone" name="suppliersPhone" value="${itemData.phone || ''}" required>
+        
+        <label for="suppliersAddress">Адрес:</label>
+        <input type="text" id="suppliersAddress" name="suppliersAddress" value="${itemData.address || ''}" required>
+    ` : '';
+
+    const collectionTitles = {
+        suppliers: 'поставщик',
+        categories: 'категория',
+        services: 'дополнительная услуга',
+        ingredients: 'ингредиент'
+    };
+
+    const titleInRussian = collectionTitles[collectionType] || 'элемент';
+
+    // Отображаем форму для редактирования элемента коллекции
+    collectionContent.innerHTML = `
+        <div class="edit-${collectionType}-form-container">
+            <h2>Редактировать ${titleInRussian}</h2>
+            <form id="edit-${collectionType}-form">
+                <label for="name">Название:</label>
+                <input type="text" id="name" name="name" value="${itemData.name || ''}" required>
+                
+                ${additionalFields}
+                
+                <button type="submit"><span class="material-icons-outlined">save</span> Сохранить</button>
+            </form>
+            <button class="back-button" onclick="showCollections('${collectionType}')">Назад</button>
+        </div>
     `;
 
-    document.getElementById('edit-supplier-form').addEventListener('submit', (event) => handleEditSupplierSubmit(event, supplierId));
+    // Обрабатываем отправку формы редактирования
+    const editForm = document.getElementById(`edit-${collectionType}-form`);
+    editForm.addEventListener('submit', (event) => handleCollectionsUpdateItem(event, collectionType, itemId));
 }
 
-// Функция для обработки сохранения изменений поставщика
-async function handleEditSupplierSubmit(event, supplierId) {
+// Обработчик обновления элемента в коллекции
+async function handleCollectionsUpdateItem(event, collectionType, itemId) {
     event.preventDefault();
 
-    const suppliersName = event.target.suppliersName.value;
-    const suppliersPhone = event.target.suppliersPhone.value;
-    const suppliersAdress = event.target.suppliersAdress.value;
+    const itemName = document.getElementById('name').value;
+    const itemPhone = collectionType === 'suppliers' ? document.getElementById('suppliersPhone').value : null;
+    const itemAddress = collectionType === 'suppliers' ? document.getElementById('suppliersAddress').value : null;
+
+    if (!itemName) {
+        alert('Пожалуйста, введите название.');
+        return;
+    }
 
     try {
         const auth = getAuth();
@@ -2066,47 +2408,111 @@ async function handleEditSupplierSubmit(event, supplierId) {
         }
 
         const userUid = user.uid;
-        const supplierDocRef = doc(db, `users/${userUid}/suppliers`, supplierId);
+        let docRef;
+        let localStorageKey = `collection_${collectionType}_${userUid}`;
 
-        await updateDoc(supplierDocRef, {
-            suppliersName,
-            suppliersPhone,
-            suppliersAdress,
-            updatedAt: new Date(),
-        });
-
-        alert('Поставщик успешно обновлен!');
-        showSuppliers();  // Перезагрузка списка поставщиков
-    } catch (error) {
-        console.error('Ошибка при обновлении поставщика:', error);
-        alert(`Ошибка при обновлении поставщика: ${error.message}`);
-    }
-}
-
-// Функция для обработки удаления поставщика
-async function handleDeleteSupplierClick(event) {
-    const button = event.currentTarget;
-    const supplierId = button.getAttribute('data-id');
-
-    const confirmation = confirm('Вы уверены, что хотите удалить этого поставщика?');
-    if (confirmation) {
-        try {
-            const auth = getAuth();
-            const user = auth.currentUser;
-
-            if (!user) {
-                alert('Пользователь не аутентифицирован. Пожалуйста, выполните вход.');
-                return;
-            }
-
-            const userUid = user.uid;
-            await deleteDoc(doc(db, `users/${userUid}/suppliers`, supplierId));
-
-            alert('Поставщик успешно удален');
-            showSuppliers();  // Перезагрузка списка поставщиков
-        } catch (error) {
-            console.error('Ошибка при удалении поставщика:', error);
-            alert(`Ошибка при удалении поставщика: ${error.message}`);
+        // Определяем документ в зависимости от типа коллекции и ID элемента
+        switch (collectionType) {
+            case 'suppliers':
+                docRef = doc(db, `users/${userUid}/suppliers`, itemId);
+                break;
+            case 'categories':
+                docRef = doc(db, `users/${userUid}/categories`, itemId);
+                break;
+            case 'services':
+                docRef = doc(db, `users/${userUid}/services`, itemId);
+                break;
+            case 'ingredients':
+                docRef = doc(db, `users/${userUid}/ingredients`, itemId);
+                break;
         }
+
+        // Данные для обновления
+        const updatedItem = {
+            name: itemName,
+            updatedAt: new Date(),
+        };
+
+        if (collectionType === 'suppliers') {
+            updatedItem.phone = itemPhone;
+            updatedItem.address = itemAddress;
+        }
+
+        // Обновляем данные в Firestore
+        await updateDoc(docRef, updatedItem);
+
+        // Обновляем данные в localStorage
+        const cachedData = getFromLocalStorage(localStorageKey) || [];
+        const itemIndex = cachedData.findIndex(item => item.id === itemId);
+        cachedData[itemIndex] = { id: itemId, ...updatedItem };
+        setToLocalStorage(localStorageKey, cachedData);
+
+        alert('Элемент успешно обновлен!');
+        showCollections(collectionType);  // Обновляем список
+    } catch (error) {
+        console.error(`Ошибка при обновлении элемента в ${collectionType}:`, error);
+        alert(`Ошибка при обновлении элемента в ${collectionType}: ${error.message}`);
     }
 }
+
+// Функция для отображения выбора коллекций
+export async function showCollectionButtons() {
+    showAdminContent();  // Загружаем основное содержимое админ-панели
+    const adminContent = document.getElementById('admin-dashboard-content');
+
+    // Добавляем кнопки для выбора коллекций как вкладки
+    adminContent.innerHTML = `
+        <button id="update-collections-btn" class="update-btn">
+            <span class="material-symbols-outlined">sync</span>
+        </button>
+        <div id="collection-tabs">
+            <button id="show-suppliers-btn" class="tab-button active-tab">Поставщики</button>
+            <button id="show-categories-btn" class="tab-button">Категории</button>
+            <button id="show-services-btn" class="tab-button">Дополнительные услуги</button>
+            <button id="show-ingredients-btn" class="tab-button">Ингредиенты</button>
+        </div>
+        <div id="collection-content">
+            <!-- Здесь будут отображаться элементы коллекций -->
+        </div>
+        <button type="button" class="back-button" onclick="loadAdminDashboard()">
+            <span class="material-icons-outlined">arrow_back</span>
+        </button>
+    `;
+
+    document.getElementById('update-collections-btn').addEventListener('click', async () => {
+        syncAllCollections();
+    });
+
+    // Получаем кнопки для выбора коллекций
+    const showSuppliersBtn = document.getElementById('show-suppliers-btn');
+    const showCategoriesBtn = document.getElementById('show-categories-btn');
+    const showServicesBtn = document.getElementById('show-services-btn');
+    const showIngredientsBtn = document.getElementById('show-ingredients-btn');
+
+    // Добавляем обработчики событий для каждой кнопки
+    showSuppliersBtn.addEventListener('click', () => switchTab('suppliers', showSuppliersBtn));
+    showCategoriesBtn.addEventListener('click', () => switchTab('categories', showCategoriesBtn));
+    showServicesBtn.addEventListener('click', () => switchTab('services', showServicesBtn));
+    showIngredientsBtn.addEventListener('click', () => switchTab('ingredients', showIngredientsBtn));
+
+    // По умолчанию отображаем вкладку "Поставщики"
+    showCollections('suppliers');
+}
+
+// Функция переключения вкладок
+function switchTab(collectionType, activeButton) {
+    // Убираем класс активной вкладки у всех кнопок
+    const tabButtons = document.querySelectorAll('.tab-button');
+    tabButtons.forEach(button => button.classList.remove('active-tab'));
+
+    // Добавляем класс активной вкладки выбранной кнопке
+    activeButton.classList.add('active-tab');
+
+    // Отображаем выбранную коллекцию
+    showCollections(collectionType);
+}
+
+// Добавление функций в глобалную область видимости
+window.showCollectionButtons = showCollectionButtons;
+window.showAddForm = showAddForm;
+window.showCollections = showCollections;

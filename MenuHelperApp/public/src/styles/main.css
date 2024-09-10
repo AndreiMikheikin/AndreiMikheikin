@@ -34,22 +34,46 @@ button {
 
 header {
   background-color: #4B3B2F;
-  padding: 16px;
-  text-align: center; }
+  text-align: center;
+  height: 70px;
+  line-height: 1; }
   header svg {
     width: 200px;
     height: auto; }
-  header #logo path {
-    stroke-dasharray: 20px;
-    stroke-dashoffset: 20px;
-    animation: anim-logo 2s ease forwards; }
-  header #logo path:nth-child(1) {
+  header .p1 {
+    stroke-dasharray: 25;
+    stroke-dashoffset: 25;
+    animation: anim-logo 2s ease forwards;
     animation-delay: 0.3s; }
-  header #logo path:nth-child(2) {
+  header .p2 {
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    animation: anim-logo 2s ease forwards;
     animation-delay: 0.6s; }
-  header #logo path:nth-child(3) {
+  header .p3 {
+    stroke-dasharray: 22;
+    stroke-dashoffset: 22;
+    animation: anim-logo 2s ease forwards;
     animation-delay: 0.9s; }
-  header #logo path:nth-child(4) {
+  header .p4 {
+    stroke-dasharray: 29;
+    stroke-dashoffset: 29;
+    animation: anim-logo 2s ease forwards;
+    animation-delay: 0.3s; }
+  header .p5 {
+    stroke-dasharray: 14;
+    stroke-dashoffset: 14;
+    animation: anim-logo 2s ease forwards;
+    animation-delay: 1.2s; }
+  header .p6 {
+    stroke-dasharray: 26;
+    stroke-dashoffset: 26;
+    animation: anim-logo 2s ease forwards;
+    animation-delay: 0.6s; }
+  header .p7 {
+    stroke-dasharray: 15;
+    stroke-dashoffset: 15;
+    animation: anim-logo 2s ease forwards;
     animation-delay: 1.2s; }
 @keyframes anim-logo {
   to {
