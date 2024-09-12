@@ -13,6 +13,9 @@ module.exports = {
     path: path.resolve(__dirname, 'public/dist'),
   },
   mode: 'production',
+  externals: {
+    'firebase': 'firebase'
+  },
   module: {
     rules: [
       {
