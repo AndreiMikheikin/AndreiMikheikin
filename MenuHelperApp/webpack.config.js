@@ -2,38 +2,43 @@ const path = require('path');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
-  entry: './public/src/main.js', // Ваша точка входа
+  entry: './public/src/main.js',
   output: {
-    filename: 'bundle.js', // Имя итогового файла сборки
-    path: path.resolve(__dirname, 'public/dist'), // Папка, куда будет помещен сборочный файл
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'public/dist'),
   },
   module: {
     rules: [
       {
-        test: /\.js$/, // Обрабатываем все JS файлы
+        test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader', // Можно использовать Babel для транспиляции
+          loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env'], // Настройка транспиляции ES6+ в ES5
+            presets: ['@babel/preset-env'],
           },
         },
       },
       {
-        test: /\.css$/, // Добавляем возможность работы с CSS файлами
+        test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
     ],
   },
   plugins: [
-    new Dotenv(), // Для работы с переменными окружения из .env файла
+    new Dotenv(),
   ],
+  resolve: {
+    alias: {
+      '@firebase': path.resolve(__dirname, 'node_modules/firebase'),
+    },
+  },
   devServer: {
     static: {
       directory: path.join(__dirname, 'public'),
     },
     compress: true,
-    port: 9000, // Порт для локального сервера
+    port: 9000,
     historyApiFallback: true,
   },
 };

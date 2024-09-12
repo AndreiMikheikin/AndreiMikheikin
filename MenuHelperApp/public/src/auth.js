@@ -1,7 +1,9 @@
+//auth.js
+
 // Импорт необходимых модулей из Firebase
 import { signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { showWelcomeModal, auth, db } from '../src/main.js';
+import { showWelcomeModal } from '../src/main.js';
 
 // Валидация формы регистрации
 function validateForm() {

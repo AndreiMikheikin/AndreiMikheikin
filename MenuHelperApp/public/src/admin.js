@@ -1,25 +1,9 @@
+//public/src/admin.js
+
 // Импорт необходимых функций из Firestore
-import {
-  collection,
-  addDoc,
-  getDocs,
-  getDoc,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  Timestamp,
-} from "firebase/firestore";
+import { collection, addDoc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, doc, query, where, Timestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import {
-  initializeDragAndDrop,
-  saveIconPositions,
-  addIconEventListeners,
-  db,
-  auth,
-} from "./main.js";
+import { initializeDragAndDrop, saveIconPositions, addIconEventListeners } from "./main.js";
 
 // IDs DOM элементов
 const ADMIN_DASHBOARD_CONTENT_ID = "admin-dashboard-content";

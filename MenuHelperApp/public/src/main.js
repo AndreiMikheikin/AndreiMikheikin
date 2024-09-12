@@ -1,8 +1,8 @@
-
+//public/src/main.js
 import { firebaseConfig } from '../../firebase-config.js'
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore } from "firebase/fire";
 import { loadAdminDashboard, showCollectionButtons } from './admin.js';
 
 // Инициализация Firebase
