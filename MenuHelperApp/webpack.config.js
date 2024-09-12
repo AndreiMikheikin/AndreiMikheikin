@@ -1,5 +1,7 @@
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
+const TerserPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: './public/src/main.js',
@@ -25,12 +27,19 @@ module.exports = {
       },
     ],
   },
+  optimization: {
+    minimizer: [new TerserPlugin()],
+  },
   plugins: [
     new Dotenv(),
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+    }),
   ],
   resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
-      '@firebase': path.resolve(__dirname, 'node_modules/firebase'),
+      '@firebase/app': require.resolve('@firebase/app'),
     },
   },
   devServer: {
