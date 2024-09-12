@@ -1,4 +1,14 @@
+
+import { firebaseConfig } from '../../firebase-config.js'
+import { getApp, getApps, initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 import { loadAdminDashboard, showCollectionButtons } from './admin.js';
+
+// Инициализация Firebase
+export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
 const ICON1_ID = 'icon1';
 const ICON2_ID = 'icon2';
@@ -113,19 +123,15 @@ export function showWelcomeModal(username) {
     const closeButton = document.getElementById('close-button');
 
     if (modal && welcomeMessage && closeButton) {
-        // Extract username without domain
-        const displayName = username.split('@')[0];
+        const displayName = username ? username.split('@')[0] : 'Гость';
 
-        // Insert name into the message
         welcomeMessage.textContent = `Добро пожаловать, ${displayName}!`;
 
-        modal.classList.remove('hidden');  // Show modal
+        modal.classList.remove('hidden');
 
-        // Add touch event handlers for swipe up
         modal.addEventListener('touchstart', handleTouchStart);
         modal.addEventListener('touchend', handleTouchEndGesture);
 
-        // Add click handler to the close button
         closeButton.addEventListener('click', hideWelcomeModal);
     } else {
         console.error('One or more elements not found in the DOM.');

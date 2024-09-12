@@ -1,25 +1,9 @@
 // Импорт необходимых модулей из Firebase
-import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, fetchSignInMethodsForEmail } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
-import { showWelcomeModal } from '../src/main.js';
+import { signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { showWelcomeModal, auth, db } from '../src/main.js';
 
-// Конфигурация Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyAjJIU3lCSJivMJ9UbihXD1dqu8ivf-8OU",
-    authDomain: "menuhelperapp.firebaseapp.com",
-    projectId: "menuhelperapp",
-    storageBucket: "menuhelperapp.appspot.com",
-    messagingSenderId: "118002716868",
-    appId: "1:118002716868:web:2623db6910ab0771c87991"
-};
-
-// Инициализация Firebase
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Валидация формы аутентификации
+// Валидация формы регистрации
 function validateForm() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -44,7 +28,7 @@ function validateForm() {
     const submitBtn = document.getElementById('submit-btn');
     submitBtn.disabled = isRegistration 
         ? !(isEmailValid && isPasswordValid && isRoleSelected && areRequirementsMet) 
-        : !(isEmailValid && isPasswordValid && isRoleSelected);
+        : !(isEmailValid && isPasswordValid);
     
     submitBtn.classList.toggle('active', !submitBtn.disabled);
 
@@ -68,73 +52,79 @@ function toggleCheckMark(id, condition) {
 function selectRole(role) {
     document.getElementById('role').value = role;
 
-    const roleButtons = document.querySelectorAll('.role-selection button');
-    roleButtons.forEach(button => button.classList.remove('selected'));
+    document.getElementById('admin-role-btn').classList.toggle('selected', role === 'admin');
+    document.getElementById('user-role-btn').classList.toggle('selected', role === 'user');
 
-    document.querySelector(`.role-selection button.${role}`).classList.add('selected');
     validateForm();
 }
 
-// Обработка отправки формы аутентификации
-async function handleSubmit(event) {
-    event.preventDefault();
-    const email = event.target.email.value;
-    const password = event.target.password.value;
-    const role = event.target.role.value;
-
-    const isRegistration = document.getElementById('form-title').textContent === 'Регистрация';
-
+// Получение роли пользователя по UID
+async function getUserRole(uid) {
     try {
-        if (isRegistration) {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            console.log('User registered:', userCredential.user);
+        const userDocRef = doc(db, 'users', uid);
+        const userDoc = await getDoc(userDocRef);
 
-            // Add user to Firestore
-            const user = userCredential.user;
-            await setDoc(doc(db, 'users', user.uid), {
-                email: user.email,
-                role: role,
-                createdAt: new Date()
-            });
-            console.log('User added to Firestore');
-
-            showWelcomeModal(user.email);
-            showPanel(role);
+        if (userDoc.exists()) {
+            return userDoc.data().role;
         } else {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            console.log('User signed in:', userCredential.user);
-
-            showWelcomeModal(userCredential.user.email);
-            showPanel(role);
+            throw new Error('User not found');
         }
     } catch (error) {
-        console.error('Authentication error:', error);
-        alert('Ошибка при выполнении действия. Повторите попытку.');
+        console.error('Error fetching user role:', error);
+        return null;
     }
 }
 
+// Обработка отправки формы входа
+async function handleSubmit(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        const role = await getUserRole(user.uid);
+        showPanel(role);
+        showWelcomeModal(user.email);
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('Ошибка при входе. Пожалуйста, попробуйте снова.');
+    }
+}
 
 // Показать панель в зависимости от роли пользователя
 function showPanel(role) {
     document.getElementById('auth-container').style.display = 'none';
-    document.getElementById('admin-dashboard-container').style.display = role === 'admin' ? 'block' : 'none';
-    document.getElementById('user-dashboard-container').style.display = role === 'user' ? 'block' : 'none';
 
-    if (role !== 'admin' && role !== 'user') {
-        console.error('Неизвестная роль:', role);
+    if (role === 'admin') {
+        document.getElementById('admin-dashboard-container').style.display = 'block';
+    } else if (role === 'user') {
+        document.getElementById('user-dashboard-container').style.display = 'block';
+    } else {
+        console.error('Unknown role:', role);
         alert('Ошибка: неизвестная роль пользователя.');
-        return;
     }
 }
 
-// Переключение формы между Входом и Регистрацией
 function toggleForm() {
+    const isFormFilled = document.getElementById('email').value || document.getElementById('password').value;
+
+    if (isFormFilled && !confirm('Вы уверены, что хотите переключить форму? Все введенные данные будут потеряны.')) {
+        return;
+    }
+
     const title = document.getElementById('form-title');
     const confirmPassword = document.getElementById('confirm-password');
     const requirements = document.getElementById('password-requirements');
     const submitBtn = document.getElementById('submit-btn');
-    const isLogin = title.textContent === 'Вход';
     const toggleLink = document.getElementById('toggle-link');
+    const adminRoleBtn = document.getElementById('admin-role-btn');
+    const userRoleBtn = document.getElementById('user-role-btn');
+
+    const isLogin = title.textContent === 'Вход';
 
     // Очистка полей формы
     document.getElementById('email').value = '';
@@ -149,11 +139,14 @@ function toggleForm() {
     title.textContent = isLogin ? 'Регистрация' : 'Вход';
     toggleLink.textContent = isLogin ? 'Есть аккаунт? Авторизация' : 'Нет аккаунта? Регистрация';
     
-    // Переключение классов вместо стиля
     confirmPassword.classList.toggle('hidden', !isLogin);
     requirements.classList.toggle('hidden', !isLogin);
     
     submitBtn.textContent = isLogin ? 'Зарегистрироваться' : 'Войти';
+
+    // Скрыть/отобразить кнопки выбора ролей
+    adminRoleBtn.classList.toggle('hidden', !isLogin);
+    userRoleBtn.classList.toggle('hidden', !isLogin);
 
     // Валидация формы после переключения
     validateForm();
@@ -163,14 +156,14 @@ function toggleForm() {
 function logout() {
     signOut(auth)
         .then(() => {
-            console.log('User signed out');
+            alert('Вы вышли из аккаунта');
             document.getElementById('auth-container').style.display = 'block';
             document.getElementById('admin-dashboard-container').style.display = 'none';
             document.getElementById('user-dashboard-container').style.display = 'none';
         })
         .catch((error) => {
-            console.error('Error signing out:', error);
-            alert('Ошибка при выходе.');
+            console.error('Logout error:', error);
+            alert('Ошибка при выходе. Попробуйте снова.');
         });
 }
 
@@ -197,30 +190,25 @@ function validateForgotPasswordForm() {
     forgotSubmitBtn.classList.toggle('active', isEmailValid);
 }
 
-// Обработка отправки формы восстановления пароля
+// Восстановление пароля
 function handleForgotPassword(event) {
     event.preventDefault();
-    const email = event.target['forgot-email'].value;
+    const email = document.getElementById('forgot-email').value;
 
     fetchSignInMethodsForEmail(auth, email)
         .then((signInMethods) => {
             if (signInMethods.length === 0) {
-                alert('Пользователь с таким email не найден.');
+                alert('Пользователь с таким email не найден. Проверьте корректность данных.');
             } else {
                 return sendPasswordResetEmail(auth, email)
                     .then(() => {
-                        console.log('Password reset email sent');
-                        alert('Ссылка для сброса пароля отправлена.');
-                    })
-                    .catch((error) => {
-                        console.error('Error sending password reset email:', error);
-                        alert('Ошибка при отправке ссылки для сброса пароля.');
+                        alert('Ссылка для сброса пароля отправлена. Проверьте ваш почтовый ящик.');
                     });
             }
         })
         .catch((error) => {
-            console.error('Error checking email:', error);
-            alert('Ошибка при проверке email.');
+            console.error('Password reset error:', error);
+            alert('Ошибка при отправке ссылки для сброса пароля.');
         });
 }
 
