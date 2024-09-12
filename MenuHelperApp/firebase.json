@@ -1,5 +1,5 @@
 {
-  "name": "menu-helper",
+  "name": "menuhelper",
   "version": "1.0.0",
   "description": "MenuHelper - Your assistant for managing menus and orders",
   "main": "public/src/main.js",
@@ -30,7 +30,7 @@
   "author": "",
   "license": "ISC",
   "hosting": {
-    "public": "public",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",

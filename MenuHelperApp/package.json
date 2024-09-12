@@ -1,0 +1,13 @@
+{
+    "scripts": {
+        "build": "webpack --config webpack.prod.js",
+        "start": "webpack serve --config webpack.dev.js",
+        "deploy": "firebase deploy"
+    },
+    "devDependencies": {
+        "dotenv-webpack": "^8.1.0"
+    },
+    "dependencies": {
+        "firebase": "^10.13.1"
+    }
+}
