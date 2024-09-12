@@ -1,5 +1,4 @@
-//firebase-config.js
-export const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyAjJIU3lCSJivMJ9UbihXD1dqu8ivf-8OU",
   authDomain: "menuhelperapp.firebaseapp.com",
   databaseURL: "https://menuhelperapp-default-rtdb.europe-west1.firebasedatabase.app",
