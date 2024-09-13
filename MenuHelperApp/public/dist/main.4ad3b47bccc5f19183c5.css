@@ -1,0 +1,784 @@
+@import url(https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400;500;700&family=Open+Sans:wght@400;600;700&display=swap);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none; }
+
+body {
+  font-family: "Open Sans", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  background-color: #F5F0E1;
+  color: #2F241D;
+  line-height: 1.6;
+  overflow-y: auto;
+  position: relative; }
+
+img {
+  max-width: 100%;
+  height: auto; }
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer; }
+
+.hidden {
+  display: none !important; }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px; }
+
+header {
+  background-color: #4B3B2F;
+  text-align: center;
+  height: 70px;
+  line-height: 1; }
+  header svg {
+    width: 200px;
+    height: auto; }
+  header .p1 {
+    stroke-dasharray: 25;
+    stroke-dashoffset: 25;
+    animation: anim-logo 2s ease forwards;
+    animation-delay: 0.3s; }
+  header .p2 {
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    animation: anim-logo 2s ease forwards;
+    animation-delay: 0.6s; }
+  header .p3 {
+    stroke-dasharray: 22;
+    stroke-dashoffset: 22;
+    animation: anim-logo 2s ease forwards;
+    animation-delay: 0.9s; }
+  header .p4 {
+    stroke-dasharray: 29;
+    stroke-dashoffset: 29;
+    animation: anim-logo 2s ease forwards;
+    animation-delay: 0.3s; }
+  header .p5 {
+    stroke-dasharray: 14;
+    stroke-dashoffset: 14;
+    animation: anim-logo 2s ease forwards;
+    animation-delay: 1.2s; }
+  header .p6 {
+    stroke-dasharray: 26;
+    stroke-dashoffset: 26;
+    animation: anim-logo 2s ease forwards;
+    animation-delay: 0.6s; }
+  header .p7 {
+    stroke-dasharray: 15;
+    stroke-dashoffset: 15;
+    animation: anim-logo 2s ease forwards;
+    animation-delay: 1.2s; }
+@keyframes anim-logo {
+  to {
+    stroke-dashoffset: 0; } }
+button {
+  background-color: #C29D6E;
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease; }
+  button:hover {
+    background-color: #b2854b; }
+  button.admin {
+    background-color: #D4A373;
+    color: #2F241D; }
+    button.admin:hover {
+      background-color: #c8894c; }
+  button.user {
+    background-color: #C29D6E;
+    color: #2F241D; }
+    button.user:hover {
+      background-color: #b2854b; }
+  button--secondary {
+    background-color: #8A6E58;
+    color: #F5F0E1; }
+    button--secondary:hover {
+      background-color: #6b5544; }
+  button__icon {
+    margin-right: 8px; }
+  button.close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-family: "Material Symbols Outlined";
+    font-size: 32px;
+    color: #D4A373;
+    cursor: pointer;
+    padding: 0; }
+    button.close-button:hover {
+      color: #c07d3b; }
+    button.close-button span {
+      font-size: 18px; }
+  button.back-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-family: "Material Symbols Outlined";
+    font-size: 32px;
+    color: #D4A373;
+    cursor: pointer;
+    padding: 0; }
+    button.back-button:hover {
+      color: #c07d3b; }
+    button.back-button span {
+      font-size: 36px; }
+  button.logout {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-family: "Material Symbols Outlined";
+    font-size: 32px;
+    color: #7a604c;
+    cursor: pointer;
+    padding: 0; }
+    button.logout:hover {
+      color: #4B3B2F; }
+    button.logout span {
+      font-size: 36px; }
+  button.remove-ingredient-button {
+    background: none;
+    border: none;
+    font-family: "Material Symbols Outlined";
+    font-size: 32px;
+    color: #ee6123;
+    cursor: pointer;
+    padding: 0; }
+    button.remove-ingredient-button:hover {
+      color: #B7410E; }
+    button.remove-ingredient-button span {
+      position: relative;
+      top: 13px;
+      color: inherit;
+      font-size: 36px; }
+  button.submit-button {
+    background-color: #C29D6E;
+    color: #FFFFFF;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer; }
+    button.submit-button:hover {
+      background-color: #b2854b; }
+  button.edit-button {
+    background-color: #D4A373;
+    border: none;
+    color: #F5F0E1;
+    padding: 3px;
+    margin: 0 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Material Symbols Outlined";
+    font-size: 14px; }
+  button.save-button {
+    background-color: #D4A373;
+    border: none;
+    color: #F5F0E1;
+    padding: 4px;
+    margin: 0 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px; }
+    button.save-button.save-button {
+      background-color: #D4A373;
+      display: none; }
+  button.delete-button {
+    background: none;
+    border: none;
+    padding: 4px;
+    margin: 0 8px;
+    color: #ee6123;
+    cursor: pointer;
+    transition: color 0.2s ease; }
+    button.delete-button:hover {
+      color: #B7410E; }
+    button.delete-button.cancel-button {
+      display: none; }
+  button.remove-button, button.remove-service {
+    background: none;
+    border: none;
+    padding: 4px;
+    margin: 0 8px;
+    color: #ee6123;
+    cursor: pointer;
+    transition: color 0.2s ease; }
+    button.remove-button:hover, button.remove-service:hover {
+      color: #B7410E; }
+    button.remove-button.cancel-button, button.remove-service.cancel-button {
+      display: none; }
+  button.cancel-button {
+    background: none;
+    border: none;
+    padding: 4px;
+    margin: 0 8px;
+    color: #ee6123;
+    cursor: pointer;
+    transition: color 0.2s ease; }
+    button.cancel-button:hover {
+      color: #B7410E; }
+    button.cancel-button.cancel-button {
+      display: none; }
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; }
+
+input {
+  padding: 12px;
+  border: 1px solid #8A6E58;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+  color: #4B3B2F;
+  margin-bottom: 8px; }
+  input:focus {
+    border-color: #C29D6E;
+    outline: none; }
+
+input[type="submit"],
+button[type="submit"] {
+  background-color: #C29D6E;
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%; }
+  input[type="submit"]:hover,
+  button[type="submit"]:hover {
+    background-color: #b2854b; }
+
+.password-requirements {
+  font-size: 14px;
+  color: #2F241D; }
+  .password-requirements .requirement {
+    display: flex;
+    align-items: center; }
+    .password-requirements .requirement .check {
+      margin-right: 8px;
+      color: #C29D6E; }
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 90%;
+  max-width: 500px;
+  background-color: #F5F0E1;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+  .modal-content {
+    padding: 16px;
+    position: relative; }
+    .modal-content .close-button {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: #C29D6E; }
+
+.show-order-container #print-modal {
+  position: fixed;
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); }
+  .show-order-container #print-modal .modal-content {
+    background-color: #F5F0E1;
+    margin: 10% auto;
+    padding: 16px;
+    border: 1px solid #8A6E58;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    position: relative; }
+  .show-order-container #print-modal .modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #2F241D;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer; }
+    .show-order-container #print-modal .modal-close-button:hover {
+      color: #C29D6E; }
+  .show-order-container #print-modal #confirm-print {
+    background-color: #4B3B2F;
+    border: none;
+    padding: 8px;
+    color: #F5F0E1;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 24px auto 0;
+    width: 100px; }
+    .show-order-container #print-modal #confirm-print:hover {
+      background-color: #2c221b; }
+
+#auth-container,
+#forgot-password-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #F5F0E1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  border: 2px solid #C29D6E; }
+
+.role-selection {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px; }
+  .role-selection .selected {
+    background-color: #e8dac8; }
+
+.toggle-link,
+.forgot-password-link {
+  margin-top: 16px;
+  color: #C29D6E;
+  cursor: pointer;
+  text-align: center; }
+
+#admin-dashboard-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: #d1b592;
+  padding: 16px;
+  border-radius: 8px;
+  overflow: hidden; }
+  #admin-dashboard-container h2 {
+    color: #4B3B2F;
+    margin-bottom: 16px;
+    text-align: center;
+    font-size: 18px; }
+  #admin-dashboard-container .icon-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
+    height: 120px;
+    line-height: 1;
+    padding: 8px;
+    background-color: rgba(212, 163, 115, 0.5);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: grab;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    #admin-dashboard-container .icon-container:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+    #admin-dashboard-container .icon-container img {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 8px; }
+    #admin-dashboard-container .icon-container p {
+      color: #4B3B2F;
+      font-size: 14px;
+      text-align: center; }
+  #admin-dashboard-container #icon1 {
+    top: 100px;
+    left: 50px; }
+  #admin-dashboard-container #icon2 {
+    top: 100px;
+    left: 200px; }
+  #admin-dashboard-container #icon3 {
+    top: 100px;
+    left: 350px; }
+  #admin-dashboard-container #icon4 {
+    top: 100px;
+    left: 500px; }
+  #admin-dashboard-container #icon5 {
+    top: 100px;
+    left: 650px; }
+
+#admin-dashboard-content {
+  position: relative;
+  padding: 16px;
+  background-color: #F5F0E1;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+  #admin-dashboard-content .add-dish-container,
+  #admin-dashboard-content .show-menu-container,
+  #admin-dashboard-content .show-order-container,
+  #admin-dashboard-content .calculation-form-container,
+  #admin-dashboard-content .show-suppliers-container,
+  #admin-dashboard-content .add-suppliers-form-container,
+  #admin-dashboard-content .edit-suppliers-form-container {
+    position: relative;
+    padding: 16px;
+    background-color: #F5F0E1;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 16px auto; }
+    #admin-dashboard-content .add-dish-container .page-title,
+    #admin-dashboard-content .show-menu-container .page-title,
+    #admin-dashboard-content .show-order-container .page-title,
+    #admin-dashboard-content .calculation-form-container .page-title,
+    #admin-dashboard-content .show-suppliers-container .page-title,
+    #admin-dashboard-content .add-suppliers-form-container .page-title,
+    #admin-dashboard-content .edit-suppliers-form-container .page-title {
+      font-family: "Cormorant", Georgia, "Times New Roman", Times, serif;
+      color: #C29D6E;
+      font-size: 2.1rem;
+      font-weight: 900;
+      margin-bottom: 16px;
+      text-align: center; }
+    #admin-dashboard-content .add-dish-container form,
+    #admin-dashboard-content .show-menu-container form,
+    #admin-dashboard-content .show-order-container form,
+    #admin-dashboard-content .calculation-form-container form,
+    #admin-dashboard-content .show-suppliers-container form,
+    #admin-dashboard-content .add-suppliers-form-container form,
+    #admin-dashboard-content .edit-suppliers-form-container form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px; }
+      #admin-dashboard-content .add-dish-container form input,
+      #admin-dashboard-content .add-dish-container form textarea,
+      #admin-dashboard-content .add-dish-container form select,
+      #admin-dashboard-content .show-menu-container form input,
+      #admin-dashboard-content .show-menu-container form textarea,
+      #admin-dashboard-content .show-menu-container form select,
+      #admin-dashboard-content .show-order-container form input,
+      #admin-dashboard-content .show-order-container form textarea,
+      #admin-dashboard-content .show-order-container form select,
+      #admin-dashboard-content .calculation-form-container form input,
+      #admin-dashboard-content .calculation-form-container form textarea,
+      #admin-dashboard-content .calculation-form-container form select,
+      #admin-dashboard-content .show-suppliers-container form input,
+      #admin-dashboard-content .show-suppliers-container form textarea,
+      #admin-dashboard-content .show-suppliers-container form select,
+      #admin-dashboard-content .add-suppliers-form-container form input,
+      #admin-dashboard-content .add-suppliers-form-container form textarea,
+      #admin-dashboard-content .add-suppliers-form-container form select,
+      #admin-dashboard-content .edit-suppliers-form-container form input,
+      #admin-dashboard-content .edit-suppliers-form-container form textarea,
+      #admin-dashboard-content .edit-suppliers-form-container form select {
+        margin-bottom: 8px;
+        padding: 12px;
+        border-radius: 4px;
+        border: 1px solid #8A6E58;
+        background-color: #FFFFFF;
+        color: #4B3B2F; }
+        #admin-dashboard-content .add-dish-container form input:focus,
+        #admin-dashboard-content .add-dish-container form textarea:focus,
+        #admin-dashboard-content .add-dish-container form select:focus,
+        #admin-dashboard-content .show-menu-container form input:focus,
+        #admin-dashboard-content .show-menu-container form textarea:focus,
+        #admin-dashboard-content .show-menu-container form select:focus,
+        #admin-dashboard-content .show-order-container form input:focus,
+        #admin-dashboard-content .show-order-container form textarea:focus,
+        #admin-dashboard-content .show-order-container form select:focus,
+        #admin-dashboard-content .calculation-form-container form input:focus,
+        #admin-dashboard-content .calculation-form-container form textarea:focus,
+        #admin-dashboard-content .calculation-form-container form select:focus,
+        #admin-dashboard-content .show-suppliers-container form input:focus,
+        #admin-dashboard-content .show-suppliers-container form textarea:focus,
+        #admin-dashboard-content .show-suppliers-container form select:focus,
+        #admin-dashboard-content .add-suppliers-form-container form input:focus,
+        #admin-dashboard-content .add-suppliers-form-container form textarea:focus,
+        #admin-dashboard-content .add-suppliers-form-container form select:focus,
+        #admin-dashboard-content .edit-suppliers-form-container form input:focus,
+        #admin-dashboard-content .edit-suppliers-form-container form textarea:focus,
+        #admin-dashboard-content .edit-suppliers-form-container form select:focus {
+          border-color: #C29D6E;
+          outline: none; }
+      #admin-dashboard-content .add-dish-container form .weight-input,
+      #admin-dashboard-content .show-menu-container form .weight-input,
+      #admin-dashboard-content .show-order-container form .weight-input,
+      #admin-dashboard-content .calculation-form-container form .weight-input,
+      #admin-dashboard-content .show-suppliers-container form .weight-input,
+      #admin-dashboard-content .add-suppliers-form-container form .weight-input,
+      #admin-dashboard-content .edit-suppliers-form-container form .weight-input {
+        width: 100px; }
+    #admin-dashboard-content .add-dish-container .edit-dish-container,
+    #admin-dashboard-content .show-menu-container .edit-dish-container,
+    #admin-dashboard-content .show-order-container .edit-dish-container,
+    #admin-dashboard-content .calculation-form-container .edit-dish-container,
+    #admin-dashboard-content .show-suppliers-container .edit-dish-container,
+    #admin-dashboard-content .add-suppliers-form-container .edit-dish-container,
+    #admin-dashboard-content .edit-suppliers-form-container .edit-dish-container {
+      margin-top: 16px; }
+      #admin-dashboard-content .add-dish-container .edit-dish-container h4,
+      #admin-dashboard-content .show-menu-container .edit-dish-container h4,
+      #admin-dashboard-content .show-order-container .edit-dish-container h4,
+      #admin-dashboard-content .calculation-form-container .edit-dish-container h4,
+      #admin-dashboard-content .show-suppliers-container .edit-dish-container h4,
+      #admin-dashboard-content .add-suppliers-form-container .edit-dish-container h4,
+      #admin-dashboard-content .edit-suppliers-form-container .edit-dish-container h4 {
+        color: #4B3B2F; }
+      #admin-dashboard-content .add-dish-container .edit-dish-container select,
+      #admin-dashboard-content .show-menu-container .edit-dish-container select,
+      #admin-dashboard-content .show-order-container .edit-dish-container select,
+      #admin-dashboard-content .calculation-form-container .edit-dish-container select,
+      #admin-dashboard-content .show-suppliers-container .edit-dish-container select,
+      #admin-dashboard-content .add-suppliers-form-container .edit-dish-container select,
+      #admin-dashboard-content .edit-suppliers-form-container .edit-dish-container select {
+        width: 100%; }
+  #admin-dashboard-content .show-menu-container #loading-indicator {
+    display: none;
+    text-align: center; }
+    #admin-dashboard-content .show-menu-container #loading-indicator p {
+      font-size: 16px;
+      margin-bottom: 8px; }
+    #admin-dashboard-content .show-menu-container #loading-indicator .spinner {
+      border: 4px solid #D4A373;
+      border-top: 4px solid #C29D6E;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite; }
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+  #admin-dashboard-content .show-menu-container #menu-list .category {
+    margin-bottom: 8px; }
+    #admin-dashboard-content .show-menu-container #menu-list .category h4 {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 5px 0;
+      color: #2F241D; }
+    #admin-dashboard-content .show-menu-container #menu-list .category .dish-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px; }
+      #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card {
+        display: flex;
+        align-items: center;
+        background-color: #F5F0E1;
+        border: 1px solid #D4A373;
+        border-radius: 8px;
+        padding: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        height: 50px; }
+        #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card h5 {
+          font-weight: bold;
+          margin-right: 16px;
+          color: #2F241D;
+          line-height: 1.2;
+          flex-shrink: 0;
+          width: 150px; }
+        #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card .ingredients {
+          font-size: 14px;
+          color: #D4A373;
+          margin-right: 8px;
+          flex-shrink: 1;
+          width: 200px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis; }
+        #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card p {
+          margin-right: 8px;
+          font-size: 14px;
+          color: #2F241D;
+          flex-shrink: 0; }
+          #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card p.weight {
+            font-weight: bold; }
+        #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card .price-container {
+          display: flex;
+          align-items: center;
+          margin-left: auto; }
+          #admin-dashboard-content .show-menu-container #menu-list .category .dish-container .dish-card .price-container .price-input {
+            border: 1px solid #D4A373;
+            border-radius: 8px;
+            padding: 8px;
+            width: 60px; }
+  #admin-dashboard-content .show-order-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    background-color: #F5F0E1;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 0 auto; }
+    #admin-dashboard-content .show-order-container form .order-properties-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 8px; }
+      #admin-dashboard-content .show-order-container form .order-properties-container .property {
+        display: flex; }
+        #admin-dashboard-content .show-order-container form .order-properties-container .property label {
+          display: inline;
+          width: 200px;
+          font-size: 14px;
+          color: #2F241D;
+          margin-bottom: 8px;
+          margin-top: 8px; }
+        #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="text"],
+        #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="number"],
+        #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="tel"],
+        #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="date"],
+        #admin-dashboard-content .show-order-container form .order-properties-container .property textarea {
+          display: inline;
+          width: 100%;
+          padding: 8px;
+          margin-bottom: 8px;
+          border: 1px solid #8A6E58;
+          border-radius: 8px;
+          font-size: 16px;
+          background-color: #D4A373;
+          color: #2F241D; }
+          #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="text"]:focus,
+          #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="number"]:focus,
+          #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="tel"]:focus,
+          #admin-dashboard-content .show-order-container form .order-properties-container .property input[type="date"]:focus,
+          #admin-dashboard-content .show-order-container form .order-properties-container .property textarea:focus {
+            border-color: #C29D6E;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
+        #admin-dashboard-content .show-order-container form .order-properties-container .property textarea {
+          height: 100px; }
+  #admin-dashboard-content .show-order-container h4 {
+    color: #4B3B2F;
+    font-size: 18px;
+    margin-top: 16px; }
+  #admin-dashboard-content .show-order-container #order-blank,
+  #admin-dashboard-content .show-order-container #additional-services {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+    background-color: #D4A373;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #8A6E58; }
+    #admin-dashboard-content .show-order-container #order-blank h3,
+    #admin-dashboard-content .show-order-container #additional-services h3 {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 5px 0;
+      color: #2F241D; }
+    #admin-dashboard-content .show-order-container #order-blank .dish-card,
+    #admin-dashboard-content .show-order-container #order-blank .service,
+    #admin-dashboard-content .show-order-container #additional-services .dish-card,
+    #admin-dashboard-content .show-order-container #additional-services .service {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #F5F0E1;
+      border: 1px solid #D4A373;
+      border-radius: 8px;
+      padding: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      height: 50px; }
+      #admin-dashboard-content .show-order-container #order-blank .dish-card p,
+      #admin-dashboard-content .show-order-container #order-blank .service p,
+      #admin-dashboard-content .show-order-container #additional-services .dish-card p,
+      #admin-dashboard-content .show-order-container #additional-services .service p {
+        font-size: 14px;
+        font-weight: bold;
+        margin: 0 16px;
+        color: #2F241D;
+        line-height: 1.2;
+        flex-shrink: 0;
+        width: 200px; }
+      #admin-dashboard-content .show-order-container #order-blank .dish-card input[type="text"],
+      #admin-dashboard-content .show-order-container #order-blank .service input[type="text"],
+      #admin-dashboard-content .show-order-container #additional-services .dish-card input[type="text"],
+      #admin-dashboard-content .show-order-container #additional-services .service input[type="text"] {
+        width: auto;
+        margin: 0 8px;
+        line-height: 1.2; }
+      #admin-dashboard-content .show-order-container #order-blank .dish-card input[type="number"],
+      #admin-dashboard-content .show-order-container #order-blank .service input[type="number"],
+      #admin-dashboard-content .show-order-container #additional-services .dish-card input[type="number"],
+      #admin-dashboard-content .show-order-container #additional-services .service input[type="number"] {
+        width: 80px;
+        margin-right: 16px;
+        margin-bottom: 0;
+        line-height: 1.2; }
+      #admin-dashboard-content .show-order-container #order-blank .dish-card span,
+      #admin-dashboard-content .show-order-container #order-blank .service span,
+      #admin-dashboard-content .show-order-container #additional-services .dish-card span,
+      #admin-dashboard-content .show-order-container #additional-services .service span {
+        margin-right: 8px; }
+  #admin-dashboard-content .show-order-container label {
+    font-size: 16px;
+    color: #2F241D;
+    margin-bottom: 8px; }
+  #admin-dashboard-content .show-order-container select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #8A6E58;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #D4A373;
+    color: #2F241D; }
+    #admin-dashboard-content .show-order-container select:focus {
+      border-color: #C29D6E;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
+  #admin-dashboard-content .show-suppliers-container #supplier-list,
+  #admin-dashboard-content .add-suppliers-form-container #supplier-list,
+  #admin-dashboard-content .edit-suppliers-form-container #supplier-list {
+    display: flex;
+    justify-content: space-evenly; }
+    #admin-dashboard-content .show-suppliers-container #supplier-list .supplier-item,
+    #admin-dashboard-content .add-suppliers-form-container #supplier-list .supplier-item,
+    #admin-dashboard-content .edit-suppliers-form-container #supplier-list .supplier-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      min-width: 200px;
+      min-height: 150px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease; }
+      #admin-dashboard-content .show-suppliers-container #supplier-list .supplier-item:hover,
+      #admin-dashboard-content .add-suppliers-form-container #supplier-list .supplier-item:hover,
+      #admin-dashboard-content .edit-suppliers-form-container #supplier-list .supplier-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+      #admin-dashboard-content .show-suppliers-container #supplier-list .supplier-item .delete-button,
+      #admin-dashboard-content .add-suppliers-form-container #supplier-list .supplier-item .delete-button,
+      #admin-dashboard-content .edit-suppliers-form-container #supplier-list .supplier-item .delete-button {
+        display: inline; }
+
+/*# sourceMappingURL=main.css.map */
+
+
+/*# sourceMappingURL=main.4ad3b47bccc5f19183c5.css.map*/

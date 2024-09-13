@@ -1,5 +1,19 @@
 {
   "projects": {
-    "default": "menuhelperapp"
-  }
+    "default": "menuhelper"
+  },
+  "targets": {
+    "menuhelperapp": {
+      "hosting": {
+        "menuhelper": [
+          "menuhelper"
+        ],
+        "menuhelperapp": [
+          "menuhelperapp"
+        ]
+      }
+    }
+  },
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }

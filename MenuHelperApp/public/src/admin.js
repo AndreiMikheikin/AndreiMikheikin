@@ -1,9 +1,9 @@
 //public/src/admin.js
-
+import { logout } from './auth.js';
 // Импорт необходимых функций из Firestore
 import { collection, addDoc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, doc, query, where, Timestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { initializeDragAndDrop, saveIconPositions, addIconEventListeners } from "./main.js";
+import { initializeDragAndDrop, saveIconPositions, addIconEventListeners, auth, db } from "./main.js";
 
 // IDs DOM элементов
 const ADMIN_DASHBOARD_CONTENT_ID = "admin-dashboard-content";
@@ -29,23 +29,23 @@ export function loadAdminDashboard() {
             <h2>Рабочий стол</h2>
             <button class="logout" onclick="logout()"><span class="material-icons-outlined">close</span></button>
             <div class="icon-container" id="${ICON1_ID}" draggable="true">
-                <img src="images/icons/add_dish_icon.svg" alt="Добавить блюдо">
+                <img src="./images/icons/add_dish_icon.svg" alt="Добавить блюдо">
                 <p>Добавить блюдо</p>
             </div>
             <div class="icon-container" id="${ICON2_ID}" draggable="true">
-                <img src="images/icons/view_menu_icon.svg" alt="Просмотр меню">
+                <img src="./images/icons/view_menu_icon.svg" alt="Просмотр меню">
                 <p>Просмотр меню</p>
             </div>
             <div class="icon-container" id="${ICON3_ID}" draggable="true">
-                <img src="images/icons/calculate_purchases_icon.svg" alt="Подсчет закупок">
+                <img src="./images/icons/calculate_purchases_icon.svg" alt="Подсчет закупок">
                 <p>Подсчет закупок</p>
             </div>
             <div class="icon-container" id="${ICON4_ID}" draggable="true">
-                <img src="images/icons/order_icon.svg" alt="Оформление заказа">
+                <img src="./images/icons/order_icon.svg" alt="Оформление заказа">
                 <p>Оформление заказа</p>
             </div>
             <div class="icon-container" id="${ICON5_ID}" draggable="true">
-                <img src="images/icons/contact_icon.svg" alt="Коллекции элементов">
+                <img src="./images/icons/contact_icon.svg" alt="Коллекции элементов">
                 <p>Коллекции элементов</p>
             </div>
         `;

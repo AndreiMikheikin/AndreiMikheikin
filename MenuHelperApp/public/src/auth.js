@@ -3,7 +3,7 @@
 // Импорт необходимых модулей из Firebase
 import { signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { showWelcomeModal } from '../src/main.js';
+import { showWelcomeModal, auth, db } from '../src/main.js';
 
 // Валидация формы регистрации
 function validateForm() {
@@ -155,7 +155,7 @@ function toggleForm() {
 }
 
 // Выход из аккаунта
-function logout() {
+export function logout() {
     signOut(auth)
         .then(() => {
             alert('Вы вышли из аккаунта');

@@ -1,4 +1,6 @@
 //public/src/main.js
+import './styles/main.css';
+
 import { firebaseConfig } from "../../firebase-config.js";
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";

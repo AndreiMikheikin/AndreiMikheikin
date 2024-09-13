@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" version="1.1" viewBox="0 0 4.2333 4.2333" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <radialGradient id="c" cx="24.018" cy="289.92" r="2.7064" gradientTransform="matrix(4.4484 4.567 -2.0604 2.0069 499.33 -401.19)" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+  <linearGradient id="a">
+   <stop stop-color="#c94f4f" offset="0"/>
+   <stop stop-color="#c42424" stop-opacity="0" offset="1"/>
+  </linearGradient>
+  <radialGradient id="b" cx="24.018" cy="289.92" r="2.7064" gradientTransform="matrix(-4.4484 -4.567 2.0604 -2.0069 -479.31 981.96)" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+ </defs>
+ <g transform="matrix(.36482 0 0 .36482 -1.5358 -103.82)" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3229">
+  <path d="m8.8261 290.34 4.6148-3.938 1e-6 9.0451-3.015-2.4612" stroke="#000"/>
+  <path d="m11.197 290.43-4.6148 3.938v-9.0451l3.015 2.4612" stroke="#000"/>
+  <path d="m11.197 290.43-4.6148 3.938v-9.0451l3.015 2.4612" stroke="url(#c)"/>
+  <path d="m8.8261 290.34 4.6148-3.938v9.0451l-3.015-2.4612" stroke="url(#b)"/>
+ </g>
+</svg>
