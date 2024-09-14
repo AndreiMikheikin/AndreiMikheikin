@@ -16,7 +16,7 @@
       ]
     },
     {
-      "target": "menuhelper",
+      "target": "menuhelperapp",
       "public": "public/dist",
       "ignore": [
         "firebase.json",

@@ -113,15 +113,66 @@ function removeIngredient(button) {
   }
 }
 
-// Функция для добавления нового поля ингредиента
+// Функция для получения данных из localStorage
+function getDataFromLocalStorage(localStorageKey) {
+  console.log(`Загрузка данных из localStorage по ключу: ${localStorageKey}`);
+
+  const data = localStorage.getItem(localStorageKey);
+
+  if (!data) {
+    console.log("Данные не найдены в localStorage");
+    return [];
+  }
+
+  const items = JSON.parse(data);
+  const itemNames = items.map((item) => item.name);
+
+  console.log(`Загруженные данные:`, itemNames);
+  return itemNames;
+}
+
+// Автозаполнение для категории
+function initializeAutocompleteForCategories() {
+  // Получаем UID пользователя
+  const userUID = getAuth().currentUser.uid;
+
+  // Ключ для хранения категорий в localStorage
+  const categoriesKey = `collection_categories_${userUID}`;
+
+  // Получаем данные из localStorage
+  const categories = getDataFromLocalStorage(categoriesKey);
+
+  // Инициализируем автозаполнение для поля с категориями
+  $("#category-name").autocomplete({
+    source: categories,
+  });
+}
+
+// Автозаполнение для ингредиентов
+function initializeAutocompleteForIngredients(index) {
+  // Получаем UID пользователя
+  const userUID = getAuth().currentUser.uid;
+
+  // Ключ для хранения ингредиентов в localStorage
+  const ingredientsKey = `collection_ingredients_${userUID}`;
+  
+  // Получаем данные из localStorage
+  const ingredients = getDataFromLocalStorage(ingredientsKey);
+  
+  // Инициализируем автозаполнение для конкретного поля ингредиента по его индексу
+  $(`#ingredient-name-${index}`).autocomplete({
+    source: ingredients,
+  });
+}
+
+// Функция для добавления нового ингредиента с уникальными id и автозаполнением
 async function addIngredientField() {
   // Загружаем опции поставщиков из Firebase
   const supplierOptions = await loadSupplierOptions();
 
   // Находим контейнер для ингредиентов
   const ingredientsContainer = document.getElementById("ingredients-container");
-  const index =
-    ingredientsContainer.querySelectorAll(".ingredient-group").length;
+  const index = ingredientsContainer.querySelectorAll(".ingredient-group").length;
 
   // Создаем новый div для группы ингредиентов
   const ingredientDiv = document.createElement("div");
@@ -130,22 +181,25 @@ async function addIngredientField() {
 
   // Добавляем HTML-контент
   ingredientDiv.innerHTML = `
-        <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Название ингредиента" required>
-        <input type="number" name="ingredient-weight" placeholder="Вес" class="weight-input" required>
-        <select name="ingredient-unit">
-            <option value="г">г</option>
-            <option value="мл">мл</option>
-            <option value="шт">шт</option>
-        </select>
-        <select name="ingredient-supplier">
-            <option value="">Выберите поставщика</option>
-            ${supplierOptions}
-        </select>
-        <button type="button" class="remove-ingredient-button"><span class="material-icons-outlined">delete</span></button>
-    `;
+    <input type="text" id="ingredient-name-${index}" name="ingredient-name" placeholder="Название ингредиента" required>
+    <input type="number" name="ingredient-weight" placeholder="Вес" class="weight-input" required>
+    <select name="ingredient-unit">
+        <option value="г">г</option>
+        <option value="мл">мл</option>
+        <option value="шт">шт</option>
+    </select>
+    <select name="ingredient-supplier">
+        <option value="">Выберите поставщика</option>
+        ${supplierOptions}
+    </select>
+    <button type="button" class="remove-ingredient-button"><span class="material-icons-outlined">delete</span></button>
+  `;
 
   // Добавляем новую группу ингредиентов в контейнер
   ingredientsContainer.appendChild(ingredientDiv);
+
+  // Инициализируем автозаполнение для нового ингредиента
+  initializeAutocompleteForIngredients(index);
 }
 
 // Функция для добавления обработчиков событий после загрузки DOM
@@ -272,7 +326,7 @@ window.showDishForm = async function showDishForm() {
             <div id="ingredients-container">
                 <h4 class="ingredients-label">Ингредиенты</h4>
                 <div class="ingredient-group">
-                    <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Название ингредиента" required>
+                    <input type="text" id="ingredient-name-0" name="ingredient-name" placeholder="Название ингредиента" required>
                     <input type="number" name="ingredient-weight" placeholder="Вес" class="weight-input" required>
                     <select name="ingredient-unit">
                         <option value="г">г</option>
@@ -312,7 +366,7 @@ window.showDishForm = async function showDishForm() {
             </form>
         </div>
     </div>
-    `;
+  `;
 
   // Загрузка списка блюд в выпадающий список
   await loadDishOptions();
@@ -320,54 +374,15 @@ window.showDishForm = async function showDishForm() {
   // Добавление обработчиков событий
   addEventListeners();
 
+  // Инициализация автозаполнения для категорий и первого ингредиента
+  initializeAutocompleteForCategories();
+  initializeAutocompleteForIngredients(0);
+
   // Обработчик отправки формы
   const form = document.getElementById("dish-form");
   form.addEventListener("submit", handleSubmit);
-
-  // Универсальная функция для получения данных из localStorage
-  function getDataFromLocalStorage(localStorageKey) {
-    console.log(`Загрузка данных из localStorage по ключу: ${localStorageKey}`);
-
-    // Получаем данные из localStorage
-    const data = localStorage.getItem(localStorageKey);
-
-    if (!data) {
-      console.log("Данные не найдены в localStorage");
-      return [];
-    }
-
-    // Парсим данные
-    const items = JSON.parse(data);
-
-    // Создаем массив имен элементов
-    const itemNames = items.map((item) => item.name);
-
-    console.log(`Загруженные данные:`, itemNames);
-    return itemNames;
-  }
-
-  // Инициализация автозаполнения для поля с категориями
-  $(document).ready(function () {
-    // Получаем категории из localStorage
-    const userUID = getAuth().currentUser.uid;
-    const categoriesKey = `collection_categories_${userUID}`;
-    const categories = getDataFromLocalStorage(categoriesKey);
-
-    // Инициализация автозаполнения для поля с категориями
-    $("#category-name").autocomplete({
-      source: categories,
-    });
-
-    // Получаем ингредиенты из localStorage
-    const ingredientsKey = `collection_ingredients_${userUID}`;
-    const ingredients = getDataFromLocalStorage(ingredientsKey);
-
-    // Инициализация автозаполнения для поля с ингредиентами
-    $("#ingredient-name").autocomplete({
-      source: ingredients,
-    });
-  });
 };
+
 
 // Функция для загрузки опций блюд в выпадающий список
 async function loadDishOptions() {
@@ -496,7 +511,7 @@ async function loadDishForEditing() {
                         <option value="">Выберите поставщика</option>
                         ${supplierOptions}
                     </select>
-                    <button type="button" class="remove-ingredient-button"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="remove-ingredient-button"><span class="material-icons-outlined">delete</span></button>
                 `;
         ingredientsContainer.appendChild(ingredientDiv);
       });
@@ -658,6 +673,8 @@ async function handleSubmit(event) {
     const newIngredients = ingredients.filter(
       (ing) => !existingIngredientNames.includes(ing.name)
     );
+
+    console.log(newIngredients);
 
     // Добавляем новые ингредиенты
     for (const newIngredient of newIngredients) {
@@ -842,7 +859,7 @@ window.showMenu = async function showMenu() {
       // Проверяем, пустое ли меню
       if (querySnapshot.empty) {
         menuList.innerHTML = `
-                    <p>Ваше меню пока пусто. <a href="#" onclick="showAddDishForm()">Добавьте первое блюдо!</a></p>
+                    <p>Ваше меню пока пусто. <a href="#" onclick="showDishForm()">Добавьте первое блюдо!</a></p>
                 `;
         return;
       }
@@ -1033,33 +1050,33 @@ function handleCancelClick(event) {
   editButton.style.display = "inline";
 }
 
-// Функция удаления блюда
-function handleDeleteClick(event) {
+// Удаление блюда
+async function handleDeleteClick(event) {
   const button = event.currentTarget;
   const dishId = button.getAttribute("data-id");
+  const user = auth.currentUser;
+  if (!user) {
+    alert("Пользователь не аутентифицирован. Пожалуйста, выполните вход.");
+    return;
+  }
 
   const confirmation = confirm("Вы уверены, что хотите удалить это блюдо?");
   if (confirmation) {
     console.log("Удаление блюда:", { dishId });
 
-    // Получаем текущего пользователя
-    const user = auth.currentUser;
-    if (!user) {
-      alert("Пользователь не аутентифицирован. Пожалуйста, выполните вход.");
-      return;
-    }
+    try {
+      const dishDocRef = doc(db, `users/${user.uid}/menu`, dishId);
+      const publicDishDocRef = doc(db, "public_menu", dishId);
 
-    // Удаление блюда из Firestore в коллекции текущего пользователя
-    deleteDoc(doc(db, `users/${user.uid}/menu`, dishId))
-      .then(() => {
-        console.log("Блюдо успешно удалено:", { dishId });
-        alert("Блюдо успешно удалено");
-        showMenu(); // Обновляем меню после удаления блюда
-      })
-      .catch((error) => {
-        console.error("Ошибка при удалении блюда:", error);
-        alert(`Ошибка при удалении блюда: ${error.message}`);
-      });
+      await deleteDoc(dishDocRef);
+      await deleteDoc(publicDishDocRef);
+
+      alert("Блюдо успешно удалено.");
+      showMenu();
+    } catch (error) {
+      console.error("Ошибка при удалении блюда:", error);
+      alert("Произошла ошибка при удалении блюда. Пожалуйста, попробуйте снова.");
+    }
   }
 }
 
@@ -1573,6 +1590,7 @@ async function loadOrderByDate() {
       });
 
       orderBlank.appendChild(categoryContainer);
+      updateTotalSum();
     }
 
     // Заполнение дополнительных услуг
@@ -1770,6 +1788,10 @@ function addDishToOrder() {
 function updateTotalSum() {
   const orderItems = document.querySelectorAll(".order-item");
   let totalSum = 0;
+
+  if (orderItems.length === 0) {
+    totalSum = 0;
+  };
 
   orderItems.forEach((item) => {
     const quantity =
@@ -2089,6 +2111,7 @@ async function saveOrder() {
     alert(`Ошибка при сохранении заказа: ${error.message}`);
   }
   loadOrders();
+  showOrderForm();
 }
 
 // Загрузка заказов в выпадающий список
