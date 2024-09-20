@@ -1,22 +1,25 @@
 //auth.js
 
 // Импорт необходимых модулей из Firebase
-import { signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { showWelcomeModal, auth, db } from '../src/main.js';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { showWelcomeModal, getLoggersName, auth, db } from '../src/main.js';
+import { loadAdminDashboard, showAdminContent } from "./admin.js";
 
 // Валидация формы регистрации
 function validateForm() {
+    const isRegistration = document.getElementById('form-title').textContent === 'Регистрация';
+
+    const loggersName = isRegistration ? document.getElementById('loggersName').value : '';
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
     const role = document.getElementById('role').value;
 
+    const isLoggersNameValid = isRegistration ? loggersName !== '' : true;
     const isEmailValid = email !== '';
     const isPasswordValid = password !== '';
     const isRoleSelected = role !== '';
-
-    const isRegistration = document.getElementById('form-title').textContent === 'Регистрация';
 
     // Проверка требований к паролю
     const isLengthValid = password.length >= 8;
@@ -29,9 +32,9 @@ function validateForm() {
 
     const submitBtn = document.getElementById('submit-btn');
     submitBtn.disabled = isRegistration 
-        ? !(isEmailValid && isPasswordValid && isRoleSelected && areRequirementsMet) 
+        ? !(isLoggersNameValid && isEmailValid && isPasswordValid && isRoleSelected && areRequirementsMet) 
         : !(isEmailValid && isPasswordValid);
-    
+
     submitBtn.classList.toggle('active', !submitBtn.disabled);
 
     document.getElementById('password-requirements').style.display = isRegistration ? 'block' : 'none';
@@ -57,6 +60,7 @@ function selectRole(role) {
     document.getElementById('admin-role-btn').classList.toggle('selected', role === 'admin');
     document.getElementById('user-role-btn').classList.toggle('selected', role === 'user');
 
+    console.log(role);
     validateForm();
 }
 
@@ -77,40 +81,87 @@ async function getUserRole(uid) {
     }
 }
 
-// Обработка отправки формы входа
+// Обработка отправки формы
 async function handleSubmit(event) {
     event.preventDefault();
 
+    const isRegistration = document.getElementById('form-title').textContent === 'Регистрация';
+    const loadingIndicator = document.getElementById('loading-indicator');
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+    // Показываем индикатор загрузки
+    loadingIndicator.classList.remove('hidden');
 
-        const role = await getUserRole(user.uid);
-        showPanel(role);
-        showWelcomeModal(user.email);
-    } catch (error) {
-        console.error('Login error:', error);
-        alert('Ошибка при входе. Пожалуйста, попробуйте снова.');
+    // Для входа поле loggersName не нужно
+    if (isRegistration) {
+        const loggersName = document.getElementById('loggersName').value;
+        const role = document.getElementById('role').value;
+        try {
+            // Регистрация нового пользователя
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Запись данных в Firestore
+            await setDoc(doc(db, 'users', user.uid), {
+                email: email,
+                loggersName: loggersName, // Запись loggersName
+                role: role,
+                createdAt: new Date()
+            });
+
+            console.log(role);
+
+            alert('Регистрация прошла успешно!');
+
+            showPanel(role);
+            showWelcomeModal(loggersName);
+        } catch (error) {
+            console.error('Ошибка при регистрации:', error);
+            alert('Ошибка при регистрации. Пожалуйста, попробуйте снова.');
+        } finally {
+            // Скрываем индикатор загрузки
+            loadingIndicator.classList.add('hidden');
+        }
+    } else {
+        try {
+            // Вход в систему
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            const loggersName = await getLoggersName(user.uid);
+            const role = await getUserRole(user.uid);
+            console.log(role);
+            showPanel(role);
+            showWelcomeModal(loggersName);
+        } catch (error) {
+            console.error('Ошибка при входе:', error);
+            alert('Ошибка при входе. Пожалуйста, попробуйте снова.');
+        } finally {
+            // Скрываем индикатор загрузки
+            loadingIndicator.classList.add('hidden');
+        }
     }
 }
 
 // Показать панель в зависимости от роли пользователя
-function showPanel(role) {
+export function showPanel(role) {
     document.getElementById('auth-container').style.display = 'none';
-
+    console.log(role);
     if (role === 'admin') {
-        document.getElementById('admin-dashboard-container').style.display = 'block';
+        // Убираем класс hidden для панели администратора
+        document.getElementById('admin-dashboard-container').classList.remove('hidden');
+        loadAdminDashboard();
     } else if (role === 'user') {
-        document.getElementById('user-dashboard-container').style.display = 'block';
+        // Убираем класс hidden для панели пользователя
+        document.getElementById('user-dashboard-container').classList.remove('hidden');
     } else {
         console.error('Unknown role:', role);
         alert('Ошибка: неизвестная роль пользователя.');
     }
 }
 
+// Функия переключения панелей Регистрацция / Вход
 function toggleForm() {
     const isFormFilled = document.getElementById('email').value || document.getElementById('password').value;
 
@@ -125,6 +176,7 @@ function toggleForm() {
     const toggleLink = document.getElementById('toggle-link');
     const adminRoleBtn = document.getElementById('admin-role-btn');
     const userRoleBtn = document.getElementById('user-role-btn');
+    const loggersNameInput = document.getElementById('loggersName'); // Получаем элемент поля loggersName
 
     const isLogin = title.textContent === 'Вход';
 
@@ -132,6 +184,7 @@ function toggleForm() {
     document.getElementById('email').value = '';
     document.getElementById('password').value = '';
     document.getElementById('confirm-password').value = '';
+    document.getElementById('loggersName').value = ''; // Очистка поля loggersName
 
     // Сброс отображения чеков
     const checkMarks = document.querySelectorAll('.check');
@@ -150,6 +203,9 @@ function toggleForm() {
     adminRoleBtn.classList.toggle('hidden', !isLogin);
     userRoleBtn.classList.toggle('hidden', !isLogin);
 
+    // Управление видимостью поля loggersName: отображаем только при регистрации
+    loggersNameInput.classList.toggle('hidden', !isLogin);
+
     // Валидация формы после переключения
     validateForm();
 }
@@ -160,8 +216,8 @@ export function logout() {
         .then(() => {
             alert('Вы вышли из аккаунта');
             document.getElementById('auth-container').style.display = 'block';
-            document.getElementById('admin-dashboard-container').style.display = 'none';
-            document.getElementById('user-dashboard-container').style.display = 'none';
+            document.getElementById('admin-dashboard-container').classList.add('hidden');
+            document.getElementById('user-dashboard-container').classList.add('hidden');
         })
         .catch((error) => {
             console.error('Logout error:', error);

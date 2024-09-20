@@ -10,8 +10,6 @@ module.exports = {
     filename: 'bundle.[contenthash].js',
     path: path.resolve(__dirname, 'public/dist'),
     publicPath: '/',
-    library: 'MyLibrary',  // Это позволит экспортировать функции глобально
-    libraryTarget: 'window',  // Сделает функции доступными через window
   },
   
   resolve: {

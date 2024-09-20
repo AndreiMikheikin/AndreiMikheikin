@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="50" height="50" version="1.1" viewBox="0 0 13.229 13.229" xmlns="http://www.w3.org/2000/svg">
+<svg id="order" width="50" height="50" version="1.1" viewBox="0 0 13.229 13.229" xmlns="http://www.w3.org/2000/svg">
  <g transform="translate(0 -283.77)">
   <rect transform="rotate(-7.0251)" x="-33.448" y="283" width="8.9908" height="12.067" ry=".4732" fill="#928cf0" style="paint-order:normal"/>
   <rect transform="rotate(7.6513)" x="40.726" y="280.91" width="8.9908" height="12.067" ry=".4732" fill="#d4af37" style="paint-order:normal"/>

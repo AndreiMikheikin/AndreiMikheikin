@@ -8,7 +8,7 @@
     <title>MenuHelper</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
-    <link rel="shortcut icon" href="images/icons/favicon.svg" type="image/x-icon" />
+    <link rel="shortcut icon" href="e34d410ddfb9a34bba7e.svg" type="image/x-icon" />
 </head>
 
 <body>
@@ -135,8 +135,12 @@
                     Пользователь
                 </button>
             </div>
+            <!-- Индикатор загрузки -->
+            <div id="loading-indicator" class="hidden">Загрузка...</div>
             <form id="auth-form" onsubmit="handleSubmit(event)">
                 <input type="hidden" id="role" name="role" />
+                <input type="text" id="loggersName" name="loggersName" placeholder="Название" class="hidden"
+                    oninput="validateForm()" />
                 <input type="email" id="email" name="email" placeholder="Email" required oninput="validateForm()" />
                 <input type="password" id="password" name="password" placeholder="Пароль" required
                     oninput="validateForm()" />
@@ -171,7 +175,6 @@
 
         <!-- Контейнер панели администратора -->
         <div class="container desktop hidden" id="admin-dashboard-container">
-            <!-- Иконки будут загружены из admin.js -->
         </div>
 
         <div id="admin-dashboard-content" class="desktop">
@@ -188,6 +191,7 @@
                 <span class="material-icons-outlined">close</span>
             </button>
         </div>
+    
 
         <!-- Контейнер восстановления пароля -->
         <div class="container hidden" id="forgot-password-container">

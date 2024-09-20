@@ -1,9 +1,9 @@
 //public/src/admin.js
-import { logout } from './auth.js';
+
 // Импорт необходимых функций из Firestore
 import { collection, addDoc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, doc, query, where, Timestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { initializeDragAndDrop, saveIconPositions, addIconEventListeners, auth, db } from "./main.js";
+import { initializeDragAndDrop, saveIconPositions, loadIconPositions, addIconEventListeners, auth, db } from "./main.js";
 
 // IDs DOM элементов
 const ADMIN_DASHBOARD_CONTENT_ID = "admin-dashboard-content";
@@ -29,32 +29,32 @@ export function loadAdminDashboard() {
             <h2>Рабочий стол</h2>
             <button class="logout" onclick="logout()"><span class="material-icons-outlined">close</span></button>
             <div class="icon-container" id="${ICON1_ID}" draggable="true">
-                <img src="./images/icons/add_dish_icon.svg" alt="Добавить блюдо">
+                <img src="d46f6a4c0ffa60bacb0e.svg" alt="Добавить блюдо">
                 <p>Добавить блюдо</p>
             </div>
             <div class="icon-container" id="${ICON2_ID}" draggable="true">
-                <img src="./images/icons/view_menu_icon.svg" alt="Просмотр меню">
+                <img src="73b3f0e208ba8ff3f248.svg" alt="Просмотр меню">
                 <p>Просмотр меню</p>
             </div>
             <div class="icon-container" id="${ICON3_ID}" draggable="true">
-                <img src="./images/icons/calculate_purchases_icon.svg" alt="Подсчет закупок">
+                <img src="912aaaefed096c273d90.svg" alt="Подсчет закупок">
                 <p>Подсчет закупок</p>
             </div>
             <div class="icon-container" id="${ICON4_ID}" draggable="true">
-                <img src="./images/icons/order_icon.svg" alt="Оформление заказа">
+                <img src="2f9daed6a7b137307714.svg" alt="Оформление заказа">
                 <p>Оформление заказа</p>
             </div>
             <div class="icon-container" id="${ICON5_ID}" draggable="true">
-                <img src="./images/icons/contact_icon.svg" alt="Коллекции элементов">
+                <img src="37db359661c95088eb82.svg" alt="Коллекции элементов">
                 <p>Коллекции элементов</p>
             </div>
         `;
 
     // Инициализируем события и загрузку
     addIconEventListeners();
-    initializeDragAndDrop();
     loadIconPositions();
-
+    initializeDragAndDrop();
+    
     // Сохраняем позиции иконок перед закрытием страницы
     window.addEventListener("beforeunload", saveIconPositions);
   } else {
@@ -62,31 +62,10 @@ export function loadAdminDashboard() {
       "Ошибка: не удалось найти admin-dashboard-container или admin-dashboard-content."
     );
   }
-
-  // Загрузка позиций иконок из локального хранилища
-  function loadIconPositions() {
-    const positions = JSON.parse(localStorage.getItem("iconPositions"));
-    if (positions) {
-      const dropzone = document.getElementById("admin-dashboard-container");
-      positions.forEach((pos) => {
-        const icon = document.getElementById(pos.id);
-        if (icon) {
-          // Пропорциональная адаптация
-          const left =
-            parseFloat(pos.left) * (dropzone.offsetWidth / window.innerWidth);
-          const top =
-            parseFloat(pos.top) * (dropzone.offsetHeight / window.innerHeight);
-
-          icon.style.left = `${left}px`;
-          icon.style.top = `${top}px`;
-        }
-      });
-    }
-  }
 }
 
 // Функция для показа админского контента и скрытия панели
-function showAdminContent() {
+export function showAdminContent() {
   const adminContainer = document.getElementById("admin-dashboard-container");
   const adminContent = document.getElementById("admin-dashboard-content");
 
@@ -1390,7 +1369,7 @@ window.showOrderForm = function showOrderForm() {
                 <option value="">Выберите заказ:</option>
                 <!-- Динамически добавляемые опции -->
             </select>
-            <button type="button" id="load-order-button"><span class="material-icons-outlined">upload</span></button>
+            <button type="button" id="load-order-button"><span class="material-icons-outlined">download</span></button>
             <button type="button" id="delete-order-button"><span class="material-icons-outlined">delete</span></button>
         </div>
 
@@ -1562,14 +1541,17 @@ async function loadOrderByDate() {
       // Добавляем блюда в соответствующий контейнер категории
       dishes.forEach((item) => {
         const orderItem = document.createElement("div");
-        orderItem.classList.add("dish-card");
+        orderItem.classList.add("order-item"); // Обратите внимание на добавление класса order-item
         orderItem.innerHTML = `
-                    <p>${item.name}</p>
-                    <input type="number" value="${item.quantity}" min="1" class="dish-quantity" data-price="${item.price}">
-                    <span>${item.price} руб.</span>
-                    <span class="dish-total-price">${item.total} руб.</span>
-                    <button type="button" class="remove-button"><span class="material-icons-outlined">delete</span></button>
+                    <div class="dish-card">
+                        <p>${item.name}</p>
+                        <input type="number" value="${item.quantity}" min="1" class="dish-quantity" data-price="${item.price}">
+                        <span>${item.price} руб.</span>
+                        <span class="dish-total-price">${item.total} руб.</span>
+                        <button type="button" class="remove-button"><span class="material-icons-outlined">delete</span></button>
+                    </div>
                 `;
+        // Добавляем обработчик для удаления блюда из заказа
         orderItem
           .querySelector(".remove-button")
           .addEventListener("click", () => {
@@ -1580,17 +1562,19 @@ async function loadOrderByDate() {
             }
             updateTotalSum();
           });
+
+        // Добавляем обработчик для изменения количества блюда
         orderItem
           .querySelector(".dish-quantity")
           .addEventListener("input", () => {
             updateDishTotalPrice(orderItem);
             updateTotalSum();
           });
+
         categoryContainer.appendChild(orderItem);
       });
 
       orderBlank.appendChild(categoryContainer);
-      updateTotalSum();
     }
 
     // Заполнение дополнительных услуг
@@ -1627,6 +1611,7 @@ async function loadOrderByDate() {
     document.getElementById("prepayment").value = orderData.prepayment;
     document.getElementById("final-sum").value = orderData.finalSum;
 
+    updateTotalSum();
     updateFinalSum();
   } catch (error) {
     console.error("Ошибка при загрузке заказа:", error);
@@ -1761,7 +1746,7 @@ function addDishToOrder() {
             <button type="button" class="remove-button"><span class="material-icons-outlined">delete</span></button>
         </div>
     `;
-  updateTotalSum();
+  
   // Добавляем обработчик для удаления блюда из заказа
   orderItem.querySelector(".remove-button").addEventListener("click", () => {
     categoryContainer.removeChild(orderItem);
@@ -1788,10 +1773,6 @@ function addDishToOrder() {
 function updateTotalSum() {
   const orderItems = document.querySelectorAll(".order-item");
   let totalSum = 0;
-
-  if (orderItems.length === 0) {
-    totalSum = 0;
-  };
 
   orderItems.forEach((item) => {
     const quantity =
