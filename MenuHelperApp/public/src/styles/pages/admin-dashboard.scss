@@ -18,26 +18,6 @@
     font-size: $font-size-large;
   }
 
-  // Добавляем сетку через псевдоэлемент
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; // Сетка не мешает взаимодействию с элементами
-    background-image: linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0.5) 1px,
-        transparent 1px
-      ),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 1px, transparent 1px);
-
-    // Сетка подстраивается под динамический GRID_SIZE
-    background-size: $grid-size $grid-size; // Размер ячеек сетки
-  }
-
   .icon-container {
     position: relative;
     display: flex;

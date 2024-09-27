@@ -3,15 +3,10 @@
 // Импорт необходимых функций из Firestore
 import { collection, addDoc, getDocs, getDoc, setDoc, updateDoc, deleteDoc, doc, query, where, Timestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { initializeDragAndDrop, saveIconPositions, loadIconPositions, addIconEventListeners, auth, db } from "./main.js";
+import { saveIconPositions, loadIconPositions, initializeIconsAndGrid, addIconEventListeners, auth, db } from "./main.js";
 
 // IDs DOM элементов
 const ADMIN_DASHBOARD_CONTENT_ID = "admin-dashboard-content";
-const ICON1_ID = "icon1";
-const ICON2_ID = "icon2";
-const ICON3_ID = "icon3";
-const ICON4_ID = "icon4";
-const ICON5_ID = "icon5";
 
 // Загрузка панели администратора
 export function loadAdminDashboard() {
@@ -20,49 +15,49 @@ export function loadAdminDashboard() {
   const adminContent = document.getElementById("admin-dashboard-content");
 
   if (adminContainer && adminContent) {
-    // Скрываем adminContent и показываем adminContainer
-    adminContent.style.display = "none";
-    adminContainer.style.display = "block";
+      // Скрываем adminContent и показываем adminContainer
+      adminContent.style.display = "none";
+      adminContainer.style.display = "block";
 
-    // Заполняем adminContainer содержимым
-    adminContainer.innerHTML = `
-            <h2>Рабочий стол</h2>
-            <button class="logout" onclick="logout()"><span class="material-icons-outlined">close</span></button>
-            <div class="icon-container" id="${ICON1_ID}" draggable="true">
-                <img src="d46f6a4c0ffa60bacb0e.svg" alt="Добавить блюдо">
-                <p>Добавить блюдо</p>
-            </div>
-            <div class="icon-container" id="${ICON2_ID}" draggable="true">
-                <img src="73b3f0e208ba8ff3f248.svg" alt="Просмотр меню">
-                <p>Просмотр меню</p>
-            </div>
-            <div class="icon-container" id="${ICON3_ID}" draggable="true">
-                <img src="912aaaefed096c273d90.svg" alt="Подсчет закупок">
-                <p>Подсчет закупок</p>
-            </div>
-            <div class="icon-container" id="${ICON4_ID}" draggable="true">
-                <img src="2f9daed6a7b137307714.svg" alt="Оформление заказа">
-                <p>Оформление заказа</p>
-            </div>
-            <div class="icon-container" id="${ICON5_ID}" draggable="true">
-                <img src="37db359661c95088eb82.svg" alt="Коллекции элементов">
-                <p>Коллекции элементов</p>
-            </div>
-        `;
+      // Заполняем adminContainer содержимым
+      adminContainer.innerHTML = `
+          <h2>Рабочий стол</h2>
+          <button class="logout" onclick="logout()"><span class="material-icons-outlined">close</span></button>
+          <div class="icon-container" id="icon1" draggable="true">
+              <img src="d46f6a4c0ffa60bacb0e.svg" alt="Добавить блюдо">
+              <p>Добавить блюдо</p>
+          </div>
+          <div class="icon-container" id="icon2" draggable="true">
+              <img src="73b3f0e208ba8ff3f248.svg" alt="Меню">
+              <p>Меню</p>
+          </div>
+          <div class="icon-container" id="icon3" draggable="true">
+              <img src="912aaaefed096c273d90.svg" alt="Расчет покупок">
+              <p>Расчет покупок</p>
+          </div>
+          <div class="icon-container" id="icon4" draggable="true">
+              <img src="2f9daed6a7b137307714.svg" alt="Заказ">
+              <p>Заказ</p>
+          </div>
+          <div class="icon-container" id="icon5" draggable="true">
+              <img src="37db359661c95088eb82.svg" alt="Коллекции">
+              <p>Коллекции</p>
+          </div>
+      `;
 
-    // Инициализируем события и загрузку
-    addIconEventListeners();
-    loadIconPositions();
-    initializeDragAndDrop();
-    
-    // Сохраняем позиции иконок перед закрытием страницы
-    window.addEventListener("beforeunload", saveIconPositions);
-  } else {
-    console.error(
-      "Ошибка: не удалось найти admin-dashboard-container или admin-dashboard-content."
-    );
+      // Инициализация иконок и сетки
+      initializeIconsAndGrid();
+
+      // Загружаем сохраненные позиции иконок
+      loadIconPositions();
+
+      // Добавляем обработчики событий для иконок
+      addIconEventListeners();
   }
 }
+
+// Не забудьте вызывать saveIconPositions() при необходимости, например, перед переходом на другую страницу или при выходе
+window.addEventListener('beforeunload', saveIconPositions);
 
 // Функция для показа админского контента и скрытия панели
 export function showAdminContent() {
@@ -134,10 +129,10 @@ function initializeAutocompleteForIngredients(index) {
 
   // Ключ для хранения ингредиентов в localStorage
   const ingredientsKey = `collection_ingredients_${userUID}`;
-  
+
   // Получаем данные из localStorage
   const ingredients = getDataFromLocalStorage(ingredientsKey);
-  
+
   // Инициализируем автозаполнение для конкретного поля ингредиента по его индексу
   $(`#ingredient-name-${index}`).autocomplete({
     source: ingredients,
@@ -362,7 +357,6 @@ window.showDishForm = async function showDishForm() {
   form.addEventListener("submit", handleSubmit);
 };
 
-
 // Функция для загрузки опций блюд в выпадающий список
 async function loadDishOptions() {
   const loadDishSelect = document.getElementById("load-dish");
@@ -448,56 +442,63 @@ async function loadDishForEditing() {
     if (dishDoc.exists()) {
       const dishData = dishDoc.data();
 
+      // Заполняем поля формы
       document.getElementById("category-name").value = dishData.category || "";
       document.getElementById("dish-name").value = dishData.name || "";
-      document.getElementById("dish-description").value =
-        dishData.description || "";
-      document.getElementById("dish-total-weight").value =
-        dishData.totalWeight || "";
+      document.getElementById("dish-description").value = dishData.description || "";
+      document.getElementById("dish-total-weight").value = dishData.totalWeight || "";
       document.getElementById("dish-price").value = dishData.price || "";
       document.getElementById("shared").checked = dishData.shared || false;
-      document.getElementById("shared-by-container").style.display =
-        dishData.shared ? "block" : "none";
+      document.getElementById("shared-by-container").style.display = dishData.shared ? "block" : "none";
       document.getElementById("shared-by").value = dishData.sharedBy || "";
 
-      const ingredientsContainer = document.getElementById(
-        "ingredients-container"
-      );
-      ingredientsContainer.innerHTML = "";
+      const ingredientsContainer = document.getElementById("ingredients-container");
+      ingredientsContainer.innerHTML = ""; // Очищаем контейнер
 
-      // Загружаем опции поставщиков из Firebase
+      // Загружаем опции поставщиков из localStorage
       const supplierOptions = await loadSupplierOptions();
 
-      dishData.ingredients.forEach((ingredient, index) => {
+      // Объект для хранения идентификаторов поставщиков
+      const suppliers = {};
+      const supplierOptionElements = supplierOptions.match(/<option value="([^"]+)">([^<]+)<\/option>/g);
+
+      // Заполняем объект `suppliers` для быстрого поиска
+      supplierOptionElements.forEach(option => {
+        const value = option.match(/<option value="([^"]+)">([^<]+)<\/option>/);
+        if (value) {
+          suppliers[value[2]] = value[1]; // Имя поставщика : ID
+        }
+      });
+
+      // Загружаем ингредиенты
+      dishData.ingredients.forEach((ingredient) => {
         const ingredientDiv = document.createElement("div");
         ingredientDiv.classList.add("ingredient-group");
-        ingredientDiv.setAttribute("data-index", index);
+
+        // Получаем ID поставщика по имени
+        const supplierId = suppliers[ingredient.supplier];
 
         ingredientDiv.innerHTML = `
-                    <input type="text" name="ingredient-name" value="${ingredient.name
-          }" placeholder="Название ингредиента" required>
-                    <input type="number" name="ingredient-weight" value="${ingredient.weight
-          }" placeholder="Вес" class="weight-input" required>
-                    <select name="ingredient-unit">
-                        <option value="г" ${ingredient.unit === "г" ? "selected" : ""
-          }>г</option>
-                        <option value="мл" ${ingredient.unit === "мл" ? "selected" : ""
-          }>мл</option>
-                        <option value="шт" ${ingredient.unit === "шт" ? "selected" : ""
-          }>шт</option>
-                    </select>
-                    <select name="ingredient-supplier">
-                        <option value="">Выберите поставщика</option>
-                        ${supplierOptions}
-                    </select>
-                    <button type="button" class="remove-ingredient-button"><span class="material-icons-outlined">delete</span></button>
-                `;
+          <input type="text" name="ingredient-name" value="${ingredient.name}" placeholder="Название ингредиента" required>
+          <input type="number" name="ingredient-weight" value="${ingredient.weight}" placeholder="Вес" class="weight-input" required>
+          <select name="ingredient-unit">
+            <option value="г" ${ingredient.unit === "г" ? "selected" : ""}>г</option>
+            <option value="мл" ${ingredient.unit === "мл" ? "selected" : ""}>мл</option>
+            <option value="шт" ${ingredient.unit === "шт" ? "selected" : ""}>шт</option>
+          </select>
+          <select name="ingredient-supplier" required>
+            <option value="">Выберите поставщика</option>
+            ${supplierOptions.replace(`value="${supplierId}"`, `value="${supplierId}" selected`)}
+          </select>
+          <button type="button" class="remove-ingredient-button">
+            <span class="material-icons-outlined">delete</span>
+          </button>
+        `;
         ingredientsContainer.appendChild(ingredientDiv);
       });
 
       updateIngredientIndices();
-      document.getElementById("save-dish-button").textContent =
-        "Сохранить изменения";
+      document.getElementById("save-dish-button").textContent = "Сохранить изменения";
     } else {
       alert("Блюдо не найдено.");
     }
@@ -1746,7 +1747,7 @@ function addDishToOrder() {
             <button type="button" class="remove-button"><span class="material-icons-outlined">delete</span></button>
         </div>
     `;
-  
+
   // Добавляем обработчик для удаления блюда из заказа
   orderItem.querySelector(".remove-button").addEventListener("click", () => {
     categoryContainer.removeChild(orderItem);

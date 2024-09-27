@@ -28,269 +28,160 @@ export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-const ICON1_ID = 'icon1';
-const ICON2_ID = 'icon2';
-const ICON3_ID = 'icon3';
-const ICON4_ID = 'icon4';
-const ICON5_ID = 'icon5';
+// Константы
+const ICON_IDS = ['icon1', 'icon2', 'icon3', 'icon4', 'icon5'];
+const GRID_SIZE = 150; // шаг сетки по X и Y
+const ICON_MARGIN = 50; // отступ слева
+const TOP_MARGIN = 100; // отступ сверху
 
-let GRID_SIZE;
-let ICON_MARGIN;
-const MARGIN_LEFT = 50; 
-const MARGIN_TOP = 100;
-const ICON_SIZE = 120;
-let resizeTimeout; // Таймаут для дебаунсинга
+// Массив для хранения пересечений сетки
+let grid = [];
+let icons = [];
+const dropzone = document.getElementById('admin-dashboard-container');
 
-// Функция для динамического обновления значений GRID_SIZE и MARGIN в зависимости от ширины контейнера
-function updateGridAndMargins() {
-    const dropzone = document.getElementById('admin-dashboard-container');
-    const containerWidth = dropzone.offsetWidth;
+// Инициализация сетки
+export function initializeGrid(containerWidth, containerHeight) {
+    grid = [];
+    const cols = Math.floor((containerWidth - ICON_MARGIN) / GRID_SIZE);
+    const rows = Math.floor((containerHeight - TOP_MARGIN) / GRID_SIZE);
 
-    // Рассчитываем ICON_MARGIN как 1% от ширины контейнера и GRID_SIZE как сумма размера иконки и отступа
-    ICON_MARGIN = containerWidth * 0.01; // 1% от ширины контейнера
-    const GRID_SIZE = ICON_SIZE + ICON_MARGIN;   // Размер сетки: размер иконки + отступ
-
-    // Обновляем размер сетки в CSS
-    dropzone.style.setProperty('--grid-size', `${GRID_SIZE}px`);
-
-    console.log(`GRID_SIZE: ${GRID_SIZE}, ICON_MARGIN: ${ICON_MARGIN}`);
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            grid.push({
+                index: `${row}:${col}`,
+                occupied: 0, // Ячейка свободна
+                x: col * GRID_SIZE + ICON_MARGIN,
+                y: row * GRID_SIZE + TOP_MARGIN
+            });
+        }
+    }
 }
 
-// Функция для инициализации сетки и отслеживания изменения размера экрана
-function initializeGrid() {
-    // Обновляем сетку при загрузке страницы
-    updateGridAndMargins();
+// Установка позиции иконки
+function positionIcon(icon, x, y) {
+    icon.style.left = `${x}px`;
+    icon.style.top = `${y}px`;
+    icon.style.position = 'absolute'; // Установка абсолютного позиционирования
+}
 
-    // Добавляем обработчик изменения размера окна с таймаутом (дебаунсинг)
-    window.addEventListener('resize', () => {
-        // Если таймер уже запущен, сбрасываем его
-        clearTimeout(resizeTimeout);
-
-        // Устанавливаем новый таймаут для пересчета через 200ms после завершения изменения размера окна
-        resizeTimeout = setTimeout(() => {
-            updateGridAndMargins();
-        }, 200);
+// Привязка иконок к сетке
+function snapIconsToGrid() {
+    icons.forEach(icon => {
+        const freeCell = grid.find(cell => cell.occupied === 0);
+        if (freeCell) {
+            freeCell.occupied = 1; // Занимаем ячейку
+            positionIcon(icon, freeCell.x, freeCell.y); // Устанавливаем позицию иконки
+        }
     });
 }
 
-function snapToGrid(x, y) {
-    if (isNaN(x) || isNaN(y)) {
-        console.error(`Invalid coordinates: x: ${x}, y: ${y}`);
-        return { left: NaN, top: NaN }; // Возвращаем NaN, если входные значения некорректны
-    }
+// Обработка изменения размера окна и пересчет сетки
+export function handleResize() {
+    const containerWidth = dropzone.clientWidth;
+    const containerHeight = dropzone.clientHeight;
 
-    const left = Math.round((x - MARGIN_LEFT) / GRID_SIZE) * GRID_SIZE + MARGIN_LEFT;
-    const top = Math.round((y - MARGIN_TOP) / GRID_SIZE) * GRID_SIZE + MARGIN_TOP;
+    // Пересчитываем сетку
+    initializeGrid(containerWidth, containerHeight);
 
-    console.log(`Snapping to grid: original x: ${x}, y: ${y} -> snapped left: ${left}, top: ${top}`);
-    
-    return { left, top };
+    // Привязываем иконки заново
+    snapIconsToGrid();
 }
 
-// Утилитарная функция для проверки занятости позиции
-function isPositionFree(left, top, currentIconId) {
-    const icons = document.querySelectorAll('.icon-container');
-    for (const icon of icons) {
-        if (icon.id !== currentIconId) {
-            const iconLeft = parseFloat(icon.style.left);
-            const iconTop = parseFloat(icon.style.top);
-            if (iconLeft === left && iconTop === top) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-// Утилитарная функция для сохранения позиций иконок
+// Сохранение позиций иконок в LocalStorage
 export function saveIconPositions() {
-    const iconContainers = document.querySelectorAll('.icon-container');
-    const positions = Array.from(iconContainers).map(icon => ({
-        id: icon.id,
-        left: icon.style.left,
-        top: icon.style.top
-    }));
-    localStorage.setItem('iconPositions', JSON.stringify(positions));
+    const iconPositions = icons.map(icon => {
+        return {
+            id: icon.id,
+            left: parseFloat(icon.style.left),
+            top: parseFloat(icon.style.top)
+        };
+    });
+
+    localStorage.setItem('iconPositions', JSON.stringify(iconPositions));
 }
 
-// Функция для установки позиции иконки с привязкой к сетке
-function setIconPosition(icon, x, y) {
-    const dropzone = document.getElementById('admin-dashboard-container');
-
-    // Проверка значений x и y перед привязкой к сетке
-    if (isNaN(x) || isNaN(y)) {
-        console.error(`Invalid coordinates: x: ${x}, y: ${y}`);
-        return;
-    }
-
-    // Привязка к сетке с использованием обновленных значений
-    const { left, top } = snapToGrid(x, y);
-
-    // Логирование значений после привязки
-    console.log(`Snapped Position: left: ${left}, top: ${top}`);
-
-    // Ограничение по краям контейнера
-    const clampedLeft = Math.max(MARGIN_LEFT, Math.min(left, dropzone.offsetWidth - icon.offsetWidth - MARGIN_LEFT));
-    const clampedTop = Math.max(MARGIN_TOP, Math.min(top, dropzone.offsetHeight - icon.offsetHeight - MARGIN_TOP));
-
-    console.log(`Calculated Position: left: ${left}, top: ${top}, Clamped Position: left: ${clampedLeft}, top: ${clampedTop}`);
-
-    // Проверка занятости позиции и установка или возврат на исходную позицию
-    if (isPositionFree(clampedLeft, clampedTop, icon.id)) {
-        icon.style.left = `${clampedLeft}px`;
-        icon.style.top = `${clampedTop}px`;
-        console.log(`Position set for ${icon.id}: left: ${clampedLeft}, top: ${clampedTop}`);
-    } else {
-        icon.style.left = `${icon.dataset.originalLeft}px`;
-        icon.style.top = `${icon.dataset.originalTop}px`;
-        console.log(`Position occupied for ${icon.id}, reverting to original position.`);
-    }
-}
-
-// Загрузка позиций иконок из локального хранилища
+// Загрузка позиций иконок из LocalStorage
 export function loadIconPositions() {
-    const positions = JSON.parse(localStorage.getItem("iconPositions"));
-    if (positions) {
-        const dropzone = document.getElementById("admin-dashboard-container");
-        updateGridAndMargins(); // Убедитесь, что сетка и отступы обновлены перед загрузкой
+    const savedPositions = JSON.parse(localStorage.getItem('iconPositions'));
 
-        positions.forEach((pos) => {
+    if (savedPositions) {
+        savedPositions.forEach(pos => {
             const icon = document.getElementById(pos.id);
             if (icon) {
-                // Перерасчет позиций иконок относительно новой сетки и контейнера
-                const left = parseFloat(pos.left);
-                const top = parseFloat(pos.top);
-
-                // Привязка позиции к новой сетке и отступам
-                const { left: snappedLeft, top: snappedTop } = snapToGrid(left, top);
-
-                // Ограничение по краям контейнера
-                const clampedLeft = Math.max(
-                    MARGIN_LEFT,
-                    Math.min(snappedLeft, dropzone.offsetWidth - icon.offsetWidth - MARGIN_LEFT)
-                );
-                const clampedTop = Math.max(
-                    MARGIN_TOP,
-                    Math.min(snappedTop, dropzone.offsetHeight - icon.offsetHeight - MARGIN_TOP)
-                );
-
-                // Установка позиции иконки
-                icon.style.left = `${clampedLeft}px`;
-                icon.style.top = `${clampedTop}px`;
+                positionIcon(icon, pos.left, pos.top);
+                // Обновляем сетку, помечаем ячейку как занятую
+                const closestCell = findNearestGridCell(pos.left, pos.top);
+                if (closestCell) {
+                    closestCell.occupied = 1;
+                }
             }
         });
     }
 }
 
-// Инициализация перетаскивания иконок
-export function initializeDragAndDrop() {
-    const iconContainers = document.querySelectorAll('.icon-container');
-
-    // Инициализация события перетаскивания
-    iconContainers.forEach(icon => {
-        icon.addEventListener('dragstart', handleDragStart);
-        icon.addEventListener('dragend', handleDragEnd);
+// Поиск ближайшей ячейки сетки
+function findNearestGridCell(x, y) {
+    return grid.reduce((prev, curr) => {
+        const prevDist = Math.hypot(x - prev.x, y - prev.y);
+        const currDist = Math.hypot(x - curr.x, y - curr.y);
+        return currDist < prevDist ? curr : prev;
     });
+}
 
-    const dashboardContainer = document.getElementById('admin-dashboard-container');
-    dashboardContainer.addEventListener('dragover', handleDragOver);
-    dashboardContainer.addEventListener('drop', handleDrop);
+// Инициализация
+export function initializeIconsAndGrid() {
+    const containerWidth = dropzone.clientWidth;
+    const containerHeight = dropzone.clientHeight;
 
-    // Обработчик изменения размера окна
+    // Инициализация сетки
+    initializeGrid(containerWidth, containerHeight);
+
+    // Найти все иконки в контейнере
+    icons = ICON_IDS.map(id => document.getElementById(id));
+
+    // Привязка иконок к сетке
+    snapIconsToGrid();
+
+    // Пересчет сетки при изменении размеров окна
     window.addEventListener('resize', handleResize);
-
-    // Инициализируем размеры сетки и отступов при загрузке
-    updateGridAndMargins();
-}
-
-// Обработчики для перетаскивания с мышью
-function handleDragStart(event) {
-    event.currentTarget.classList.add('dragging');
-    event.dataTransfer.setData('text/plain', event.currentTarget.id);
-}
-
-function handleDragEnd(event) {
-    event.currentTarget.classList.remove('dragging');
-    console.log(`Dropped ${event.currentTarget.id}`); // Логирование
-}
-
-function handleDragOver(event) {
-    event.preventDefault();
-    console.log('Drag over dropzone'); // Логирование
-}
-
-// Функция для обработки события drop
-function handleDrop(event) {
-    event.preventDefault();
-    const id = event.dataTransfer.getData('text/plain');
-    const draggableElement = document.getElementById(id);
-    const dropzone = document.getElementById('admin-dashboard-container');
-
-    // Рассчитываем координаты относительно контейнера
-    const offsetX = event.clientX - dropzone.getBoundingClientRect().left;
-    const offsetY = event.clientY - dropzone.getBoundingClientRect().top;
-
-    // Ограничение перемещения иконок внутри видимой области контейнера
-    const left = Math.max(0, Math.min(offsetX - (draggableElement.offsetWidth / 2), dropzone.offsetWidth - draggableElement.offsetWidth));
-    const top = Math.max(0, Math.min(offsetY - (draggableElement.offsetHeight / 2), dropzone.offsetHeight - draggableElement.offsetHeight));
-
-    draggableElement.style.left = `${left}px`;
-    draggableElement.style.top = `${top}px`;
-
-    saveIconPositions();
-}
-
-// Обработчик изменения размера окна
-function handleResize() {
-    updateGridAndMargins();
-
-    // Обновляем позиции всех иконок с новой сеткой
-    const iconContainers = document.querySelectorAll('.icon-container');
-    iconContainers.forEach(icon => {
-        const left = parseFloat(icon.style.left);
-        const top = parseFloat(icon.style.top);
-        const { left: snappedLeft, top: snappedTop } = snapToGrid(left, top);
-        setIconPosition(icon, snappedLeft, snappedTop);
-    });
 }
 
 // Функция для обработки двойного клика и касаний на иконках
 export function addIconEventListeners() {
-    document.getElementById(ICON1_ID).addEventListener('dblclick', showDishForm);
-    document.getElementById(ICON2_ID).addEventListener('dblclick', showMenu);
-    document.getElementById(ICON3_ID).addEventListener('dblclick', showPurchaseCalculationForm);
-    document.getElementById(ICON4_ID).addEventListener('dblclick', showOrderForm);
-    document.getElementById(ICON5_ID).addEventListener('dblclick', showCollectionButtons);
+    document.getElementById(ICON_IDS[0]).addEventListener('dblclick', showDishForm);
+    document.getElementById(ICON_IDS[1]).addEventListener('dblclick', showMenu);
+    document.getElementById(ICON_IDS[2]).addEventListener('dblclick', showPurchaseCalculationForm);
+    document.getElementById(ICON_IDS[3]).addEventListener('dblclick', showOrderForm);
+    document.getElementById(ICON_IDS[4]).addEventListener('dblclick', showCollectionButtons);
 
-    document.getElementById(ICON1_ID).addEventListener('touchend', handleTouchEnd);
-    document.getElementById(ICON2_ID).addEventListener('touchend', handleTouchEnd);
-    document.getElementById(ICON3_ID).addEventListener('touchend', handleTouchEnd);
-    document.getElementById(ICON4_ID).addEventListener('touchend', handleTouchEnd);
-    document.getElementById(ICON5_ID).addEventListener('touchend', handleTouchEnd);
+    ICON_IDS.forEach(id => {
+        document.getElementById(id).addEventListener('touchend', handleTouchEnd);
+    });
 }
 
 function handleTouchEnd(event) {
     const id = event.currentTarget.id;
     setTimeout(() => {
         switch (id) {
-            case ICON1_ID:
+            case ICON_IDS[0]:
                 showDishForm();
                 break;
-            case ICON2_ID:
+            case ICON_IDS[1]:
                 showMenu();
                 break;
-            case ICON3_ID:
+            case ICON_IDS[2]:
                 showPurchaseCalculationForm();
                 break;
-            case ICON4_ID:
+            case ICON_IDS[3]:
                 showOrderForm();
                 break;
-            case ICON5_ID:
+            case ICON_IDS[4]:
                 showCollectionButtons();
                 break;
         }
     }, 200);
 }
+
 
 let startY = 0;
 let startX = 0;
